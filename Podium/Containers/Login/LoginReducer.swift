@@ -10,8 +10,13 @@ import ComposableArchitecture
 let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
     switch action {
+    case .dismissBanner:
+      state.bannerData = nil
+      return .none
+      
     case .phoneNumberChanged(let phoneNumber):
       state.phoneNumber = phoneNumber
+      print(phoneNumber)
       return .none
       
     case .verificationCodeChanged(let verificationCode):
@@ -34,6 +39,7 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       
     case .didVerifyPhone(.failure(let error)):
       state.isVerificationPending = false
+      state.bannerData = BannerData(title: "Error", detail: error.localizedDescription, type: .error)
       return .none
       
     case .signIn:
@@ -59,6 +65,8 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       
     case .didSignIn(.failure(let error)):
       state.isVerificationPending = false
+      environment.localStorage.removeObject(forKey: StorageKey.authVerificationID.rawValue)
+      state.bannerData = BannerData(title: "Error", detail: error.localizedDescription, type: .error)
       return .none
     }
   }

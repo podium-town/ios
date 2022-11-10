@@ -59,12 +59,30 @@ struct LoginView: View {
                 .foregroundColor(.gray)
                 .font(.body.weight(.medium))
               
-              TextField("+22 123 3445", text: viewStore.binding(
+              iPhoneNumberField(text: viewStore.binding(
                 get: \.phoneNumber,
                 send: LoginAction.phoneNumberChanged
-              ))
-              .textFieldStyle(PodiumTextFieldStyle(isEditing: true))
-              .keyboardType(.phonePad)
+              ), formatted: true)
+              .flagHidden(false)
+              .prefixHidden(false)
+              .flagSelectable(true)
+              .padding()
+              .background(
+                RoundedRectangle(cornerRadius: 16)
+                  .strokeBorder(
+                    LinearGradient(
+                      gradient: .init(
+                        colors: [
+                          Color("ColorGradient1"),
+                          Color("ColorGradient2")
+                        ]
+                      ),
+                      startPoint: .topLeading,
+                      endPoint: .bottomTrailing
+                    ),
+                    lineWidth: 3
+                  )
+              )
             }
             .onAppear {
               self.endTextEditing()
@@ -97,6 +115,10 @@ struct LoginView: View {
         }
         .padding()
       }
+      .banner(data: viewStore.binding(
+        get: \.bannerData,
+        send: LoginAction.dismissBanner
+      ))
     }
   }
 }

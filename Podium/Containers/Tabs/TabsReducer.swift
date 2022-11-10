@@ -9,18 +9,30 @@ import ComposableArchitecture
 import Combine
 
 let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
-  homeReducer.optional().pullback(
-    state: \.home,
+  homeReducer.pullback(
+    state: \.homeState,
     action: /TabsAction.home,
+    environment: { $0 }
+  ),
+  profileReducer.pullback(
+    state: \.profileState,
+    action: /TabsAction.profile,
+    environment: { $0 }
+  ),
+  addReducer.pullback(
+    state: \.addState,
+    action: /TabsAction.add,
     environment: { $0 }
   ),
   Reducer { state, action, environment in
     switch action {
     case .initialize:
-      state.home = HomeState()
       return .none
       
     case .home(_):
+      return .none
+      
+    case .add(_):
       return .none
     }
   }

@@ -10,4 +10,5 @@ struct LoginState: Equatable {
   var verificationId: String?
   var phoneNumber = ""
   var verificationCode = ""
+  var bannerData: BannerData?
 }

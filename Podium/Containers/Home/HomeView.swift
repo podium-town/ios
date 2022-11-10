@@ -17,11 +17,17 @@ struct HomeView: View {
         ZStack {
           VStack(spacing: 0) {
             List {
-              ForEach(1..<4) { post in
+              ForEach(viewStore.posts.sorted(by: { $0.createdAt > $1.createdAt})) { post in
                 Button {
                   viewStore.send(.presentThread(isPresented: true))
                 } label: {
-                  Post(post: Mocks.post)
+                  Post(
+                    post: post,
+                    profile: viewStore.profiles[post.ownerId]!,
+                    onDelete: { post in
+                      viewStore.send(.deletePost(id: post.id))
+                    }
+                  )
                 }
               }
               .listRowSeparator(.hidden)
@@ -29,49 +35,72 @@ struct HomeView: View {
             }
             .listStyle(.plain)
             .refreshable {
-              
+              await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
             }
             
             VStack(spacing: 0) {
               Divider()
                 .overlay(Color("ColorSeparator"))
               
-              ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                  Button {
-                    viewStore.send(.presentStories(isPresented: true))
-                  } label: {
-                    StoryAvatar()
+              HStack(spacing: 0) {
+                ScrollView(.horizontal, showsIndicators: false) {
+                  HStack {
+                    Button {
+                      viewStore.send(.presentStories(isPresented: true))
+                    } label: {
+                      StoryAvatar()
+                    }
+                    
+                    Button {
+                      viewStore.send(.presentStories(isPresented: true))
+                    } label: {
+                      StoryAvatar()
+                    }
+                    
+                    Button {
+                      viewStore.send(.presentStories(isPresented: true))
+                    } label: {
+                      StoryAvatar()
+                    }
+                    
+                    Button {
+                      viewStore.send(.presentStories(isPresented: true))
+                    } label: {
+                      StoryAvatar()
+                    }
+                    
+                    Button {
+                      viewStore.send(.presentStories(isPresented: true))
+                    } label: {
+                      StoryAvatar()
+                    }
                   }
-                  
-                  Button {
-                    viewStore.send(.presentStories(isPresented: true))
-                  } label: {
-                    StoryAvatar()
-                  }
-                  
-                  Button {
-                    viewStore.send(.presentStories(isPresented: true))
-                  } label: {
-                    StoryAvatar()
-                  }
-                  
-                  Button {
-                    viewStore.send(.presentStories(isPresented: true))
-                  } label: {
-                    StoryAvatar()
-                  }
-                  
-                  Button {
-                    viewStore.send(.presentStories(isPresented: true))
-                  } label: {
-                    StoryAvatar()
-                  }
+                  .padding(.horizontal)
                 }
-                .padding(.horizontal)
+                .padding(.top, 16)
+                .padding(.bottom, 18)
+                
+                Button {
+                  viewStore.send(.presentAdd(isPresented: true))
+                } label: {
+                  Image("add")
+                    .resizable()
+                    .frame(width: 28, height: 28)
+                }
+                .padding()
+                .sheet(isPresented: viewStore.binding(
+                  get: \.isAddPresented,
+                  send: HomeAction.presentAdd
+                )) {
+                  IfLetStore(
+                    store.scope(
+                      state: \.add,
+                      action: HomeAction.add
+                    ),
+                    then: AddView.init(store:)
+                  )
+                }
               }
-              .padding(.top, 16)
-              .padding(.bottom, 18)
             }
             .sheet(isPresented: viewStore.binding(
               get: \.isStoriesPresented,
@@ -87,14 +116,12 @@ struct HomeView: View {
             }
           }
           .navigationBarTitleDisplayMode(.inline)
-          .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-              Image("more")
-                .resizable()
-                .frame(width: 18, height: 18)
-                .scaledToFill()
-            }
-          }
+          .overlay(alignment: .top, content: {
+            Color("ColorBackground")
+              .background(.regularMaterial)
+              .edgesIgnoringSafeArea(.top)
+              .frame(height: 0)
+          })
           .onAppear {
             self.endTextEditing()
             viewStore.send(.initialize)
@@ -130,7 +157,9 @@ struct HomeView: View {
 struct HomeView_Previews: PreviewProvider {
   static var previews: some View {
     HomeView(store: Store(
-      initialState: HomeState(),
+      initialState: HomeState(
+        profile: Mocks.profile
+      ),
       reducer: homeReducer,
       environment: AppEnvironment()
     ))

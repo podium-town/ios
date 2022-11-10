@@ -14,13 +14,10 @@ struct TabsView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       TabView {
-        IfLetStore(
-          store.scope(
-            state: \.home,
-            action: TabsAction.home
-          ),
-          then: HomeView.init(store:)
-        )
+        HomeView(store: store.scope(
+          state: \.homeState,
+          action: TabsAction.home
+        ))
         .tabItem {
           Image("home")
             .resizable()
@@ -43,16 +40,12 @@ struct TabsView: View {
               .frame(width: 26, height: 26, alignment: .center)
           }
         
-        Text("Profile")
+        ProfileView(store: store.scope(
+          state: \.profileState,
+          action: TabsAction.profile
+        ))
           .tabItem {
             Image("profile")
-              .resizable()
-              .frame(width: 26, height: 26, alignment: .center)
-          }
-        
-        Text("Add")
-          .tabItem {
-            Image("add")
               .resizable()
               .frame(width: 26, height: 26, alignment: .center)
           }
@@ -70,7 +63,18 @@ struct TabsView: View {
 struct TabsView_Previews: PreviewProvider {
   static var previews: some View {
     TabsView(store: Store(
-      initialState: TabsState(),
+      initialState: TabsState(
+        profile: Mocks.profile,
+        homeState: HomeState(
+          profile: Mocks.profile
+        ),
+        profileState: ProfileState(
+          profile: Mocks.profile
+        ),
+        addState: AddState(
+          profile: Mocks.profile
+        )
+      ),
       reducer: tabsReducer,
       environment: AppEnvironment()
     ))

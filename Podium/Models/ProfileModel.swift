@@ -9,6 +9,10 @@ import Foundation
 
 struct ProfileModel: Equatable, Identifiable {
   var id: String
+  var username: String
+  var following: [String] = []
+  var createdAt: Int
+  var avatar: String?
 }
 
 extension ProfileModel: Codable {

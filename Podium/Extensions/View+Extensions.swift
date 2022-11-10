@@ -17,6 +17,10 @@ extension View {
     )
   }
   
+  func banner(data: Binding<BannerData?>) -> some View {
+    self.modifier(BannerModifier(data: data))
+  }
+  
   func tabViewStyle(backgroundColor: Color? = nil,
                     itemColor: Color? = nil,
                     selectedItemColor: Color? = nil,

@@ -5,6 +5,25 @@
 //  Created by Michael Jach on 08/11/2022.
 //
 
-struct PostModel {
+import Foundation
+
+struct PostModel: Equatable, Identifiable {
+  var id: String
   var text: String
+  var ownerId: String
+  var createdAt: Int64
+}
+
+extension PostModel: Codable {
+  init(dictionary: [String: Any]) throws {
+    self = try JSONDecoder().decode(
+      PostModel.self,
+      from: JSONSerialization.data(withJSONObject: dictionary)
+    )
+  }
+  
+  func encoded() -> Data? {
+    let encoder = JSONEncoder()
+    return try? encoder.encode(self)
+  }
 }

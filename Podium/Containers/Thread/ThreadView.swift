@@ -13,7 +13,18 @@ struct ThreadView: View {
   
   var body: some View {
     WithViewStore(store) { viewStore in
-      Text("Hello, World!")
+      ScrollView {
+        
+      }
+      .navigationBarTitleDisplayMode(.inline)
+      .toolbar {
+        ToolbarItem(placement: .navigationBarTrailing) {
+          Image("more")
+            .resizable()
+            .frame(width: 18, height: 18)
+            .scaledToFill()
+        }
+      }
     }
   }
 }

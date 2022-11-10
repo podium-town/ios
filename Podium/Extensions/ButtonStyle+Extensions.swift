@@ -10,7 +10,8 @@ import SwiftUI
 struct PodiumButton: ButtonStyle {
   func makeBody(configuration: Configuration) -> some View {
     configuration.label
-      .padding()
+      .padding(.vertical, 20)
+      .padding(.horizontal, 12)
       .background(LinearGradient(
         gradient: .init(
           colors: [

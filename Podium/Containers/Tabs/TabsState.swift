@@ -6,6 +6,10 @@
 //
 
 struct TabsState: Equatable {
+  var profile: ProfileModel
+  
   // View States
-  var home: HomeState?
+  var homeState: HomeState
+  var profileState: ProfileState
+  var addState: AddState
 }

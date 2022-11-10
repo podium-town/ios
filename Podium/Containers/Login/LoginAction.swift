@@ -14,4 +14,5 @@ enum LoginAction {
   case didVerifyPhone(TaskResult<String>)
   case signIn
   case didSignIn(TaskResult<ProfileModel>)
+  case dismissBanner
 }
