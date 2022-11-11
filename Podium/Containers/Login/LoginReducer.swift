@@ -16,9 +16,15 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       
     case .phoneNumberChanged(let phoneNumber):
       state.phoneNumber = phoneNumber
-      print(phoneNumber)
+      return .none
+
+    case .resend:
       return .none
       
+    case .usernameChanged(let username):
+      state.username = username
+      return .none
+    
     case .verificationCodeChanged(let verificationCode):
       state.verificationCode = verificationCode
       return .none
@@ -39,7 +45,11 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       
     case .didVerifyPhone(.failure(let error)):
       state.isVerificationPending = false
-      state.bannerData = BannerData(title: "Error", detail: error.localizedDescription, type: .error)
+      state.bannerData = BannerData(
+        title: "Error",
+        detail: error.localizedDescription,
+        type: .error
+      )
       return .none
       
     case .signIn:
@@ -56,17 +66,57 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       }
       
     case .didSignIn(.success(let profile)):
+      state.profile = profile
       state.isVerificationPending = false
+      state.verificationId = nil
       environment.localStorage.removeObject(forKey: StorageKey.authVerificationID.rawValue)
       if let encoded = profile.encoded() {
         environment.localStorage.set(encoded, forKey: StorageKey.profile.rawValue)
+      }
+      if profile.username == nil {
+        state.isUsernameSelectionVisible = true
       }
       return .none
       
     case .didSignIn(.failure(let error)):
       state.isVerificationPending = false
       environment.localStorage.removeObject(forKey: StorageKey.authVerificationID.rawValue)
-      state.bannerData = BannerData(title: "Error", detail: error.localizedDescription, type: .error)
+      state.bannerData = BannerData(
+        title: "Error",
+        detail: error.localizedDescription,
+        type: .error
+      )
+      return .none
+      
+    case .setUsername:
+      let profile = state.profile
+      let username = state.username
+      if let profile = profile {
+        return .task {
+          await .didSetUsername(TaskResult {
+            try await environment.api.setUsername(
+              profile: profile,
+              username: username
+            )
+          })
+        }
+      } else {
+        return .none
+      }
+      
+    case .didSetUsername(.success(let profile)):
+      if let encoded = profile.encoded() {
+        environment.localStorage.set(encoded, forKey: StorageKey.profile.rawValue)
+      }
+      state.isUsernameSelectionVisible = false
+      return .none
+      
+    case .didSetUsername(.failure(let error)):
+      state.bannerData = BannerData(
+        title: "Error",
+        detail: error.localizedDescription,
+        type: .error
+      )
       return .none
     }
   }

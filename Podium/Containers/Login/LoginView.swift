@@ -27,12 +27,20 @@ struct LoginView: View {
           if viewStore.verificationId != nil {
             Text("Enter Verification Code you just recieved")
             
-            TextField("", text: viewStore.binding(
-              get: \.verificationCode,
-              send: LoginAction.verificationCodeChanged
-            ))
-            .textFieldStyle(PodiumTextFieldStyle(isEditing: true))
-            .keyboardType(.numberPad)
+            VStack(alignment: .leading) {
+              TextField("", text: viewStore.binding(
+                get: \.verificationCode,
+                send: LoginAction.verificationCodeChanged
+              ))
+              .textFieldStyle(PodiumTextFieldStyle(isEditing: true))
+              .keyboardType(.numberPad)
+              
+              Button {
+                
+              } label: {
+                Text("Resend")
+              }
+            }
             
             Button {
               viewStore.send(.signIn)
@@ -53,7 +61,7 @@ struct LoginView: View {
             .onAppear {
               self.endTextEditing()
             }
-          } else {
+          } else if viewStore.verificationId == nil {
             VStack(alignment: .leading, spacing: 8) {
               Text("Phone number")
                 .foregroundColor(.gray)
@@ -104,6 +112,35 @@ struct LoginView: View {
             }
             .disabled(viewStore.isVerificationPending)
             .buttonStyle(PodiumButton())
+          }
+          
+          if viewStore.isUsernameSelectionVisible {
+            VStack {
+              Text("Enter your desired username")
+              
+              TextField("", text: viewStore.binding(
+                get: \.username,
+                send: LoginAction.usernameChanged
+              ))
+              .textFieldStyle(PodiumTextFieldStyle(isEditing: true))
+              
+              Button {
+                viewStore.send(.setUsername)
+              } label: {
+                HStack {
+                  Spacer()
+                  HStack(spacing: 8) {
+                    if viewStore.isVerificationPending {
+                      ProgressView()
+                    }
+                    Text("Set username")
+                  }
+                  Spacer()
+                }
+              }
+              .disabled(viewStore.isVerificationPending)
+              .buttonStyle(PodiumButton())
+            }
           }
           
           Divider()

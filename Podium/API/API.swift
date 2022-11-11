@@ -38,7 +38,21 @@ class API {
         if let dictionary = dictionary {
           return try ProfileModel(dictionary: dictionary)
         } else {
-          throw AppError.general
+          let profile = ProfileModel(
+            id: result.user.uid,
+            following: [result.user.uid],
+            createdAt: Int(Date().millisecondsSince1970) / 1000
+          )
+          try await db
+            .collection("users")
+            .document(profile.id)
+            .setData([
+              "id": profile.id,
+              "following": profile.following,
+              "createdAt": profile.createdAt
+            ])
+          
+          return profile
         }
       } catch let error {
         throw error
@@ -75,8 +89,10 @@ class API {
       let dictionary = try await db
         .collection("posts")
         .whereField("ownerId", in: followingIds)
+        .order(by: "createdAt", descending: true)
+        .limit(to: 50)
         .getDocuments().documents
-
+      
       for document in dictionary {
         if let post = try? PostModel(dictionary: document.data()) {
           posts.append(post)
@@ -107,7 +123,7 @@ class API {
         ownerId: ownerId,
         createdAt: Date().millisecondsSince1970 / 1000
       )
-
+      
       try await db
         .collection("posts")
         .document(post.id)
@@ -124,6 +140,23 @@ class API {
     }
   }
   
+  func setUsername(profile: ProfileModel, username: String) async throws -> ProfileModel {
+    var updated = profile
+    do {
+      try await db
+        .collection("users")
+        .document(updated.id)
+        .setData([
+          "username": username
+        ], merge: true)
+      
+      updated.username = username
+      return updated
+    } catch let error {
+      throw error
+    }
+  }
+  
   func deletePost(id: String) async throws -> String {
     do {
       try await db
@@ -132,6 +165,29 @@ class API {
         .delete()
       
       return id
+    } catch let error {
+      throw error
+    }
+  }
+  
+  func search(query: String) async throws -> [ProfileModel] {
+    do {
+      var profiles: [ProfileModel] = []
+      let results = try await db
+        .collection("users")
+        .whereField("username", isGreaterThanOrEqualTo: query)
+        .whereField("username", isLessThanOrEqualTo: query+"\u{F7FF}")
+        .limit(to: 50)
+        .getDocuments()
+        .documents
+      
+      for document in results {
+        if let profile = try? ProfileModel(dictionary: document.data()) {
+          profiles.append(profile)
+        }
+      }
+      
+      return profiles
     } catch let error {
       throw error
     }

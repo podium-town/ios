@@ -12,6 +12,7 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
     switch action {
     case .textChanged(let text):
       state.text = text
+      state.isSendDisabled = state.text.count < 3
       return .none
       
     case .addPost:

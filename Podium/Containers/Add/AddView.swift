@@ -13,35 +13,61 @@ struct AddView: View {
   
   @FocusState private var isTextFocused: Bool
   
+  init(store: Store<AddState, AddAction>) {
+    self.store = store
+    UITextView.appearance().backgroundColor = .clear
+  }
+  
   var body: some View {
     WithViewStore(store) { viewStore in
-      VStack {
-        TextEditor(text: viewStore.binding(
-          get: \.text,
-          send: AddAction.textChanged
-        ))
-        .font(.largeTitle)
-        .padding()
-        .padding(.top, 22)
-        .focused($isTextFocused)
+      ZStack {
+        Color("ColorBackground")
+          .ignoresSafeArea()
         
-        Button {
-          viewStore.send(.addPost)
-        } label: {
-          HStack {
-            Spacer()
-            Text("Send")
-            Spacer()
+        VStack {
+          if #available(iOS 16.0, *) {
+            TextEditor(text: viewStore.binding(
+              get: \.text,
+              send: AddAction.textChanged
+            ))
+            .scrollContentBackground(.hidden)
+            .background(Color("ColorBackground"))
+            .font(.largeTitle)
+            .padding()
+            .padding(.top, 22)
+            .focused($isTextFocused)
+          } else {
+            TextEditor(text: viewStore.binding(
+              get: \.text,
+              send: AddAction.textChanged
+            ))
+            .background(Color("ColorBackground"))
+            .font(.largeTitle)
+            .padding()
+            .padding(.top, 22)
+            .focused($isTextFocused)
           }
+          
+          Button {
+            viewStore.send(.addPost)
+          } label: {
+            HStack {
+              Spacer()
+              Text("Send")
+              Spacer()
+            }
+          }
+          .buttonStyle(PodiumButton())
+          .disabled(viewStore.isSendPending || viewStore.isSendDisabled)
+          .opacity(viewStore.isSendPending || viewStore.isSendDisabled ? 0.5 : 1)
+          .padding()
+          .padding(.top, 4)
         }
-        .buttonStyle(PodiumButton())
-        .disabled(viewStore.isSendPending)
-        .padding()
+        .onAppear {
+          isTextFocused = true
+        }
+        .background(Color("ColorBackground"))
       }
-      .onAppear {
-        isTextFocused = true
-      }
-      .background(Color("ColorBackground"))
     }
   }
 }

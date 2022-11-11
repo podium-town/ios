@@ -12,4 +12,5 @@ struct TabsState: Equatable {
   var homeState: HomeState
   var profileState: ProfileState
   var addState: AddState
+  var exploreState: ExploreState
 }

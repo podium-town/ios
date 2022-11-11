@@ -17,7 +17,7 @@ struct HomeView: View {
         ZStack {
           VStack(spacing: 0) {
             List {
-              ForEach(viewStore.posts.sorted(by: { $0.createdAt > $1.createdAt})) { post in
+              ForEach(viewStore.posts) { post in
                 Button {
                   viewStore.send(.presentThread(isPresented: true))
                 } label: {
@@ -35,7 +35,11 @@ struct HomeView: View {
             }
             .listStyle(.plain)
             .refreshable {
+#if targetEnvironment(simulator)
+              
+#else
               await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
+#endif
             }
             
             VStack(spacing: 0) {
@@ -45,6 +49,12 @@ struct HomeView: View {
               HStack(spacing: 0) {
                 ScrollView(.horizontal, showsIndicators: false) {
                   HStack {
+                    Button {
+                      
+                    } label: {
+                      StoryAvatar(isAddVisible: true)
+                    }
+                    
                     Button {
                       viewStore.send(.presentStories(isPresented: true))
                     } label: {
@@ -124,7 +134,11 @@ struct HomeView: View {
           })
           .onAppear {
             self.endTextEditing()
+#if targetEnvironment(simulator)
+            
+#else
             viewStore.send(.initialize)
+#endif
           }
           
           // Workaround for multiple NavigationLinks

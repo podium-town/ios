@@ -7,4 +7,5 @@
 
 struct ProfileState: Equatable {
   var profile: ProfileModel
+  var posts: [PostModel] = []
 }

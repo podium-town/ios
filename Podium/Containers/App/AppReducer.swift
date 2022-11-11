@@ -35,6 +35,9 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
           ),
           addState: AddState(
             profile: loadedProfile
+          ),
+          exploreState: ExploreState(
+            profile: loadedProfile
           )
         )
       } else if let verificationId = environment.localStorage.string(forKey: StorageKey.authVerificationID.rawValue) {
@@ -54,6 +57,27 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
       return .none
       
     case .login(.didSignIn(.success(let profile))):
+      if profile.username != nil {
+        state.login = nil
+        state.tabs = TabsState(
+          profile: profile,
+          homeState: HomeState(
+            profile: profile
+          ),
+          profileState: ProfileState(
+            profile: profile
+          ),
+          addState: AddState(
+            profile: profile
+          ),
+          exploreState: ExploreState(
+            profile: profile
+          )
+        )
+      }
+      return .none
+      
+    case .login(.didSetUsername(.success(let profile))):
       state.login = nil
       state.tabs = TabsState(
         profile: profile,
@@ -64,6 +88,9 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
           profile: profile
         ),
         addState: AddState(
+          profile: profile
+        ),
+        exploreState: ExploreState(
           profile: profile
         )
       )

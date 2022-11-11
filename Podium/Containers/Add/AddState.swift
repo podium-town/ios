@@ -9,4 +9,5 @@ struct AddState: Equatable {
   var profile: ProfileModel
   var text = ""
   var isSendPending = false
+  var isSendDisabled = true
 }

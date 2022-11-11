@@ -22,7 +22,7 @@ struct Post: View {
       
       VStack(alignment: .leading, spacing: 4) {
         HStack(spacing: 0) {
-          Text(profile.username)
+          Text(profile.username ?? profile.id)
             .fontWeight(.semibold)
           
           Spacer()

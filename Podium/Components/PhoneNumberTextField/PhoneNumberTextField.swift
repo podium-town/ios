@@ -260,7 +260,7 @@ public struct iPhoneNumberField: UIViewRepresentable {
             text.wrappedValue = textContent
           } else if let number = textField.phoneNumber {
             let country = String(number.countryCode)
-            text.wrappedValue = country + textContent
+            text.wrappedValue = "+" + country + " " + textContent
           } else {
             text.wrappedValue = textContent
           }

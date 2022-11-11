@@ -24,15 +24,23 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
     action: /TabsAction.add,
     environment: { $0 }
   ),
+  exploreReducer.pullback(
+    state: \.exploreState,
+    action: /TabsAction.explore,
+    environment: { $0 }
+  ),
   Reducer { state, action, environment in
     switch action {
-    case .initialize:
-      return .none
-      
     case .home(_):
       return .none
       
     case .add(_):
+      return .none
+      
+    case .profile(_):
+      return .none
+      
+    case .explore(_):
       return .none
     }
   }

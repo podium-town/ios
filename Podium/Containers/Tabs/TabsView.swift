@@ -24,7 +24,10 @@ struct TabsView: View {
             .frame(width: 26, height: 26, alignment: .center)
         }
         
-        Text("search")
+        ExploreView(store: store.scope(
+          state: \.exploreState,
+          action: TabsAction.explore
+        ))
           .tabItem {
             Image("search")
               .resizable()
@@ -53,9 +56,6 @@ struct TabsView: View {
       .tabViewStyle(
         backgroundColor: Color("ColorBackground")
       )
-      .onAppear {
-        viewStore.send(.initialize)
-      }
     }
   }
 }
@@ -72,6 +72,9 @@ struct TabsView_Previews: PreviewProvider {
           profile: Mocks.profile
         ),
         addState: AddState(
+          profile: Mocks.profile
+        ),
+        exploreState: ExploreState(
           profile: Mocks.profile
         )
       ),

@@ -7,7 +7,8 @@
 
 import SwiftUI
 import ComposableArchitecture
-import Firebase
+import FirebaseCore
+import FirebaseAuth
 
 @main
 struct PodiumApp: App {
