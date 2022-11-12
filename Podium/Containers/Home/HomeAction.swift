@@ -12,6 +12,7 @@ enum HomeAction {
   case presentStories(isPresented: Bool)
   case presentThread(isPresented: Bool)
   case presentAdd(isPresented: Bool)
+  case presentProfile(isPresented: Bool, profile: ProfileModel?)
   case getPosts
   case didGetPosts(TaskResult<([ProfileModel], [PostModel])>)
   case deletePost(id: String)
@@ -21,4 +22,5 @@ enum HomeAction {
   case add(AddAction)
   case stories(StoriesAction)
   case thread(ThreadAction)
+  case profile(ProfileAction)
 }

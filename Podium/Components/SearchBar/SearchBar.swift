@@ -9,6 +9,9 @@ import SwiftUI
 
 struct SearchBar: View {
   @Binding var searchQuery: String
+  @FocusState private var focus: Bool
+  
+  var onClear: (() -> Void)?
   
   var body: some View {
     ZStack {
@@ -16,7 +19,23 @@ struct SearchBar: View {
         .foregroundColor(Color("ColorLightBackground"))
       HStack {
         Image(systemName: "magnifyingglass")
-        TextField("Search ...", text: $searchQuery)
+        TextField("Search...", text: $searchQuery)
+          .textInputAutocapitalization(.never)
+          .disableAutocorrection(true)
+          .submitLabel(.search)
+          .focused($focus)
+        
+        Spacer()
+        
+        if onClear != nil && focus {
+          Button {
+            focus = false
+            onClear?()
+          } label: {
+            Image(systemName: "multiply")
+              .padding(.trailing, 13)
+          }
+        }
       }
       .foregroundColor(.gray)
       .padding(.leading, 13)

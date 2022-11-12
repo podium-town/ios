@@ -9,8 +9,10 @@ struct HomeState: Equatable {
   var profile: ProfileModel
   var isStoriesPresented = false
   var isThreadPresented = false
+  var isProfilePresented = false
   var isAddPresented = false
   var isLoadingRefreshable = false
+  var isEmpty = false
   var profiles: [String: ProfileModel] = [:]
   var posts: [PostModel] = []
   
@@ -18,4 +20,5 @@ struct HomeState: Equatable {
   var add: AddState?
   var stories: StoriesState?
   var thread: ThreadState?
+  var profileState: ProfileState?
 }

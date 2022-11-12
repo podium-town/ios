@@ -12,5 +12,8 @@ enum ExploreAction {
   case search
   case didSearch(TaskResult<[ProfileModel]>)
   case follow(String)
-  case didFollow(TaskResult<String>)
+  case didFollow(TaskResult<(ProfileModel, String)>)
+  case unFollow(String)
+  case didUnfollow(TaskResult<(ProfileModel, String)>)
+  case clearSearch
 }

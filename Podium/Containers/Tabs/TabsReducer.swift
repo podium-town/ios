@@ -34,10 +34,26 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
     case .home(_):
       return .none
       
+    case .add(.didAddPost(.success(let post))):
+      state.profileState.posts.append(post)
+      return .none
+      
     case .add(_):
       return .none
       
     case .profile(_):
+      return .none
+      
+    case .explore(.didFollow(.success((let from, let id)))):
+      state.profile.following.append(id)
+      state.exploreState.profile.following.append(id)
+      state.homeState.profile.following.append(id)
+      return .none
+      
+    case .explore(.didUnfollow(.success((let from, let id)))):
+      state.profile.following.removeAll(where: { $0 == id })
+      state.exploreState.profile.following.removeAll(where: { $0 == id })
+      state.homeState.profile.following.removeAll(where: { $0 == id })
       return .none
       
     case .explore(_):

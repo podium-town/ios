@@ -11,7 +11,7 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
   Reducer { state, action, environment in
     switch action {
     case .searchQueryChanged(let searchQuery):
-      state.searchQuery = searchQuery
+      state.searchQuery = searchQuery.lowercased()
       return state.searchQuery.count > 2 ? Effect(value: .search) : .none
       
     case .search:
@@ -24,8 +24,13 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
         })
       }
       
+    case .clearSearch:
+      state.searchQuery = ""
+      state.profiles = []
+      return .none
+      
     case .didSearch(.success(let profiles)):
-      state.profiles = profiles
+      state.profiles = profiles.filter({ $0.id != state.profile.id})
       return .none
       
     case .didSearch(.failure(let error)):
@@ -33,13 +38,46 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
       
     case .follow(let id):
       state.pendingFollowRequests.append(id)
-      return .none
+      let from = state.profile
+      return .task {
+        await .didFollow(TaskResult {
+          try await environment.api.follow(
+            from: from,
+            id: id
+          )
+        })
+      }
       
-    case .didFollow(.success(let id)):
+    case .didFollow(.success((let from, let id))):
       state.pendingFollowRequests.removeAll(where: { $0 == id })
+      if let encoded = from.encoded() {
+        environment.localStorage.set(encoded, forKey: StorageKey.profile.rawValue)
+      }
       return .none
       
     case .didFollow(.failure(let error)):
+      return .none
+      
+    case .unFollow(let id):
+      state.pendingFollowRequests.append(id)
+      let from = state.profile
+      return .task {
+        await .didUnfollow(TaskResult {
+          try await environment.api.unFollow(
+            from: from,
+            id: id
+          )
+        })
+      }
+      
+    case .didUnfollow(.success((let from, let id))):
+      state.pendingFollowRequests.removeAll(where: { $0 == id })
+      if let encoded = from.encoded() {
+        environment.localStorage.set(encoded, forKey: StorageKey.profile.rawValue)
+      }
+      return .none
+      
+    case .didUnfollow(.failure(let error)):
       return .none
     }
   }

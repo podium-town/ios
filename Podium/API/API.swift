@@ -107,8 +107,8 @@ class API {
   
   func getPostsProfiles(ids: [String]) async throws -> ([ProfileModel], [PostModel]) {
     do {
-      let profiles = try await getProfiles(ids: ids)
       let posts = try await getPosts(followingIds: ids)
+      let profiles = try await getProfiles(ids: posts.map({ $0.ownerId }))
       return (profiles, posts)
     } catch let error {
       throw error
@@ -152,6 +152,40 @@ class API {
       
       updated.username = username
       return updated
+    } catch let error {
+      throw error
+    }
+  }
+  
+  func follow(from: ProfileModel, id: String) async throws -> (ProfileModel, String) {
+    var updated = from
+    do {
+      try await db
+        .collection("users")
+        .document(updated.id)
+        .updateData([
+          "following": FieldValue.arrayUnion([id])
+        ])
+      
+      updated.following.append(id)
+      return (updated, id)
+    } catch let error {
+      throw error
+    }
+  }
+  
+  func unFollow(from: ProfileModel, id: String) async throws -> (ProfileModel, String) {
+    var updated = from
+    do {
+      try await db
+        .collection("users")
+        .document(updated.id)
+        .updateData([
+          "following": FieldValue.arrayRemove([id])
+        ])
+      
+      updated.following.removeAll(where: { $0 == id })
+      return (updated, id)
     } catch let error {
       throw error
     }

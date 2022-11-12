@@ -16,31 +16,49 @@ struct HomeView: View {
       NavigationView {
         ZStack {
           VStack(spacing: 0) {
-            List {
-              ForEach(viewStore.posts) { post in
-                Button {
-                  viewStore.send(.presentThread(isPresented: true))
-                } label: {
-                  Post(
-                    post: post,
-                    profile: viewStore.profiles[post.ownerId]!,
-                    onDelete: { post in
-                      viewStore.send(.deletePost(id: post.id))
-                    }
-                  )
-                }
+            if viewStore.isEmpty {
+              VStack {
+                Spacer()
+                Text("👋 Follow some people to get you started.")
+                .fontWeight(.medium)
+                .padding()
+                Spacer()
               }
-              .listRowSeparator(.hidden)
-              .listRowInsets(EdgeInsets())
-            }
-            .listStyle(.plain)
-            .refreshable {
+            } else {
+              List {
+                ForEach(viewStore.posts) { post in
+                  Button {
+                    viewStore.send(.presentThread(isPresented: true))
+                  } label: {
+                    Post(
+                      post: post,
+                      profile: viewStore.profiles[post.ownerId]!,
+                      onDelete: { post in
+                        viewStore.send(.deletePost(id: post.id))
+                      },
+                      onProfile: { profile in
+                        viewStore.send(.presentProfile(
+                          isPresented: true,
+                          profile: profile
+                        ))
+                      }
+                    )
+                  }
+                }
+                .listRowSeparator(.hidden)
+                .listRowInsets(EdgeInsets())
+              }
+              .listStyle(.plain)
+              .refreshable {
 #if targetEnvironment(simulator)
-              
+                
 #else
-              await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
+                await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
 #endif
+              }
             }
+            
+            Spacer()
             
             VStack(spacing: 0) {
               Divider()
@@ -126,12 +144,11 @@ struct HomeView: View {
             }
           }
           .navigationBarTitleDisplayMode(.inline)
-          .overlay(alignment: .top, content: {
-            Color("ColorBackground")
-              .background(.regularMaterial)
-              .edgesIgnoringSafeArea(.top)
-              .frame(height: 0)
-          })
+          .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+              Text("")
+            }
+          }
           .onAppear {
             self.endTextEditing()
 #if targetEnvironment(simulator)
@@ -162,6 +179,27 @@ struct HomeView: View {
               label: EmptyView.init
             )
           }
+          
+          WithViewStore(store.scope(state: \.isProfilePresented)) { viewStore in
+            NavigationLink(
+              destination: IfLetStore(
+                store.scope(
+                  state: \.profileState,
+                  action: HomeAction.profile
+                ),
+                then: { store in
+                  ProfileView(store: store)
+                }
+              ),
+              isActive: viewStore.binding(
+                send: .presentProfile(
+                  isPresented: false,
+                  profile: nil
+                )
+              ),
+              label: EmptyView.init
+            )
+          }
         }
       }
     }
@@ -172,7 +210,8 @@ struct HomeView_Previews: PreviewProvider {
   static var previews: some View {
     HomeView(store: Store(
       initialState: HomeState(
-        profile: Mocks.profile
+        profile: Mocks.profile,
+        isEmpty: false
       ),
       reducer: homeReducer,
       environment: AppEnvironment()

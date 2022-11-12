@@ -13,6 +13,7 @@ struct ExploreProfile: View {
   @Binding var isFollowing: Bool
   
   var onFollow: (_ userId: String) -> Void
+  var onUnfollow: (_ userId: String) -> Void
   
   var body: some View {
     HStack {
@@ -28,7 +29,7 @@ struct ExploreProfile: View {
       
       if isFollowing {
         Button {
-          
+          onUnfollow(profile.id)
         } label: {
           Text("Unfollow")
             .fontWeight(.semibold)
@@ -72,7 +73,8 @@ struct ExploreProfile_Previews: PreviewProvider {
       profile: Mocks.profile,
       disabled: .constant(false),
       isFollowing: .constant(false),
-      onFollow: { _ in }
+      onFollow: { _ in },
+      onUnfollow: { _ in }
     )
   }
 }

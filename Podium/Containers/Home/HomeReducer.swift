@@ -47,6 +47,7 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       return .none
       
     case .getPosts:
+      state.isLoadingRefreshable = true
       let followingIds = state.profile.following
       return .task {
         await .didGetPosts(TaskResult {
@@ -57,11 +58,14 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       }
       
     case .didGetPosts(.success((let profiles, let posts))):
+      state.isLoadingRefreshable = false
       state.posts = posts
       state.profiles = Dictionary(uniqueKeysWithValues: profiles.map{ ($0.id, $0) })
+      state.isEmpty = posts.count == 0
       return .none
       
     case .didGetPosts(.failure(let error)):
+      state.isLoadingRefreshable = false
       return .none
       
     case .presentAdd(let isPresented):
@@ -69,6 +73,15 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       if isPresented {
         state.add = AddState(
           profile: state.profile
+        )
+      }
+      return .none
+      
+    case .presentProfile(let isPresented, let profile):
+      state.isProfilePresented = isPresented
+      if isPresented, let profile = profile {
+        state.profileState = ProfileState(
+          profile: profile
         )
       }
       return .none
@@ -94,7 +107,14 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       state.isAddPresented = false
       return Effect(value: .getPosts)
       
+    case .add(.didAddPost(.success(let post))):
+      state.posts.append(post)
+      return Effect(value: .getPosts)
+      
     case .add(_):
+      return .none
+      
+    case .profile(_):
       return .none
     }
   }

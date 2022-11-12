@@ -48,6 +48,9 @@ struct ProfileView: View {
                 profile: viewStore.profile,
                 onDelete: { post in
                   
+                },
+                onProfile: { profile in
+                  
                 }
               )
             }

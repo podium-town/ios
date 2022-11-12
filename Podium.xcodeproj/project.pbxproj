@@ -182,6 +182,7 @@
 				8225920C291A9E9200D17E30 /* Extensions */,
 				822591F7291A9B8500D17E30 /* Containers */,
 				822591E6291A9AC700D17E30 /* PodiumApp.swift */,
+				82BBC983291AC292008DB479 /* Mocks.swift */,
 				822591EA291A9AC900D17E30 /* Assets.xcassets */,
 				82BBC99B291ADCD7008DB479 /* Info.plist */,
 				82BBC99A291ADCD2008DB479 /* Podium.entitlements */,
@@ -195,7 +196,6 @@
 			isa = PBXGroup;
 			children = (
 				822591ED291A9AC900D17E30 /* Preview Assets.xcassets */,
-				82BBC983291AC292008DB479 /* Mocks.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -685,7 +685,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -697,6 +697,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -721,7 +722,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -733,6 +734,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
