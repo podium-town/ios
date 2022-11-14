@@ -7,9 +7,12 @@
 
 import FirebaseFirestore
 import FirebaseAuth
+import FirebaseStorage
+import UIKit
 
 class API {
   let db = Firestore.firestore()
+  let storage = Storage.storage()
   
   func verifyPhoneNumber(phoneNumber: String) async throws -> String {
     do {
@@ -59,6 +62,33 @@ class API {
       }
     } else {
       throw AppError.general
+    }
+  }
+  
+  func uploadMedia(profileId: String, images: [UIImage]) async throws -> [String] {
+    do {
+      var ids: [String] = []
+      for image in images {
+        let fileId = UUID().uuidString
+        let storageRef = storage.reference()
+        let fileRef = storageRef.child("\(profileId)/\(fileId).png")
+        _ = try await fileRef.putDataAsync(image.jpegData(compressionQuality: 9)!)
+        ids.append(fileId)
+      }
+      return ids
+    } catch let error {
+      throw error
+    }
+  }
+  
+  func loadImage(profileId: String, fileId: String) async throws -> (String, Data) {
+    do {
+      let storageRef = storage.reference()
+      let fileRef = storageRef.child("\(profileId)/\(fileId).png")
+      let data = try await fileRef.data(maxSize: 100 * 1024 * 1024)
+      return (fileId, data)
+    } catch let error {
+      throw error
     }
   }
   
@@ -115,13 +145,14 @@ class API {
     }
   }
   
-  func addPost(text: String, ownerId: String) async throws -> PostModel {
+  func addPost(text: String, ownerId: String, images: [String]?) async throws -> PostModel {
     do {
       let post = PostModel(
         id: UUID().uuidString,
         text: text,
         ownerId: ownerId,
-        createdAt: Date().millisecondsSince1970 / 1000
+        createdAt: Date().millisecondsSince1970 / 1000,
+        images: images ?? []
       )
       
       try await db
@@ -131,7 +162,8 @@ class API {
           "id": post.id,
           "ownerId": post.ownerId,
           "createdAt": post.createdAt,
-          "text": post.text
+          "text": post.text,
+          "images": post.images
         ], merge: true)
       
       return post

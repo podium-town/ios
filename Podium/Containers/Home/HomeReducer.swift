@@ -47,6 +47,13 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       return .none
       
     case .getPosts:
+      if let posts = environment.localStorage.data(forKey: StorageKey.posts.rawValue),
+         let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts),
+         let profiles = environment.localStorage.data(forKey: StorageKey.profiles.rawValue),
+         let loadedProfiles = try? JSONDecoder().decode([String: ProfileModel].self, from: profiles) {
+        state.posts = loadedPosts
+        state.profiles = loadedProfiles
+      }
       state.isLoadingRefreshable = true
       let followingIds = state.profile.following
       return .task {
@@ -59,8 +66,14 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       
     case .didGetPosts(.success((let profiles, let posts))):
       state.isLoadingRefreshable = false
-      state.posts = posts
       state.profiles = Dictionary(uniqueKeysWithValues: profiles.map{ ($0.id, $0) })
+      state.posts = posts
+      if let encodedPosts = try? JSONEncoder().encode(state.posts) {
+        environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
+      }
+      if let encodedProfiles = try? JSONEncoder().encode(state.profiles) {
+        environment.localStorage.set(encodedProfiles, forKey: StorageKey.profiles.rawValue)
+      }
       state.isEmpty = posts.count == 0
       return .none
       
@@ -110,6 +123,10 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     case .add(.didAddPost(.success(let post))):
       state.posts.append(post)
       return Effect(value: .getPosts)
+      
+    case .add(.dismiss):
+      state.isAddPresented = false
+      return .none
       
     case .add(_):
       return .none

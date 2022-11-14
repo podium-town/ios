@@ -15,17 +15,37 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
       state.isSendDisabled = state.text.count < 3
       return .none
       
+    case .addImage(let image):
+      state.images.append(image)
+      return .none
+      
+    case .dismiss:
+      return .none
+      
     case .addPost:
       state.isSendPending = true
       let text = state.text
       let ownerId = state.profile.id
-      return .task {
-        await .didAddPost(TaskResult {
-          try await environment.api.addPost(
-            text: text,
-            ownerId: ownerId
-          )
-        })
+      if state.images.isEmpty {
+        return .task {
+          await .didAddPost(TaskResult {
+            try await environment.api.addPost(
+              text: text,
+              ownerId: ownerId,
+              images: []
+            )
+          })
+        }
+      } else {
+        let images = state.images
+        return .task {
+          await .didUploadMedia(TaskResult {
+            try await environment.api.uploadMedia(
+              profileId: ownerId,
+              images: images
+            )
+          })
+        }
       }
       
     case .didAddPost(.success(let post)):
@@ -34,6 +54,27 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
       
     case .didAddPost(.failure(let error)):
       state.isSendPending = false
+      return .none
+      
+    case .didUploadMedia(.success(let ids)):
+      let text = state.text
+      let ownerId = state.profile.id
+      return .task {
+        await .didAddPost(TaskResult {
+          try await environment.api.addPost(
+            text: text,
+            ownerId: ownerId,
+            images: ids
+          )
+        })
+      }
+      
+    case .didUploadMedia(.failure(let error)):
+      state.isSendPending = false
+      return .none
+      
+    case .presentPicker(let isPresented):
+      state.isPickerPresented = isPresented
       return .none
     }
   }

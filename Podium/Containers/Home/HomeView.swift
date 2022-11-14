@@ -20,8 +20,8 @@ struct HomeView: View {
               VStack {
                 Spacer()
                 Text("👋 Follow some people to get you started.")
-                .fontWeight(.medium)
-                .padding()
+                  .fontWeight(.medium)
+                  .padding()
                 Spacer()
               }
             } else {
@@ -31,12 +31,12 @@ struct HomeView: View {
                     viewStore.send(.presentThread(isPresented: true))
                   } label: {
                     Post(
-                      post: post,
                       profile: viewStore.profiles[post.ownerId]!,
-                      onDelete: { post in
+                      post: post,
+                      onTapDelete: { post in
                         viewStore.send(.deletePost(id: post.id))
                       },
-                      onProfile: { profile in
+                      onTapProfile: { profile in
                         viewStore.send(.presentProfile(
                           isPresented: true,
                           profile: profile
@@ -64,7 +64,7 @@ struct HomeView: View {
               Divider()
                 .overlay(Color("ColorSeparator"))
               
-              HStack(spacing: 0) {
+              ZStack {
                 ScrollView(.horizontal, showsIndicators: false) {
                   HStack {
                     Button {
@@ -108,25 +108,33 @@ struct HomeView: View {
                 .padding(.top, 16)
                 .padding(.bottom, 18)
                 
-                Button {
-                  viewStore.send(.presentAdd(isPresented: true))
-                } label: {
-                  Image("add")
-                    .resizable()
-                    .frame(width: 28, height: 28)
-                }
-                .padding()
-                .sheet(isPresented: viewStore.binding(
-                  get: \.isAddPresented,
-                  send: HomeAction.presentAdd
-                )) {
-                  IfLetStore(
-                    store.scope(
-                      state: \.add,
-                      action: HomeAction.add
-                    ),
-                    then: AddView.init(store:)
-                  )
+                HStack {
+                  Spacer()
+                  Button {
+                    viewStore.send(.presentAdd(isPresented: true))
+                  } label: {
+                    Image("add")
+                      .resizable()
+                      .frame(width: 32, height: 32)
+                      .padding(20)
+                      .background(Color.accentColor)
+                  }
+                  .foregroundColor(Color.white)
+                  .clipShape(Circle())
+                  .padding(.trailing)
+                  .shadow(radius: 5)
+                  .sheet(isPresented: viewStore.binding(
+                    get: \.isAddPresented,
+                    send: HomeAction.presentAdd
+                  )) {
+                    IfLetStore(
+                      store.scope(
+                        state: \.add,
+                        action: HomeAction.add
+                      ),
+                      then: AddView.init(store:)
+                    )
+                  }
                 }
               }
             }
@@ -150,7 +158,6 @@ struct HomeView: View {
             }
           }
           .onAppear {
-            self.endTextEditing()
 #if targetEnvironment(simulator)
             
 #else

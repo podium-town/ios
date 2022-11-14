@@ -2,21 +2,19 @@
 //  Post.swift
 //  Podium
 //
-//  Created by Michael Jach on 08/11/2022.
+//  Created by Michael Jach on 14/11/2022.
 //
 
 import SwiftUI
 
 struct Post: View {
-  var post: PostModel
   var profile: ProfileModel
-  var onDelete: (_ post: PostModel) -> Void
-  var onProfile: (_ profile: ProfileModel) -> Void
+  var post: PostModel
   
   var body: some View {
     HStack(alignment: .top, spacing: 12) {
       Button {
-        onProfile(profile)
+        
       } label: {
         Image(uiImage: (profile.avatar?.base64ToImage() ?? UIImage(named: "avatar")!))
           .resizable()
@@ -33,7 +31,7 @@ struct Post: View {
           Spacer()
           
           Menu {
-            Button("Delete", action: { onDelete(post) })
+            Button("Delete", action: {  })
           } label: {
             Image("more")
               .resizable()
@@ -52,6 +50,22 @@ struct Post: View {
         }
         
         Text(post.text)
+        
+        if let images = post.images {
+          HStack {
+            ForEach(images, id: \.self) { id in
+              RoundedRectangle(cornerRadius: 16)
+                .foregroundColor(Color.gray)
+                .overlay(
+                  Text("Loading")
+                )
+                .frame(height: 190)
+                .onAppear {
+                  
+                }
+            }
+          }
+        }
       }
     }
     .padding(12)
@@ -64,10 +78,8 @@ struct Post: View {
 struct Post_Previews: PreviewProvider {
   static var previews: some View {
     Post(
-      post: Mocks.post,
       profile: Mocks.profile,
-      onDelete: { _ in },
-      onProfile: { _ in }
+      post: Mocks.post
     )
   }
 }

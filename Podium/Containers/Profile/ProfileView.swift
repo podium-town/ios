@@ -43,16 +43,7 @@ struct ProfileView: View {
             Button {
               
             } label: {
-              Post(
-                post: post,
-                profile: viewStore.profile,
-                onDelete: { post in
-                  
-                },
-                onProfile: { profile in
-                  
-                }
-              )
+              
             }
           }
           .listRowSeparator(.hidden)

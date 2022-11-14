@@ -7,5 +7,7 @@
 
 enum StorageKey: String {
   case profile
+  case posts
+  case profiles
   case authVerificationID
 }

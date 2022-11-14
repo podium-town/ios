@@ -26,7 +26,6 @@
 		82259215291AA02A00D17E30 /* HomeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82259214291AA02A00D17E30 /* HomeAction.swift */; };
 		82259217291AA03C00D17E30 /* HomeReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82259216291AA03C00D17E30 /* HomeReducer.swift */; };
 		82259219291AA05200D17E30 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82259218291AA05200D17E30 /* HomeView.swift */; };
-		8225921D291AA22800D17E30 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8225921C291AA22800D17E30 /* Post.swift */; };
 		82259220291AA7CD00D17E30 /* StoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8225921F291AA7CD00D17E30 /* StoriesView.swift */; };
 		82259223291AA9CB00D17E30 /* StoryAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82259222291AA9CB00D17E30 /* StoryAvatar.swift */; };
 		82259227291AAC3200D17E30 /* LoginState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82259226291AAC3200D17E30 /* LoginState.swift */; };
@@ -72,6 +71,10 @@
 		82F2AE37291E861A00A4524E /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE36291E861A00A4524E /* ExploreView.swift */; };
 		82F2AE3A291E87F300A4524E /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE39291E87F300A4524E /* SearchBar.swift */; };
 		82F2AE3D291E8D7400A4524E /* ExploreProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE3C291E8D7400A4524E /* ExploreProfile.swift */; };
+		82F2AE40292030E200A4524E /* TextFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE3F292030E200A4524E /* TextFieldView.swift */; };
+		82F2AE432920584A00A4524E /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE422920584A00A4524E /* ImagePicker.swift */; };
+		82F2AE452920FE8E00A4524E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 82F2AE442920FE8E00A4524E /* FirebaseStorage */; };
+		82F2AE5D2922FCE200A4524E /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE5C2922FCE200A4524E /* Post.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -94,7 +97,6 @@
 		82259214291AA02A00D17E30 /* HomeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeAction.swift; sourceTree = "<group>"; };
 		82259216291AA03C00D17E30 /* HomeReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeReducer.swift; sourceTree = "<group>"; };
 		82259218291AA05200D17E30 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		8225921C291AA22800D17E30 /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		8225921F291AA7CD00D17E30 /* StoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesView.swift; sourceTree = "<group>"; };
 		82259222291AA9CB00D17E30 /* StoryAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryAvatar.swift; sourceTree = "<group>"; };
 		82259226291AAC3200D17E30 /* LoginState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginState.swift; sourceTree = "<group>"; };
@@ -139,6 +141,9 @@
 		82F2AE36291E861A00A4524E /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 		82F2AE39291E87F300A4524E /* SearchBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
 		82F2AE3C291E8D7400A4524E /* ExploreProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreProfile.swift; sourceTree = "<group>"; };
+		82F2AE3F292030E200A4524E /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
+		82F2AE422920584A00A4524E /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		82F2AE5C2922FCE200A4524E /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +154,7 @@
 				822591F6291A9B7000D17E30 /* ComposableArchitecture in Frameworks */,
 				8279378A291D679B00FD5148 /* PhoneNumberKit in Frameworks */,
 				82BBC995291AD1CB008DB479 /* FirebaseAuth in Frameworks */,
+				82F2AE452920FE8E00A4524E /* FirebaseStorage in Frameworks */,
 				828E350A291C167B0089AD1A /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -267,22 +273,16 @@
 		8225921A291AA21100D17E30 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				82F2AE5B2922FCD600A4524E /* Post */,
+				82F2AE412920584200A4524E /* ImagePicker */,
+				82F2AE3E292030CE00A4524E /* TextField */,
 				82F2AE3B291E8D6000A4524E /* ExploreProfile */,
 				82F2AE38291E87EA00A4524E /* SearchBar */,
 				82793783291D64CB00FD5148 /* PhoneNumberTextField */,
 				82793780291D60A800FD5148 /* Banner */,
 				82259221291AA9BA00D17E30 /* StoryAvatar */,
-				8225921B291AA21800D17E30 /* Post */,
 			);
 			path = Components;
-			sourceTree = "<group>";
-		};
-		8225921B291AA21800D17E30 /* Post */ = {
-			isa = PBXGroup;
-			children = (
-				8225921C291AA22800D17E30 /* Post.swift */,
-			);
-			path = Post;
 			sourceTree = "<group>";
 		};
 		8225921E291AA7C100D17E30 /* Stories */ = {
@@ -418,6 +418,30 @@
 			path = ExploreProfile;
 			sourceTree = "<group>";
 		};
+		82F2AE3E292030CE00A4524E /* TextField */ = {
+			isa = PBXGroup;
+			children = (
+				82F2AE3F292030E200A4524E /* TextFieldView.swift */,
+			);
+			path = TextField;
+			sourceTree = "<group>";
+		};
+		82F2AE412920584200A4524E /* ImagePicker */ = {
+			isa = PBXGroup;
+			children = (
+				82F2AE422920584A00A4524E /* ImagePicker.swift */,
+			);
+			path = ImagePicker;
+			sourceTree = "<group>";
+		};
+		82F2AE5B2922FCD600A4524E /* Post */ = {
+			isa = PBXGroup;
+			children = (
+				82F2AE5C2922FCE200A4524E /* Post.swift */,
+			);
+			path = Post;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -439,6 +463,7 @@
 				82BBC994291AD1CB008DB479 /* FirebaseAuth */,
 				828E3509291C167B0089AD1A /* FirebaseFirestore */,
 				82793789291D679B00FD5148 /* PhoneNumberKit */,
+				82F2AE442920FE8E00A4524E /* FirebaseStorage */,
 			);
 			productName = Podium;
 			productReference = 822591E3291A9AC700D17E30 /* Podium.app */;
@@ -510,6 +535,7 @@
 				82259217291AA03C00D17E30 /* HomeReducer.swift in Sources */,
 				8225922D291AAC7000D17E30 /* LoginView.swift in Sources */,
 				82F2AE35291E85F600A4524E /* ExploreReducer.swift in Sources */,
+				82F2AE5D2922FCE200A4524E /* Post.swift in Sources */,
 				82BBC98B291AC680008DB479 /* ButtonStyle+Extensions.swift in Sources */,
 				82BBC992291AD09E008DB479 /* API.swift in Sources */,
 				8225920E291A9EAD00D17E30 /* View+Extensions.swift in Sources */,
@@ -519,7 +545,6 @@
 				828E351C291C55640089AD1A /* AddReducer.swift in Sources */,
 				8225922F291AB2D200D17E30 /* StoriesState.swift in Sources */,
 				828E3518291C55440089AD1A /* AddState.swift in Sources */,
-				8225921D291AA22800D17E30 /* Post.swift in Sources */,
 				82BBC979291ABAFF008DB479 /* ThreadState.swift in Sources */,
 				82259213291AA01B00D17E30 /* HomeState.swift in Sources */,
 				822591E7291A9AC700D17E30 /* PodiumApp.swift in Sources */,
@@ -547,6 +572,7 @@
 				82F2AE33291E85E500A4524E /* ExploreAction.swift in Sources */,
 				8279377C291D517F00FD5148 /* String+Extensions.swift in Sources */,
 				828E3515291C53870089AD1A /* Date+Extensions.swift in Sources */,
+				82F2AE40292030E200A4524E /* TextFieldView.swift in Sources */,
 				82259231291AB2E900D17E30 /* StoriesAction.swift in Sources */,
 				82259223291AA9CB00D17E30 /* StoryAvatar.swift in Sources */,
 				82259210291A9ECF00D17E30 /* Color+Extensions.swift in Sources */,
@@ -556,6 +582,7 @@
 				82F2AE31291E85AB00A4524E /* ExploreState.swift in Sources */,
 				82F2AE3A291E87F300A4524E /* SearchBar.swift in Sources */,
 				82793782291D60BB00FD5148 /* Banner.swift in Sources */,
+				82F2AE432920584A00A4524E /* ImagePicker.swift in Sources */,
 				828E3513291C1AA70089AD1A /* ProfileView.swift in Sources */,
 				82BBC989291AC44A008DB479 /* TextFieldStyle+Extensions.swift in Sources */,
 			);
@@ -685,7 +712,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -722,7 +749,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -822,6 +849,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 82BBC993291AD1CB008DB479 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
+		};
+		82F2AE442920FE8E00A4524E /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 82BBC993291AD1CB008DB479 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

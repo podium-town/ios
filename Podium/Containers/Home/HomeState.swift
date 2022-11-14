@@ -5,6 +5,9 @@
 //  Created by Michael Jach on 08/11/2022.
 //
 
+import ComposableArchitecture
+import Foundation
+
 struct HomeState: Equatable {
   var profile: ProfileModel
   var isStoriesPresented = false
