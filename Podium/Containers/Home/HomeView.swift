@@ -33,10 +33,10 @@ struct HomeView: View {
                     Post(
                       profile: viewStore.profiles[post.ownerId]!,
                       post: post,
-                      onTapDelete: { post in
+                      onDelete: { post in
                         viewStore.send(.deletePost(id: post.id))
                       },
-                      onTapProfile: { profile in
+                      onProfile: { profile in
                         viewStore.send(.presentProfile(
                           isPresented: true,
                           profile: profile

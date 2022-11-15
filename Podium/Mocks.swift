@@ -12,7 +12,8 @@ struct Mocks {
     id: "123",
     text: "You are viewing the README and repositories as a public user. You are viewing the README and repositories as a public user.",
     ownerId: "456",
-    createdAt: 123
+    createdAt: 123,
+    images: ["ID1", "id2", "od3"]
   )
   static var profile = ProfileModel(
     id: "0000",
