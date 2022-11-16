@@ -75,6 +75,7 @@
 		82F2AE432920584A00A4524E /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE422920584A00A4524E /* ImagePicker.swift */; };
 		82F2AE452920FE8E00A4524E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 82F2AE442920FE8E00A4524E /* FirebaseStorage */; };
 		82F2AE5D2922FCE200A4524E /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE5C2922FCE200A4524E /* Post.swift */; };
+		82F2AE5F29244D1C00A4524E /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE5E29244D1C00A4524E /* UIImage+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -144,6 +145,7 @@
 		82F2AE3F292030E200A4524E /* TextFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldView.swift; sourceTree = "<group>"; };
 		82F2AE422920584A00A4524E /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		82F2AE5C2922FCE200A4524E /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		82F2AE5E29244D1C00A4524E /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -255,6 +257,7 @@
 				828E3514291C53870089AD1A /* Date+Extensions.swift */,
 				82793775291C5DEC00FD5148 /* ViewStore+Extensions.swift */,
 				8279377B291D517F00FD5148 /* String+Extensions.swift */,
+				82F2AE5E29244D1C00A4524E /* UIImage+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -533,6 +536,7 @@
 				828E350F291C1A670089AD1A /* ProfileAction.swift in Sources */,
 				82259220291AA7CD00D17E30 /* StoriesView.swift in Sources */,
 				82259217291AA03C00D17E30 /* HomeReducer.swift in Sources */,
+				82F2AE5F29244D1C00A4524E /* UIImage+Extensions.swift in Sources */,
 				8225922D291AAC7000D17E30 /* LoginView.swift in Sources */,
 				82F2AE35291E85F600A4524E /* ExploreReducer.swift in Sources */,
 				82F2AE5D2922FCE200A4524E /* Post.swift in Sources */,
@@ -712,7 +716,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -749,7 +753,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;

@@ -14,7 +14,20 @@ struct ThreadView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       ScrollView {
-        
+        if let profile = viewStore.profile,
+           let post = viewStore.post {
+          Post(
+            profile: profile,
+            post: post,
+            onDelete: { post in
+              
+            },
+            onProfile: { profile in
+              
+            },
+            variant:.large
+          )
+        }
       }
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
@@ -32,7 +45,10 @@ struct ThreadView: View {
 struct ThreadView_Previews: PreviewProvider {
   static var previews: some View {
     ThreadView(store: Store(
-      initialState: ThreadState(),
+      initialState: ThreadState(
+        profile: Mocks.profile,
+        post: Mocks.post
+      ),
       reducer: threadReducer,
       environment: AppEnvironment()
     ))

@@ -106,10 +106,13 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       }
       return .none
       
-    case .presentThread(let isPresented):
+    case .presentThread(let isPresented, let profile, let post):
       state.isThreadPresented = isPresented
       if isPresented {
-        state.thread = ThreadState()
+        state.thread = ThreadState(
+          profile: profile,
+          post: post
+        )
       }
       return .none
       

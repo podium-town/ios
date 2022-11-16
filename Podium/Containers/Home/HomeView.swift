@@ -28,7 +28,11 @@ struct HomeView: View {
               List {
                 ForEach(viewStore.posts) { post in
                   Button {
-                    viewStore.send(.presentThread(isPresented: true))
+                    viewStore.send(.presentThread(
+                      isPresented: true,
+                      profile: viewStore.profiles[post.ownerId]!,
+                      post: post
+                    ))
                   } label: {
                     Post(
                       profile: viewStore.profiles[post.ownerId]!,
@@ -182,7 +186,11 @@ struct HomeView: View {
                   ThreadView(store: store)
                 }
               ),
-              isActive: viewStore.binding(send: .presentThread(isPresented: false)),
+              isActive: viewStore.binding(send: .presentThread(
+                isPresented: false,
+                profile: nil,
+                post: nil
+              )),
               label: EmptyView.init
             )
           }

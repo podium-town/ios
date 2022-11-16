@@ -6,5 +6,6 @@
 //
 
 struct ThreadState: Equatable {
-  
+  var profile: ProfileModel?
+  var post: PostModel?
 }

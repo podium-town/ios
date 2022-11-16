@@ -72,7 +72,7 @@ class API {
         let fileId = UUID().uuidString
         let storageRef = storage.reference()
         let fileRef = storageRef.child("\(profileId)/\(fileId).png")
-        _ = try await fileRef.putDataAsync(image.jpegData(compressionQuality: 9)!)
+        _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.7)!)
         ids.append(fileId)
       }
       return ids
@@ -85,7 +85,7 @@ class API {
     do {
       let storageRef = storage.reference()
       let fileRef = storageRef.child("\(profileId)/\(fileId).png")
-      let data = try await fileRef.data(maxSize: 100 * 1024 * 1024)
+      let data = try await fileRef.data(maxSize: 10 * 1024 * 1024)
       return (fileId, data)
     } catch let error {
       throw error
@@ -138,7 +138,7 @@ class API {
   func getPostsProfiles(ids: [String]) async throws -> ([ProfileModel], [PostModel]) {
     do {
       let posts = try await getPosts(followingIds: ids)
-      let profiles = try await getProfiles(ids: posts.map({ $0.ownerId }))
+      let profiles = try await getProfiles(ids: Array(Set(posts.map({ $0.ownerId }))))
       return (profiles, posts)
     } catch let error {
       throw error

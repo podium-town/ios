@@ -7,13 +7,20 @@
 
 import SwiftUI
 
+enum PostVariant {
+  case base
+  case large
+}
+
 struct Post: View {
   var profile: ProfileModel
   var post: PostModel
   var onDelete: (_ post: PostModel) -> Void
   var onProfile: (_ profile: ProfileModel) -> Void
+  var variant: PostVariant = .base
   
   @State private var images: [String: UIImage] = [:]
+  @State private var isMediaPresented = false
   
   var body: some View {
     HStack(alignment: .top, spacing: 12) {
@@ -23,7 +30,7 @@ struct Post: View {
         Image(uiImage: (profile.avatar?.base64ToImage() ?? UIImage(named: "avatar")!))
           .resizable()
           .scaledToFill()
-          .frame(width: 48, height: 48)
+          .frame(width: variant == .base ? 48 : 64, height: variant == .base ? 48 : 64)
           .clipShape(Circle())
       }
       
@@ -31,6 +38,7 @@ struct Post: View {
         HStack(spacing: 0) {
           Text(profile.username ?? profile.id)
             .fontWeight(.semibold)
+            .font(variant == .base ? .body : .title)
           
           Spacer()
           
@@ -55,57 +63,77 @@ struct Post: View {
         
         Text(post.text)
         
-        if let imagePlaceholders = post.images {
-          if imagePlaceholders.count == 1 {
-            if let img = images[imagePlaceholders[0]] {
-              Image(uiImage: img)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 310, height: 160)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-            } else {
-              RoundedRectangle(cornerRadius: 16)
-                .foregroundColor(Color("ColorLightBackground"))
-                .overlay(
-                  ProgressView()
-                )
-                .frame(width: 310, height: 160)
-                .task {
-                  await downloadImage(
-                    profileId: profile.id,
-                    fileId: imagePlaceholders[0]
-                  )
+        VStack(spacing: 0) {
+          if let imagePlaceholders = post.images {
+            if imagePlaceholders.count == 1 {
+              if let img = images[imagePlaceholders[0]] {
+                Button {
+                  isMediaPresented = true
+                } label: {
+                  Image(uiImage: img)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 310, height: 160)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
-            }
-          } else {
-            ScrollView(.horizontal) {
-              HStack {
-                ForEach(imagePlaceholders, id: \.self) { fileId in
-                  if let img = images[fileId] {
-                    Image(uiImage: img)
-                      .resizable()
-                      .scaledToFill()
-                      .frame(width: 280, height: 160)
-                      .clipShape(RoundedRectangle(cornerRadius: 16))
-                  } else {
-                    RoundedRectangle(cornerRadius: 16)
-                      .foregroundColor(Color("ColorLightBackground"))
-                      .overlay(
-                        ProgressView()
-                      )
-                      .frame(width: 280, height: 160)
-                      .task {
-                        await downloadImage(
-                          profileId: profile.id,
-                          fileId: fileId
-                        )
+              } else {
+                RoundedRectangle(cornerRadius: 16)
+                  .foregroundColor(Color("ColorLightBackground"))
+                  .overlay(
+                    ProgressView()
+                  )
+                  .frame(width: 310, height: 160)
+                  .task {
+                    await downloadImage(
+                      profileId: profile.id,
+                      fileId: imagePlaceholders[0]
+                    )
+                  }
+              }
+            } else {
+              ScrollView(.horizontal, showsIndicators: false) {
+                HStack {
+                  ForEach(imagePlaceholders, id: \.self) { fileId in
+                    if let img = images[fileId] {
+                      Button {
+                        isMediaPresented = true
+                      } label: {
+                        Image(uiImage: img)
+                          .resizable()
+                          .scaledToFill()
+                          .frame(width: 280, height: 160)
+                          .clipShape(RoundedRectangle(cornerRadius: 16))
                       }
+                    } else {
+                      RoundedRectangle(cornerRadius: 16)
+                        .foregroundColor(Color("ColorLightBackground"))
+                        .overlay(
+                          ProgressView()
+                        )
+                        .frame(width: 280, height: 160)
+                        .task {
+                          await downloadImage(
+                            profileId: profile.id,
+                            fileId: fileId
+                          )
+                        }
+                    }
                   }
                 }
+                .padding(.top, 8)
               }
-              .padding(.top, 8)
             }
           }
+        }
+        .sheet(isPresented: $isMediaPresented) {
+          TabView {
+            ForEach(Array(images.values), id: \.self) { img in
+              Image(uiImage: img)
+                .resizable()
+                .scaledToFit()
+            }
+          }
+          .tabViewStyle(.page)
         }
       }
     }
