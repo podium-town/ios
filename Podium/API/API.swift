@@ -8,7 +8,6 @@
 import FirebaseFirestore
 import FirebaseAuth
 import FirebaseStorage
-import UIKit
 
 class API {
   let db = Firestore.firestore()
