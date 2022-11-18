@@ -13,6 +13,7 @@ struct PostModel: Equatable, Identifiable {
   var ownerId: String
   var createdAt: Int64
   var images: [String]? = []
+  var imageData: [Data]? = []
 }
 
 extension PostModel: Codable {

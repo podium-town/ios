@@ -18,7 +18,7 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
       let query = state.searchQuery
       return .task {
         await .didSearch(TaskResult {
-          try await environment.api.search(
+          try await API.search(
             query: query
           )
         })
@@ -41,7 +41,7 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
       let from = state.profile
       return .task {
         await .didFollow(TaskResult {
-          try await environment.api.follow(
+          try await API.follow(
             from: from,
             id: id
           )
@@ -63,7 +63,7 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
       let from = state.profile
       return .task {
         await .didUnfollow(TaskResult {
-          try await environment.api.unFollow(
+          try await API.unFollow(
             from: from,
             id: id
           )

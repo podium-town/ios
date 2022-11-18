@@ -12,7 +12,8 @@ struct ProfileModel: Equatable, Identifiable {
   var username: String?
   var following: [String] = []
   var createdAt: Int
-  var avatar: String?
+  var avatarId: String?
+  var avatarData: Data?
 }
 
 extension ProfileModel: Codable {

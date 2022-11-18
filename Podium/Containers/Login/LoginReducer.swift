@@ -33,7 +33,8 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       state.isVerificationPending = true
       let phoneNumber = state.phoneNumber
       return .task {
-        await .didVerifyPhone(TaskResult { try await environment.api.verifyPhoneNumber(phoneNumber: phoneNumber)
+        await .didVerifyPhone(TaskResult {
+          try await API.verifyPhoneNumber(phoneNumber: phoneNumber)
         })
       }
       
@@ -58,7 +59,7 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       let verificationId = state.verificationId
       return .task {
         await .didSignIn(TaskResult {
-          try await environment.api.signIn(
+          try await API.signIn(
             verificationId: verificationId,
             verificationCode: verificationCode
           )
@@ -94,7 +95,7 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       if let profile = profile {
         return .task {
           await .didSetUsername(TaskResult {
-            try await environment.api.setUsername(
+            try await API.setUsername(
               profile: profile,
               username: username
             )

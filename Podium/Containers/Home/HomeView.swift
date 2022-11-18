@@ -52,6 +52,7 @@ struct HomeView: View {
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets())
               }
+              .id(UUID())
               .listStyle(.plain)
               .refreshable {
 #if targetEnvironment(simulator)
@@ -61,8 +62,6 @@ struct HomeView: View {
 #endif
               }
             }
-            
-            Spacer()
             
             VStack(spacing: 0) {
               Divider()
@@ -74,37 +73,10 @@ struct HomeView: View {
                     Button {
                       
                     } label: {
-                      StoryAvatar(isAddVisible: true)
-                    }
-                    
-                    Button {
-                      viewStore.send(.presentStories(isPresented: true))
-                    } label: {
-                      StoryAvatar()
-                    }
-                    
-                    Button {
-                      viewStore.send(.presentStories(isPresented: true))
-                    } label: {
-                      StoryAvatar()
-                    }
-                    
-                    Button {
-                      viewStore.send(.presentStories(isPresented: true))
-                    } label: {
-                      StoryAvatar()
-                    }
-                    
-                    Button {
-                      viewStore.send(.presentStories(isPresented: true))
-                    } label: {
-                      StoryAvatar()
-                    }
-                    
-                    Button {
-                      viewStore.send(.presentStories(isPresented: true))
-                    } label: {
-                      StoryAvatar()
+                      StoryAvatar(
+                        profile: viewStore.profile,
+                        isAddVisible: true
+                      )
                     }
                   }
                   .padding(.horizontal)
@@ -226,7 +198,8 @@ struct HomeView_Previews: PreviewProvider {
     HomeView(store: Store(
       initialState: HomeState(
         profile: Mocks.profile,
-        isEmpty: false
+        isEmpty: false,
+        posts: [Mocks.post]
       ),
       reducer: homeReducer,
       environment: AppEnvironment()

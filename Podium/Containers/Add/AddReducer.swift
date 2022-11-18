@@ -29,7 +29,7 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
       if state.images.isEmpty {
         return .task {
           await .didAddPost(TaskResult {
-            try await environment.api.addPost(
+            try await API.addPost(
               text: text,
               ownerId: ownerId,
               images: []
@@ -40,7 +40,7 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
         let images = state.images
         return .task {
           await .didUploadMedia(TaskResult {
-            try await environment.api.uploadMedia(
+            try await API.uploadMedia(
               profileId: ownerId,
               images: images
             )
@@ -61,7 +61,7 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
       let ownerId = state.profile.id
       return .task {
         await .didAddPost(TaskResult {
-          try await environment.api.addPost(
+          try await API.addPost(
             text: text,
             ownerId: ownerId,
             images: ids

@@ -101,9 +101,9 @@ struct AddView_Previews: PreviewProvider {
       initialState: AddState(
         profile: Mocks.profile,
         images: [
-          UIImage(named: "dummy-avatar")!,
-          UIImage(named: "dummy-avatar")!,
-          UIImage(named: "dummy-avatar")!
+          UIImage(named: "avatar")!,
+          UIImage(named: "avatar")!,
+          UIImage(named: "avatar")!
         ]
       ),
       reducer: addReducer,

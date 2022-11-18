@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import Combine
+import Foundation
 
 let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
   homeReducer.pullback(
@@ -31,6 +32,41 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
   ),
   Reducer { state, action, environment in
     switch action {
+    case .getPosts:
+      if let posts = environment.localStorage.data(forKey: StorageKey.posts.rawValue),
+         let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts),
+         let profiles = environment.localStorage.data(forKey: StorageKey.profiles.rawValue),
+         let loadedProfiles = try? JSONDecoder().decode([String: ProfileModel].self, from: profiles) {
+        state.homeState.posts = loadedPosts
+        state.homeState.profiles = loadedProfiles
+        state.homeState.isLoadingRefreshable = true
+      }
+      let followingIds = state.profile.following
+      return .task {
+        await .didGetPosts(TaskResult {
+          try await API.getPostsProfiles(
+            ids: followingIds
+          )
+        })
+      }
+      
+    case .didGetPosts(.success((let profiles, let posts))):
+      state.homeState.isLoadingRefreshable = false
+      state.homeState.profiles = Dictionary(uniqueKeysWithValues: profiles.map{ ($0.id, $0) })
+      state.homeState.posts = posts
+      if let encodedPosts = try? JSONEncoder().encode(state.homeState.posts) {
+        environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
+      }
+      if let encodedProfiles = try? JSONEncoder().encode(state.homeState.profiles) {
+        environment.localStorage.set(encodedProfiles, forKey: StorageKey.profiles.rawValue)
+      }
+      state.homeState.isEmpty = posts.count == 0
+      return .none
+      
+    case .didGetPosts(.failure(let error)):
+      state.homeState.isLoadingRefreshable = false
+      return .none
+      
     case .home(_):
       return .none
       
@@ -39,6 +75,17 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       return .none
       
     case .add(_):
+      return .none
+      
+    case .profile(.changeAvatar(let uiImage)):
+      let avatar = uiImage.scalePreservingAspectRatio(targetSize: CGSize(width: 300, height: 300)).jpegData(compressionQuality: 0.5)
+      state.profile.avatarData = avatar
+      state.profileState.profile.avatarData = avatar
+      state.exploreState.profile.avatarData = avatar
+      state.homeState.profile.avatarData = avatar
+      if let encoded = state.profile.encoded() {
+        environment.localStorage.set(encoded, forKey: StorageKey.profile.rawValue)
+      }
       return .none
       
     case .profile(_):

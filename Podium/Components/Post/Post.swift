@@ -15,35 +15,34 @@ enum PostVariant {
 struct Post: View {
   var profile: ProfileModel
   var post: PostModel
-  var onDelete: (_ post: PostModel) -> Void
-  var onProfile: (_ profile: ProfileModel) -> Void
+  var onDelete: ((_ post: PostModel) -> Void)?
+  var onProfile: ((_ profile: ProfileModel) -> Void)?
   var variant: PostVariant = .base
   
-  @State private var images: [String: UIImage] = [:]
   @State private var isMediaPresented = false
   
   var body: some View {
     HStack(alignment: .top, spacing: 12) {
       Button {
-        onProfile(profile)
+        onProfile?(profile)
       } label: {
-        Image(uiImage: (profile.avatar?.base64ToImage() ?? UIImage(named: "avatar")!))
+        Image(uiImage: (profile.avatarData != nil) ? UIImage(data: profile.avatarData!)! : UIImage(named: "avatar")!)
           .resizable()
           .scaledToFill()
           .frame(width: variant == .base ? 48 : 64, height: variant == .base ? 48 : 64)
           .clipShape(Circle())
       }
-      
+
       VStack(alignment: .leading, spacing: 4) {
         HStack(spacing: 0) {
           Text(profile.username ?? profile.id)
             .fontWeight(.semibold)
             .font(variant == .base ? .body : .title)
-          
+
           Spacer()
-          
+
           Menu {
-            Button("Delete", action: { onDelete(post) })
+            Button("Delete", action: { onDelete?(post) })
           } label: {
             Image("more")
               .resizable()
@@ -51,7 +50,7 @@ struct Post: View {
               .padding(.horizontal, 12)
               .foregroundColor(.gray)
           }
-          
+
           Text(
             Date(timeIntervalSince1970: TimeInterval(
               integerLiteral: post.createdAt
@@ -60,20 +59,20 @@ struct Post: View {
           .foregroundColor(.gray)
           .font(.caption)
         }
-        
+
         Text(post.text)
-        
+
         VStack(spacing: 0) {
-          if let imagePlaceholders = post.images {
-            if imagePlaceholders.count == 1 {
-              if let img = images[imagePlaceholders[0]] {
+          if let imageData = post.imageData {
+            if imageData.count == 1 {
+              if let imgData = imageData[0] {
                 Button {
                   isMediaPresented = true
                 } label: {
-                  Image(uiImage: img)
+                  Image(uiImage: UIImage(data: imgData)!)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 310, height: 160)
+                    .frame(height: 160)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
               } else {
@@ -82,53 +81,30 @@ struct Post: View {
                   .overlay(
                     ProgressView()
                   )
-                  .frame(width: 310, height: 160)
-                  .task {
-                    await downloadImage(
-                      profileId: profile.id,
-                      fileId: imagePlaceholders[0]
-                    )
-                  }
+                  .frame(height: 160)
               }
             } else {
-              ScrollView(.horizontal, showsIndicators: false) {
-                HStack {
-                  ForEach(imagePlaceholders, id: \.self) { fileId in
-                    if let img = images[fileId] {
-                      Button {
-                        isMediaPresented = true
-                      } label: {
-                        Image(uiImage: img)
-                          .resizable()
-                          .scaledToFill()
-                          .frame(width: 280, height: 160)
-                          .clipShape(RoundedRectangle(cornerRadius: 16))
-                      }
-                    } else {
-                      RoundedRectangle(cornerRadius: 16)
-                        .foregroundColor(Color("ColorLightBackground"))
-                        .overlay(
-                          ProgressView()
-                        )
-                        .frame(width: 280, height: 160)
-                        .task {
-                          await downloadImage(
-                            profileId: profile.id,
-                            fileId: fileId
-                          )
-                        }
-                    }
+              HStack {
+                ForEach(imageData, id: \.self) { data in
+                  Button {
+                    isMediaPresented = true
+                  } label: {
+                    Image(uiImage: UIImage(data: data)!)
+                      .resizable()
+                      .scaledToFill()
+                      .frame(height: 160)
+                      .clipShape(RoundedRectangle(cornerRadius: 16))
                   }
                 }
-                .padding(.top, 8)
               }
+              .padding(.top, 8)
             }
           }
         }
         .sheet(isPresented: $isMediaPresented) {
           TabView {
-            ForEach(Array(images.values), id: \.self) { img in
-              Image(uiImage: img)
+            ForEach(post.imageData ?? [], id: \.self) { data in
+              Image(uiImage: UIImage(data: data)!)
                 .resizable()
                 .scaledToFit()
             }
@@ -138,23 +114,9 @@ struct Post: View {
       }
     }
     .padding(12)
-    
+
     Divider()
       .overlay(Color("ColorSeparator"))
-  }
-  
-  func downloadImage(profileId: String, fileId: String) async {
-    do {
-      let (fileId, data) = try await API().loadImage(
-        profileId: profileId,
-        fileId: fileId
-      )
-      DispatchQueue.main.async() {
-        self.images[fileId] = UIImage(data: data)
-      }
-    } catch let error {
-      
-    }
   }
 }
 

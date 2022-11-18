@@ -56,6 +56,9 @@ struct TabsView: View {
       .tabViewStyle(
         backgroundColor: Color("ColorBackground")
       )
+      .onAppear {
+        viewStore.send(.getPosts)
+      }
     }
   }
 }
@@ -66,7 +69,8 @@ struct TabsView_Previews: PreviewProvider {
       initialState: TabsState(
         profile: Mocks.profile,
         homeState: HomeState(
-          profile: Mocks.profile
+          profile: Mocks.profile,
+          posts: [Mocks.post]
         ),
         profileState: ProfileState(
           profile: Mocks.profile

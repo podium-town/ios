@@ -17,7 +17,7 @@ struct ExploreProfile: View {
   
   var body: some View {
     HStack {
-      Image(uiImage: profile.avatar?.base64ToImage() ?? UIImage(named: "avatar")!)
+      Image(uiImage: profile.avatarData == nil ? UIImage(named: "avatar")! : UIImage(data: profile.avatarData!)!)
         .resizable()
         .frame(width: 44, height: 44)
         .clipShape(Circle())

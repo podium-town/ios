@@ -15,6 +15,11 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     action: /HomeAction.stories,
     environment: { $0 }
   ),
+  profileReducer.optional().pullback(
+    state: \.profileState,
+    action: /HomeAction.profile,
+    environment: { $0 }
+  ),
   threadReducer.optional().pullback(
     state: \.thread,
     action: /HomeAction.thread,
@@ -29,12 +34,12 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     switch action {
     case .initialize:
       state.stories = StoriesState()
-      return Effect(value: .getPosts)
+      return .none
       
     case .deletePost(let id):
       return .task {
         await .didDeletePost(TaskResult {
-          try await environment.api.deletePost(
+          try await API.deletePost(
             id: id
           )
         })
@@ -58,7 +63,7 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       let followingIds = state.profile.following
       return .task {
         await .didGetPosts(TaskResult {
-          try await environment.api.getPostsProfiles(
+          try await API.getPostsProfiles(
             ids: followingIds
           )
         })

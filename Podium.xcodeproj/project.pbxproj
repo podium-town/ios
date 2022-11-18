@@ -38,7 +38,6 @@
 		826030E6291B015B006007C3 /* LocalStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826030E5291B015B006007C3 /* LocalStorageKey.swift */; };
 		8263AE77291BA7CA0074B033 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8263AE76291BA7CA0074B033 /* GoogleService-Info.plist */; };
 		82793776291C5DEC00FD5148 /* ViewStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82793775291C5DEC00FD5148 /* ViewStore+Extensions.swift */; };
-		8279377C291D517F00FD5148 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8279377B291D517F00FD5148 /* String+Extensions.swift */; };
 		82793782291D60BB00FD5148 /* Banner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82793781291D60BB00FD5148 /* Banner.swift */; };
 		82793785291D64E300FD5148 /* PhoneNumberTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82793784291D64E300FD5148 /* PhoneNumberTextField.swift */; };
 		82793787291D668200FD5148 /* iPhoneNumberField+ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82793786291D668200FD5148 /* iPhoneNumberField+ViewModifiers.swift */; };
@@ -110,7 +109,6 @@
 		826030E5291B015B006007C3 /* LocalStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorageKey.swift; sourceTree = "<group>"; };
 		8263AE76291BA7CA0074B033 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		82793775291C5DEC00FD5148 /* ViewStore+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewStore+Extensions.swift"; sourceTree = "<group>"; };
-		8279377B291D517F00FD5148 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		82793781291D60BB00FD5148 /* Banner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Banner.swift; sourceTree = "<group>"; };
 		82793784291D64E300FD5148 /* PhoneNumberTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberTextField.swift; sourceTree = "<group>"; };
 		82793786291D668200FD5148 /* iPhoneNumberField+ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "iPhoneNumberField+ViewModifiers.swift"; sourceTree = "<group>"; };
@@ -256,7 +254,6 @@
 				82BBC98A291AC680008DB479 /* ButtonStyle+Extensions.swift */,
 				828E3514291C53870089AD1A /* Date+Extensions.swift */,
 				82793775291C5DEC00FD5148 /* ViewStore+Extensions.swift */,
-				8279377B291D517F00FD5148 /* String+Extensions.swift */,
 				82F2AE5E29244D1C00A4524E /* UIImage+Extensions.swift */,
 			);
 			path = Extensions;
@@ -574,7 +571,6 @@
 				82793785291D64E300FD5148 /* PhoneNumberTextField.swift in Sources */,
 				8225922B291AAC5900D17E30 /* LoginReducer.swift in Sources */,
 				82F2AE33291E85E500A4524E /* ExploreAction.swift in Sources */,
-				8279377C291D517F00FD5148 /* String+Extensions.swift in Sources */,
 				828E3515291C53870089AD1A /* Date+Extensions.swift in Sources */,
 				82F2AE40292030E200A4524E /* TextFieldView.swift in Sources */,
 				82259231291AB2E900D17E30 /* StoriesAction.swift in Sources */,
@@ -716,7 +712,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -753,7 +749,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;

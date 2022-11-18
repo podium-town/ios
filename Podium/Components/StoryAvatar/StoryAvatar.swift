@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct StoryAvatar: View {
+  @State var profile: ProfileModel
   var isAddVisible: Bool = false
   
   var body: some View {
-    Image("dummy-avatar")
+    Image(uiImage: profile.avatarData == nil ? UIImage(named: "avatar")! : UIImage(data: profile.avatarData!)!)
       .resizable()
-      .frame(width: 58, height: 58)
       .scaledToFill()
+      .frame(width: 58, height: 58)
       .clipShape(Circle())
       .overlay(isAddVisible ?
                VStack {
@@ -38,6 +39,9 @@ struct StoryAvatar: View {
 
 struct StoryAvatar_Previews: PreviewProvider {
   static var previews: some View {
-    StoryAvatar(isAddVisible: true)
+    StoryAvatar(
+      profile: Mocks.profile,
+      isAddVisible: true
+    )
   }
 }

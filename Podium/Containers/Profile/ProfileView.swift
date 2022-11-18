@@ -17,10 +17,25 @@ struct ProfileView: View {
     WithViewStore(store) { viewStore in
       VStack(alignment: .leading, spacing: 0) {
         HStack(spacing: 18) {
-          Image(uiImage: viewStore.profile.avatar?.base64ToImage() ?? UIImage(named: "avatar")!)
-            .resizable()
-            .frame(width: 100, height: 100)
-            .clipShape(Circle())
+          Button {
+            viewStore.send(.presentPicker(isPresented: true))
+          } label: {
+            Image(uiImage: viewStore.profile.avatarData == nil ? UIImage(named: "avatar")! : UIImage(data: viewStore.profile.avatarData!)!)
+              .resizable()
+              .scaledToFill()
+              .frame(width: 100, height: 100)
+              .clipShape(Circle())
+          }
+          .sheet(isPresented: viewStore.binding(
+            get: \.isPickerPresented,
+            send: ProfileAction.presentPicker(isPresented:)
+          )) {
+            ImagePicker(
+              sourceType: .photoLibrary
+            ) { image in
+              viewStore.send(.changeAvatar(image))
+            }
+          }
           
           Text(viewStore.profile.username ?? viewStore.profile.id)
             .font(.title2)
@@ -43,18 +58,25 @@ struct ProfileView: View {
             Button {
               
             } label: {
-              
+              Post(
+                profile: viewStore.profile,
+                post: post
+              )
             }
           }
           .listRowSeparator(.hidden)
           .listRowInsets(EdgeInsets())
         }
+        .id(UUID())
         .listStyle(.plain)
         .refreshable {
+#if targetEnvironment(simulator)
           
+#else
+          await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
+#endif
         }
-        
-        Spacer()
+
       }
       .onAppear {
         viewStore.send(.getPosts)

@@ -11,10 +11,18 @@ import FirebaseStorage
 import UIKit
 
 class API {
-  let db = Firestore.firestore()
-  let storage = Storage.storage()
+  static let db = Firestore.firestore()
+  static let storage = Storage.storage()
+  static var cachedImages: [String: Data] = [:]
   
-  func verifyPhoneNumber(phoneNumber: String) async throws -> String {
+  static func initialize() {
+    if let cached = UserDefaults.standard.data(forKey: "cached-images"),
+       let loaded = try? JSONDecoder().decode([String: Data].self, from: cached) {
+      self.cachedImages = loaded
+    }
+  }
+  
+  static func verifyPhoneNumber(phoneNumber: String) async throws -> String {
     do {
       return try await PhoneAuthProvider.provider()
         .verifyPhoneNumber(phoneNumber, uiDelegate: nil)
@@ -23,7 +31,7 @@ class API {
     }
   }
   
-  func signIn(verificationId: String?, verificationCode: String?) async throws -> ProfileModel {
+  static func signIn(verificationId: String?, verificationCode: String?) async throws -> ProfileModel {
     if let verificationId = verificationId,
        let verificationCode = verificationCode {
       let credential = PhoneAuthProvider.provider().credential(
@@ -65,7 +73,7 @@ class API {
     }
   }
   
-  func uploadMedia(profileId: String, images: [UIImage]) async throws -> [String] {
+  static func uploadMedia(profileId: String, images: [UIImage]) async throws -> [String] {
     do {
       var ids: [String] = []
       for image in images {
@@ -81,7 +89,7 @@ class API {
     }
   }
   
-  func loadImage(profileId: String, fileId: String) async throws -> (String, Data) {
+  static func loadImage(profileId: String, fileId: String) async throws -> (String, Data) {
     do {
       let storageRef = storage.reference()
       let fileRef = storageRef.child("\(profileId)/\(fileId).png")
@@ -92,7 +100,7 @@ class API {
     }
   }
   
-  func getProfiles(ids: [String]) async throws -> [ProfileModel] {
+  static func getProfiles(ids: [String]) async throws -> [ProfileModel] {
     do {
       var profiles: [ProfileModel] = []
       
@@ -102,7 +110,13 @@ class API {
         .getDocuments().documents
       
       for document in dictionary {
-        if let profile = try? ProfileModel(dictionary: document.data()) {
+        if var profile = try? ProfileModel(dictionary: document.data()) {
+          if let avatarId = profile.avatarId {
+            let storageRef = storage.reference()
+            let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
+            let data = try await fileRef.data(maxSize: 10 * 1024 * 1024)
+            profile.avatarData = data
+          }
           profiles.append(profile)
         }
       }
@@ -112,7 +126,7 @@ class API {
     }
   }
   
-  func getPosts(followingIds: [String]) async throws -> [PostModel] {
+  static func getPosts(followingIds: [String]) async throws -> [PostModel] {
     do {
       var posts: [PostModel] = []
       
@@ -124,10 +138,33 @@ class API {
         .getDocuments().documents
       
       for document in dictionary {
-        if let post = try? PostModel(dictionary: document.data()) {
+        if var post = try? PostModel(dictionary: document.data()) {
+          if let images = post.images {
+            for fileId in images {
+              if let cached = self.cachedImages[fileId] {
+                if post.imageData == nil {
+                  post.imageData = []
+                }
+                post.imageData?.append(cached)
+              } else {
+                let (_, imageData) = try await loadImage(
+                  profileId: post.ownerId,
+                  fileId: fileId
+                )
+                if post.imageData == nil {
+                  post.imageData = []
+                }
+                post.imageData?.append(imageData)
+                self.cachedImages[fileId] = imageData
+              }
+            }
+          }
           posts.append(post)
         }
       }
+      
+      let encoded = try JSONEncoder().encode(self.cachedImages)
+      UserDefaults.standard.set(encoded, forKey: "cached-images")
       
       return posts
     } catch let error {
@@ -135,7 +172,7 @@ class API {
     }
   }
   
-  func getPostsProfiles(ids: [String]) async throws -> ([ProfileModel], [PostModel]) {
+  static func getPostsProfiles(ids: [String]) async throws -> ([ProfileModel], [PostModel]) {
     do {
       let posts = try await getPosts(followingIds: ids)
       let profiles = try await getProfiles(ids: Array(Set(posts.map({ $0.ownerId }))))
@@ -145,7 +182,7 @@ class API {
     }
   }
   
-  func addPost(text: String, ownerId: String, images: [String]?) async throws -> PostModel {
+  static func addPost(text: String, ownerId: String, images: [String]?) async throws -> PostModel {
     do {
       let post = PostModel(
         id: UUID().uuidString,
@@ -172,24 +209,61 @@ class API {
     }
   }
   
-  func setUsername(profile: ProfileModel, username: String) async throws -> ProfileModel {
+  static func setUsername(profile: ProfileModel, username: String) async throws -> ProfileModel {
     var updated = profile
     do {
-      try await db
-        .collection("users")
-        .document(updated.id)
-        .setData([
-          "username": username
-        ], merge: true)
-      
-      updated.username = username
-      return updated
+      let isAvailable = try await API.checkUsername(username: username)
+      if isAvailable {
+        try await db
+          .collection("users")
+          .document(updated.id)
+          .setData([
+            "username": username
+          ], merge: true)
+        
+        updated.username = username
+        return updated
+      } else {
+        throw AppError.usernameTaken
+      }
     } catch let error {
       throw error
     }
   }
   
-  func follow(from: ProfileModel, id: String) async throws -> (ProfileModel, String) {
+  static func changeAvatar(profileId: String, uiImage: UIImage) async throws -> String {
+    do {
+      let fileId = UUID().uuidString
+      let storageRef = storage.reference()
+      let fileRef = storageRef.child("\(profileId)/\(fileId).png")
+      _ = try await fileRef.putDataAsync(uiImage.scalePreservingAspectRatio(targetSize: CGSize(width: 300, height: 300)).jpegData(compressionQuality: 0.5)!)
+      try await db
+        .collection("users")
+        .document(profileId)
+        .updateData([
+          "avatarId": fileId
+        ])
+      return fileId
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func checkUsername(username: String) async throws -> Bool {
+    do {
+      let results = try await db
+        .collection("users")
+        .whereField("username", isEqualTo: username)
+        .count
+        .getAggregation(source: .server)
+      
+      return results.count == 0
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func follow(from: ProfileModel, id: String) async throws -> (ProfileModel, String) {
     var updated = from
     do {
       try await db
@@ -206,7 +280,7 @@ class API {
     }
   }
   
-  func unFollow(from: ProfileModel, id: String) async throws -> (ProfileModel, String) {
+  static func unFollow(from: ProfileModel, id: String) async throws -> (ProfileModel, String) {
     var updated = from
     do {
       try await db
@@ -223,7 +297,7 @@ class API {
     }
   }
   
-  func deletePost(id: String) async throws -> String {
+  static func deletePost(id: String) async throws -> String {
     do {
       try await db
         .collection("posts")
@@ -236,7 +310,7 @@ class API {
     }
   }
   
-  func search(query: String) async throws -> [ProfileModel] {
+  static func search(query: String) async throws -> [ProfileModel] {
     do {
       var profiles: [ProfileModel] = []
       let results = try await db

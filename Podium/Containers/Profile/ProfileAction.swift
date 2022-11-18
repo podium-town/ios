@@ -6,8 +6,11 @@
 //
 
 import ComposableArchitecture
+import UIKit
 
 enum ProfileAction {
   case getPosts
   case didGetPosts(TaskResult<[PostModel]>)
+  case presentPicker(isPresented: Bool)
+  case changeAvatar(UIImage)
 }

@@ -10,6 +10,7 @@ import Foundation
 enum AppError: Error, Codable {
   case general
   case profileNotExists
+  case usernameTaken
 }
 
 extension AppError: LocalizedError {
@@ -17,6 +18,9 @@ extension AppError: LocalizedError {
     switch self {
     case .profileNotExists:
       return "Profile not found"
+      
+    case .usernameTaken:
+      return "Username taken"
       
     case .general:
       return "Generic error"

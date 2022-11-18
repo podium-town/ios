@@ -23,12 +23,14 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
     switch action {
     case .initialize:
+      API.initialize()
       if let profile = environment.localStorage.data(forKey: StorageKey.profile.rawValue),
          let loadedProfile = try? JSONDecoder().decode(ProfileModel.self, from: profile) {
         state.tabs = TabsState(
           profile: loadedProfile,
           homeState: HomeState(
-            profile: loadedProfile
+            profile: loadedProfile,
+            posts: []
           ),
           profileState: ProfileState(
             profile: loadedProfile
@@ -62,7 +64,8 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         state.tabs = TabsState(
           profile: profile,
           homeState: HomeState(
-            profile: profile
+            profile: profile,
+            posts: []
           ),
           profileState: ProfileState(
             profile: profile
@@ -82,7 +85,8 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
       state.tabs = TabsState(
         profile: profile,
         homeState: HomeState(
-          profile: profile
+          profile: profile,
+          posts: []
         ),
         profileState: ProfileState(
           profile: profile
