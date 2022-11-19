@@ -19,6 +19,8 @@ struct Post: View {
   var onProfile: ((_ profile: ProfileModel) -> Void)?
   var onImage: ((_ post: PostModel) -> Void)?
   var variant: PostVariant = .base
+  
+  @State private var loadedImages: [String: Data] = [:]
     
   var body: some View {
     HStack(alignment: .top, spacing: 12) {
@@ -52,38 +54,41 @@ struct Post: View {
         Text(post.text)
 
         VStack(spacing: 0) {
-          if let imageData = post.imageData {
-            if imageData.count == 1 {
-              if let imgData = imageData[0] {
-                Button {
-                  onImage?(post)
-                } label: {
-                  Image(uiImage: UIImage(data: imgData)!)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(height: 160)
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                    .allowsHitTesting(false)
-                }
-              }
-            } else {
-              HStack {
-                ForEach(imageData, id: \.self) { data in
+          if let images = post.images {
+            HStack {
+              ForEach(images, id: \.self) { fileId in
+                if let loadedImage = loadedImages[fileId] {
                   Button {
                     onImage?(post)
                   } label: {
-                    Image(uiImage: UIImage(data: data)!)
+                    Image(uiImage: UIImage(data: loadedImage)!)
                       .resizable()
                       .scaledToFill()
                       .frame(height: 160)
                       .clipShape(RoundedRectangle(cornerRadius: 15))
+                      .allowsHitTesting(false)
                   }
+                } else {
+                  RoundedRectangle(cornerRadius: 15)
+                    .foregroundColor(Color("ColorLightBackground"))
+                    .frame(height: 160)
+                    .task {
+                      do {
+                        let (_, loadedData) = try await API.loadImage(
+                          profileId: profile.id,
+                          fileId: fileId
+                        )
+                        self.loadedImages[fileId] = loadedData
+                      } catch let error {
+                        print(error)
+                      }
+                    }
                 }
               }
-              .padding(.top, 8)
             }
           }
         }
+        .padding(.top, 8)
       }
     }
     .padding(12)

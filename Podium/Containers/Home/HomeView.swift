@@ -104,7 +104,7 @@ struct HomeView: View {
                   .clipShape(Circle())
                   .padding(.trailing)
                   .shadow(radius: 5)
-                  .sheet(isPresented: viewStore.binding(
+                  .fullScreenCover(isPresented: viewStore.binding(
                     get: \.isAddPresented,
                     send: HomeAction.presentAdd
                   )) {

@@ -14,11 +14,21 @@ struct MediaView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       TabView {
-        ForEach(viewStore.post.imageData ?? [], id: \.self) { data in
-          Image(uiImage: UIImage(data: data)!)
-            .resizable()
-            .scaledToFit()
-            .padding()
+        ForEach(viewStore.post.images ?? [], id: \.self) { fileId in
+          if let loadedImage = viewStore.loadedImages[fileId] {
+            Image(uiImage: UIImage(data: loadedImage)!)
+              .resizable()
+              .scaledToFill()
+              .padding()
+          } else {
+            RoundedRectangle(cornerRadius: 15)
+              .foregroundColor(Color("ColorLightBackground"))
+              .onAppear {
+                viewStore.send(.loadImage(
+                  fileId: fileId
+                ))
+              }
+          }
         }
       }
       .tabViewStyle(.page)

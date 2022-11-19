@@ -13,14 +13,7 @@ import UIKit
 class API {
   static let db = Firestore.firestore()
   static let storage = Storage.storage()
-  static var cachedImages: [String: Data] = [:]
-  
-  static func initialize() {
-    if let cached = UserDefaults.standard.data(forKey: "cached-images"),
-       let loaded = try? JSONDecoder().decode([String: Data].self, from: cached) {
-      self.cachedImages = loaded
-    }
-  }
+  static let cache = CustomCache<String, Data>()
   
   static func verifyPhoneNumber(phoneNumber: String) async throws -> String {
     do {
@@ -47,7 +40,14 @@ class API {
           .data()
         
         if let dictionary = dictionary {
-          return try ProfileModel(dictionary: dictionary)
+          var profile = try ProfileModel(dictionary: dictionary)
+          if let avatarId = profile.avatarId {
+            let storageRef = storage.reference()
+            let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
+            let data = try await fileRef.data(maxSize: 10 * 1024 * 1024)
+            profile.avatarData = data
+          }
+          return profile
         } else {
           let profile = ProfileModel(
             id: result.user.uid,
@@ -91,10 +91,15 @@ class API {
   
   static func loadImage(profileId: String, fileId: String) async throws -> (String, Data) {
     do {
-      let storageRef = storage.reference()
-      let fileRef = storageRef.child("\(profileId)/\(fileId).png")
-      let data = try await fileRef.data(maxSize: 10 * 1024 * 1024)
-      return (fileId, data)
+      if let cached = API.cache.value(forKey: fileId) {
+        return (fileId, cached)
+      } else {
+        let storageRef = storage.reference()
+        let fileRef = storageRef.child("\(profileId)/\(fileId).png")
+        let data = try await fileRef.data(maxSize: 10 * 1024 * 1024)
+        API.cache.insert(data, forKey: fileId, timeToLiveInMinutes: 24 * 60)
+        return (fileId, data)
+      }
     } catch let error {
       throw error
     }
@@ -138,34 +143,11 @@ class API {
         .getDocuments().documents
       
       for document in dictionary {
-        if var post = try? PostModel(dictionary: document.data()) {
-          if let images = post.images {
-            for fileId in images {
-              if let cached = self.cachedImages[fileId] {
-                if post.imageData == nil {
-                  post.imageData = []
-                }
-                post.imageData?.append(cached)
-              } else {
-                let (_, imageData) = try await loadImage(
-                  profileId: post.ownerId,
-                  fileId: fileId
-                )
-                if post.imageData == nil {
-                  post.imageData = []
-                }
-                post.imageData?.append(imageData)
-                self.cachedImages[fileId] = imageData
-              }
-            }
-          }
+        if let post = try? PostModel(dictionary: document.data()) {
           posts.append(post)
         }
       }
-      
-      let encoded = try JSONEncoder().encode(self.cachedImages)
-      UserDefaults.standard.set(encoded, forKey: "cached-images")
-      
+            
       return posts
     } catch let error {
       throw error
@@ -175,8 +157,12 @@ class API {
   static func getPostsProfiles(ids: [String]) async throws -> ([ProfileModel], [PostModel]) {
     do {
       let posts = try await getPosts(followingIds: ids)
-      let profiles = try await getProfiles(ids: Array(Set(posts.map({ $0.ownerId }))))
-      return (profiles, posts)
+      if !posts.isEmpty {
+        let profiles = try await getProfiles(ids: Array(Set(posts.map({ $0.ownerId }))))
+        return (profiles, posts)
+      } else {
+        throw AppError.general
+      }
     } catch let error {
       throw error
     }

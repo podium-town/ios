@@ -61,7 +61,7 @@ struct LoginView: View {
             .onAppear {
               self.endTextEditing()
             }
-          } else if viewStore.verificationId == nil {
+          } else if viewStore.verificationId == nil && !viewStore.isUsernameSelectionVisible {
             VStack(alignment: .leading, spacing: 8) {
               Text("Phone number")
                 .foregroundColor(.gray)
@@ -123,6 +123,8 @@ struct LoginView: View {
                 send: LoginAction.usernameChanged
               ))
               .textFieldStyle(PodiumTextFieldStyle(isEditing: true))
+              .textInputAutocapitalization(.never)
+              .disableAutocorrection(true)
               
               Button {
                 viewStore.send(.setUsername)

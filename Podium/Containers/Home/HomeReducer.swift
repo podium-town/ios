@@ -155,6 +155,9 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       
     case .profile(_):
       return .none
+      
+    case .media(_):
+      return .none
     }
   }
 )

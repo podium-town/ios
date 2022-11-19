@@ -23,7 +23,6 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
     switch action {
     case .initialize:
-      API.initialize()
       if let profile = environment.localStorage.data(forKey: StorageKey.profile.rawValue),
          let loadedProfile = try? JSONDecoder().decode(ProfileModel.self, from: profile) {
         state.tabs = TabsState(

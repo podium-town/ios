@@ -65,6 +65,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       
     case .didGetPosts(.failure(let error)):
       state.homeState.isLoadingRefreshable = false
+      state.homeState.isEmpty = state.homeState.posts.count == 0
       return .none
         
     case .home(_):
@@ -95,13 +96,13 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.profile.following.append(id)
       state.exploreState.profile.following.append(id)
       state.homeState.profile.following.append(id)
-      return .none
+      return Effect(value: .getPosts)
       
     case .explore(.didUnfollow(.success((let from, let id)))):
       state.profile.following.removeAll(where: { $0 == id })
       state.exploreState.profile.following.removeAll(where: { $0 == id })
       state.homeState.profile.following.removeAll(where: { $0 == id })
-      return .none
+      return Effect(value: .getPosts)
       
     case .explore(_):
       return .none

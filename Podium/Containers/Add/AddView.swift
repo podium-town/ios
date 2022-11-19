@@ -7,94 +7,96 @@
 
 import SwiftUI
 import ComposableArchitecture
+import Introspect
 
 struct AddView: View {
   let store: Store<AddState, AddAction>
   
-  init(store: Store<AddState, AddAction>) {
-    self.store = store
-    UITextView.appearance().backgroundColor = .clear
-  }
-  
   var body: some View {
     WithViewStore(store) { viewStore in
-      VStack(spacing: 0) {
-        HStack {
-          Spacer()
-          Button {
-            viewStore.send(.dismiss)
-          } label: {
-            Image("close")
-              .resizable()
-              .frame(width: 28, height: 28)
-              .foregroundColor(Color("ColorText"))
+      NavigationView {
+        VStack(spacing: 0) {
+          HStack {
+            Spacer()
+            Button {
+              viewStore.send(.dismiss)
+            } label: {
+              Image("close")
+                .resizable()
+                .frame(width: 28, height: 28)
+                .foregroundColor(Color("ColorText"))
+            }
           }
-        }
-        .padding()
-        
-        CustomTextField(
-          text: viewStore.binding(
+          .padding()
+          
+          TextEditor(text: viewStore.binding(
             get: \.text,
             send: AddAction.textChanged
-          ),
-          isSecured: false,
-          keyboard: .default
-        )
-        .font(.title)
-        .padding()
-        
-        ScrollView(.horizontal) {
-          HStack {
-            ForEach(viewStore.images, id: \.self) { image in
-              Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
-                .frame(maxWidth: 360, maxHeight: 160)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-            }
-          }
+          ))
+          .font(.title)
           .padding(.horizontal)
-        }
-        
-        HStack {
-          Button {
-            viewStore.send(.presentPicker(isPresented: true))
-          } label: {
-            Image("media")
-              .resizable()
-              .frame(width: 28, height: 28)
-          }
-          .buttonStyle(PodiumButtonSecondary())
-          .disabled(viewStore.images.count > 3)
-          .opacity(viewStore.images.count > 3 ? 0.5 : 1)
-          .sheet(isPresented: viewStore.binding(
-            get: \.isPickerPresented,
-            send: AddAction.presentPicker(isPresented:)
-          )) {
-            ImagePicker(
-              sourceType: .photoLibrary
-            ) { image in
-              viewStore.send(.addImage(image))
-            }
+          .introspectTextView { textField in
+            textField.becomeFirstResponder()
           }
           
-          Button {
-            viewStore.send(.addPost)
-          } label: {
-            HStack {
-              Spacer()
-              Text("Send")
-              Spacer()
+          HStack {
+            ForEach(viewStore.images, id: \.self) { image in
+              RoundedRectangle(cornerRadius: 15)
+                .foregroundColor(Color("ColorLightBackground"))
+                .overlay(
+                  Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 140)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                )
+                .frame(height: 140)
+                .clipped()
             }
           }
-          .buttonStyle(PodiumButton())
-          .disabled(viewStore.isSendPending || viewStore.isSendDisabled)
-          .opacity(viewStore.isSendPending || viewStore.isSendDisabled ? 0.5 : 1)
+          .padding()
+          .padding(.bottom, 0)
+          
+          HStack {
+            Button {
+              viewStore.send(.presentPicker(isPresented: true))
+            } label: {
+              Image("media")
+                .resizable()
+                .frame(width: 28, height: 28)
+            }
+            .buttonStyle(PodiumButtonSecondary())
+            .disabled(viewStore.images.count > 3)
+            .opacity(viewStore.images.count > 3 ? 0.5 : 1)
+            .sheet(isPresented: viewStore.binding(
+              get: \.isPickerPresented,
+              send: AddAction.presentPicker(isPresented:)
+            )) {
+              ImagePicker(
+                sourceType: .photoLibrary
+              ) { image in
+                viewStore.send(.addImage(image))
+              }
+            }
+            
+            Button {
+              viewStore.send(.addPost)
+            } label: {
+              HStack {
+                Spacer()
+                Text("Send")
+                Spacer()
+              }
+            }
+            .buttonStyle(PodiumButton())
+            .disabled(viewStore.isSendPending || viewStore.isSendDisabled)
+            .opacity(viewStore.isSendPending || viewStore.isSendDisabled ? 0.5 : 1)
+          }
+          .padding()
+          .padding(.top, 0)
         }
-        .padding()
-        .padding(.top, 0)
+        .background(Color("ColorBackground"))
       }
-      .background(Color("ColorBackground"))
     }
   }
 }
