@@ -66,7 +66,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
     case .didGetPosts(.failure(let error)):
       state.homeState.isLoadingRefreshable = false
       return .none
-      
+        
     case .home(_):
       return .none
       

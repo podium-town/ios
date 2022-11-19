@@ -17,10 +17,9 @@ struct Post: View {
   var post: PostModel
   var onDelete: ((_ post: PostModel) -> Void)?
   var onProfile: ((_ profile: ProfileModel) -> Void)?
+  var onImage: ((_ post: PostModel) -> Void)?
   var variant: PostVariant = .base
-  
-  @State private var isMediaPresented = false
-  
+    
   var body: some View {
     HStack(alignment: .top, spacing: 12) {
       Button {
@@ -41,16 +40,6 @@ struct Post: View {
 
           Spacer()
 
-          Menu {
-            Button("Delete", action: { onDelete?(post) })
-          } label: {
-            Image("more")
-              .resizable()
-              .frame(width: 18, height: 18)
-              .padding(.horizontal, 12)
-              .foregroundColor(.gray)
-          }
-
           Text(
             Date(timeIntervalSince1970: TimeInterval(
               integerLiteral: post.createdAt
@@ -67,49 +56,33 @@ struct Post: View {
             if imageData.count == 1 {
               if let imgData = imageData[0] {
                 Button {
-                  isMediaPresented = true
+                  onImage?(post)
                 } label: {
                   Image(uiImage: UIImage(data: imgData)!)
                     .resizable()
                     .scaledToFill()
                     .frame(height: 160)
-                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
+                    .allowsHitTesting(false)
                 }
-              } else {
-                RoundedRectangle(cornerRadius: 16)
-                  .foregroundColor(Color("ColorLightBackground"))
-                  .overlay(
-                    ProgressView()
-                  )
-                  .frame(height: 160)
               }
             } else {
               HStack {
                 ForEach(imageData, id: \.self) { data in
                   Button {
-                    isMediaPresented = true
+                    onImage?(post)
                   } label: {
                     Image(uiImage: UIImage(data: data)!)
                       .resizable()
                       .scaledToFill()
                       .frame(height: 160)
-                      .clipShape(RoundedRectangle(cornerRadius: 16))
+                      .clipShape(RoundedRectangle(cornerRadius: 15))
                   }
                 }
               }
               .padding(.top, 8)
             }
           }
-        }
-        .sheet(isPresented: $isMediaPresented) {
-          TabView {
-            ForEach(post.imageData ?? [], id: \.self) { data in
-              Image(uiImage: UIImage(data: data)!)
-                .resizable()
-                .scaledToFit()
-            }
-          }
-          .tabViewStyle(.page)
         }
       }
     }

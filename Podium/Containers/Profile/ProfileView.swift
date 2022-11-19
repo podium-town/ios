@@ -67,7 +67,6 @@ struct ProfileView: View {
           .listRowSeparator(.hidden)
           .listRowInsets(EdgeInsets())
         }
-        .id(UUID())
         .listStyle(.plain)
         .refreshable {
 #if targetEnvironment(simulator)

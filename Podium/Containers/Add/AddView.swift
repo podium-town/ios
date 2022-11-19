@@ -32,12 +32,14 @@ struct AddView: View {
         }
         .padding()
         
-        CustomTextField(text: viewStore.binding(
-          get: \.text,
-          send: AddAction.textChanged
-        ),
-                        isSecured: false,
-                        keyboard: .default)
+        CustomTextField(
+          text: viewStore.binding(
+            get: \.text,
+            send: AddAction.textChanged
+          ),
+          isSecured: false,
+          keyboard: .default
+        )
         .font(.title)
         .padding()
         
@@ -63,6 +65,8 @@ struct AddView: View {
               .frame(width: 28, height: 28)
           }
           .buttonStyle(PodiumButtonSecondary())
+          .disabled(viewStore.images.count > 3)
+          .opacity(viewStore.images.count > 3 ? 0.5 : 1)
           .sheet(isPresented: viewStore.binding(
             get: \.isPickerPresented,
             send: AddAction.presentPicker(isPresented:)

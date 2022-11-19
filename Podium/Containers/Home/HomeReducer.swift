@@ -30,6 +30,11 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     action: /HomeAction.add,
     environment: { $0 }
   ),
+  mediaReducer.optional().pullback(
+    state: \.mediaState,
+    action: /HomeAction.media,
+    environment: { $0 }
+  ),
   Reducer { state, action, environment in
     switch action {
     case .initialize:
@@ -52,6 +57,7 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       return .none
       
     case .getPosts:
+      state.isLoadingRefreshable = true
       if let posts = environment.localStorage.data(forKey: StorageKey.posts.rawValue),
          let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts),
          let profiles = environment.localStorage.data(forKey: StorageKey.profiles.rawValue),
@@ -59,7 +65,6 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
         state.posts = loadedPosts
         state.profiles = loadedProfiles
       }
-      state.isLoadingRefreshable = true
       let followingIds = state.profile.following
       return .task {
         await .didGetPosts(TaskResult {
@@ -91,6 +96,15 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       if isPresented {
         state.add = AddState(
           profile: state.profile
+        )
+      }
+      return .none
+      
+    case .presentMedia(let isPresented, let post):
+      state.isMediaPresented = isPresented
+      if isPresented, let post = post {
+        state.mediaState = MediaState(
+          post: post
         )
       }
       return .none

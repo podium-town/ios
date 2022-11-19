@@ -13,6 +13,7 @@ struct HomeState: Equatable {
   var isStoriesPresented = false
   var isThreadPresented = false
   var isProfilePresented = false
+  var isMediaPresented = false
   var isAddPresented = false
   var isLoadingRefreshable = false
   var isEmpty = false
@@ -24,4 +25,5 @@ struct HomeState: Equatable {
   var stories: StoriesState?
   var thread: ThreadState?
   var profileState: ProfileState?
+  var mediaState: MediaState?
 }

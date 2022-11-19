@@ -45,6 +45,12 @@ struct HomeView: View {
                           isPresented: true,
                           profile: profile
                         ))
+                      },
+                      onImage: { post in
+                        viewStore.send(.presentMedia(
+                          isPresented: true,
+                          post: post
+                        ))
                       }
                     )
                   }
@@ -52,7 +58,6 @@ struct HomeView: View {
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets())
               }
-              .id(UUID())
               .listStyle(.plain)
               .refreshable {
 #if targetEnvironment(simulator)
@@ -128,6 +133,20 @@ struct HomeView: View {
             }
           }
           .navigationBarTitleDisplayMode(.inline)
+          .sheet(isPresented: viewStore.binding(
+            get: \.isMediaPresented,
+            send: HomeAction.presentMedia(
+              isPresented: false,
+              post: nil
+            ))) {
+            IfLetStore(
+              store.scope(
+                state: \.mediaState,
+                action: HomeAction.media
+              ),
+              then: MediaView.init(store:)
+            )
+          }
           .toolbar {
             ToolbarItem(placement: .navigationBarLeading) {
               Text("")
@@ -139,12 +158,6 @@ struct HomeView: View {
 #else
             viewStore.send(.initialize)
 #endif
-          }
-          
-          // Workaround for multiple NavigationLinks
-          // https://github.com/pointfreeco/swift-composable-architecture/issues/393
-          NavigationLink(destination: EmptyView()) {
-            EmptyView()
           }
           
           WithViewStore(store.scope(state: \.isThreadPresented)) { viewStore in

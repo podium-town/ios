@@ -64,6 +64,10 @@
 		82BBC992291AD09E008DB479 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BBC991291AD09E008DB479 /* API.swift */; };
 		82BBC995291AD1CB008DB479 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 82BBC994291AD1CB008DB479 /* FirebaseAuth */; };
 		82BBC99F291AE481008DB479 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BBC99E291AE481008DB479 /* ProfileModel.swift */; };
+		82DBC94929291706002F885C /* MediaState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DBC94829291706002F885C /* MediaState.swift */; };
+		82DBC94B2929171A002F885C /* MediaAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DBC94A2929171A002F885C /* MediaAction.swift */; };
+		82DBC94D2929172B002F885C /* MediaReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DBC94C2929172B002F885C /* MediaReducer.swift */; };
+		82DBC94F29291742002F885C /* MediaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DBC94E29291742002F885C /* MediaView.swift */; };
 		82F2AE31291E85AB00A4524E /* ExploreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE30291E85AB00A4524E /* ExploreState.swift */; };
 		82F2AE33291E85E500A4524E /* ExploreAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE32291E85E500A4524E /* ExploreAction.swift */; };
 		82F2AE35291E85F600A4524E /* ExploreReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F2AE34291E85F600A4524E /* ExploreReducer.swift */; };
@@ -134,6 +138,10 @@
 		82BBC99A291ADCD2008DB479 /* Podium.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Podium.entitlements; sourceTree = "<group>"; };
 		82BBC99B291ADCD7008DB479 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		82BBC99E291AE481008DB479 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
+		82DBC94829291706002F885C /* MediaState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaState.swift; sourceTree = "<group>"; };
+		82DBC94A2929171A002F885C /* MediaAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaAction.swift; sourceTree = "<group>"; };
+		82DBC94C2929172B002F885C /* MediaReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaReducer.swift; sourceTree = "<group>"; };
+		82DBC94E29291742002F885C /* MediaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaView.swift; sourceTree = "<group>"; };
 		82F2AE30291E85AB00A4524E /* ExploreState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreState.swift; sourceTree = "<group>"; };
 		82F2AE32291E85E500A4524E /* ExploreAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreAction.swift; sourceTree = "<group>"; };
 		82F2AE34291E85F600A4524E /* ExploreReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreReducer.swift; sourceTree = "<group>"; };
@@ -209,6 +217,7 @@
 		822591F7291A9B8500D17E30 /* Containers */ = {
 			isa = PBXGroup;
 			children = (
+				82DBC947292916F6002F885C /* Media */,
 				82F2AE2F291E859B00A4524E /* Explore */,
 				828E3516291C55370089AD1A /* Add */,
 				828E350B291C1A390089AD1A /* Profile */,
@@ -391,6 +400,17 @@
 			path = API;
 			sourceTree = "<group>";
 		};
+		82DBC947292916F6002F885C /* Media */ = {
+			isa = PBXGroup;
+			children = (
+				82DBC94829291706002F885C /* MediaState.swift */,
+				82DBC94A2929171A002F885C /* MediaAction.swift */,
+				82DBC94C2929172B002F885C /* MediaReducer.swift */,
+				82DBC94E29291742002F885C /* MediaView.swift */,
+			);
+			path = Media;
+			sourceTree = "<group>";
+		};
 		82F2AE2F291E859B00A4524E /* Explore */ = {
 			isa = PBXGroup;
 			children = (
@@ -553,6 +573,7 @@
 				82259207291A9CAD00D17E30 /* TabsAction.swift in Sources */,
 				8225920B291A9CD400D17E30 /* TabsView.swift in Sources */,
 				82BBC97D291ABB21008DB479 /* ThreadReducer.swift in Sources */,
+				82DBC94B2929171A002F885C /* MediaAction.swift in Sources */,
 				82793787291D668200FD5148 /* iPhoneNumberField+ViewModifiers.swift in Sources */,
 				82793776291C5DEC00FD5148 /* ViewStore+Extensions.swift in Sources */,
 				82259202291A9BFA00D17E30 /* AppView.swift in Sources */,
@@ -561,6 +582,7 @@
 				828E351E291C55780089AD1A /* AddView.swift in Sources */,
 				822591FC291A9BB800D17E30 /* AppAction.swift in Sources */,
 				82259215291AA02A00D17E30 /* HomeAction.swift in Sources */,
+				82DBC94F29291742002F885C /* MediaView.swift in Sources */,
 				828E3511291C1A7D0089AD1A /* ProfileReducer.swift in Sources */,
 				822591FE291A9BCE00D17E30 /* AppReducer.swift in Sources */,
 				82259233291AB2FF00D17E30 /* StoriesReducer.swift in Sources */,
@@ -571,6 +593,8 @@
 				82793785291D64E300FD5148 /* PhoneNumberTextField.swift in Sources */,
 				8225922B291AAC5900D17E30 /* LoginReducer.swift in Sources */,
 				82F2AE33291E85E500A4524E /* ExploreAction.swift in Sources */,
+				82DBC94D2929172B002F885C /* MediaReducer.swift in Sources */,
+				82DBC94929291706002F885C /* MediaState.swift in Sources */,
 				828E3515291C53870089AD1A /* Date+Extensions.swift in Sources */,
 				82F2AE40292030E200A4524E /* TextFieldView.swift in Sources */,
 				82259231291AB2E900D17E30 /* StoriesAction.swift in Sources */,
@@ -712,7 +736,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -749,7 +773,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -807,8 +831,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/pointfreeco/swift-composable-architecture";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.45.0;
 			};
 		};
 		82793788291D679B00FD5148 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */ = {
@@ -823,8 +847,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
 			requirement = {
-				branch = master;
-				kind = branch;
+				kind = upToNextMinorVersion;
+				minimumVersion = 10.2.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
