@@ -6,6 +6,9 @@
 //
 
 struct ThreadState: Equatable {
-  var profile: ProfileModel?
+  var profile: ProfileModel
   var post: PostModel?
+  var text = ""
+  var isSendDisabled = true
+  var comments: [PostModel] = []
 }

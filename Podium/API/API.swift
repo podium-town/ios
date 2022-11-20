@@ -13,7 +13,6 @@ import UIKit
 class API {
   static let db = Firestore.firestore()
   static let storage = Storage.storage()
-  static let cache = CustomCache<String, Data>()
   
   static func verifyPhoneNumber(phoneNumber: String) async throws -> String {
     do {
@@ -75,31 +74,26 @@ class API {
   
   static func uploadMedia(profileId: String, images: [UIImage]) async throws -> [String] {
     do {
-      var ids: [String] = []
+      var urls: [String] = []
       for image in images {
         let fileId = UUID().uuidString
         let storageRef = storage.reference()
         let fileRef = storageRef.child("\(profileId)/\(fileId).png")
         _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.7)!)
-        ids.append(fileId)
+        let url = try await fileRef.downloadURL()
+        urls.append(url.absoluteString)
       }
-      return ids
+      return urls
     } catch let error {
       throw error
     }
   }
   
-  static func loadImage(profileId: String, fileId: String) async throws -> (String, Data) {
+  static func getImage(url: String) async throws -> (String, Data) {
     do {
-      if let cached = API.cache.value(forKey: fileId) {
-        return (fileId, cached)
-      } else {
-        let storageRef = storage.reference()
-        let fileRef = storageRef.child("\(profileId)/\(fileId).png")
-        let data = try await fileRef.data(maxSize: 10 * 1024 * 1024)
-        API.cache.insert(data, forKey: fileId, timeToLiveInMinutes: 24 * 60)
-        return (fileId, data)
-      }
+      let request = URLRequest(url: URL(string: url)!, cachePolicy: .returnCacheDataElseLoad, timeoutInterval: 30)
+      let (data, _) = try await URLSession.shared.data(for: request)
+      return (url, data)
     } catch let error {
       throw error
     }
@@ -147,21 +141,26 @@ class API {
           posts.append(post)
         }
       }
-            
+      
       return posts
     } catch let error {
       throw error
     }
   }
   
-  static func getPostsProfiles(ids: [String]) async throws -> ([ProfileModel], [PostModel]) {
+  static func getPostsProfiles(ids: [String]) async throws -> [PostModel] {
     do {
-      let posts = try await getPosts(followingIds: ids)
+      var posts = try await getPosts(followingIds: ids)
       if !posts.isEmpty {
-        let profiles = try await getProfiles(ids: Array(Set(posts.map({ $0.ownerId }))))
-        return (profiles, posts)
+        var profiles = try await getProfiles(ids: Array(Set(posts.map({ $0.ownerId }))))
+        posts = posts.map { post in
+          var mut = post
+          mut.profile = profiles.first(where: { $0.id == mut.ownerId })
+          return mut
+        }
+        return posts
       } else {
-        throw AppError.general
+        return []
       }
     } catch let error {
       throw error
@@ -188,6 +187,40 @@ class API {
           "text": post.text,
           "images": post.images
         ], merge: true)
+      
+      return post
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func addComment(text: String, ownerId: String, postId: String) async throws -> PostModel {
+    do {
+      let post = PostModel(
+        id: UUID().uuidString,
+        text: text,
+        ownerId: ownerId,
+        createdAt: Date().millisecondsSince1970 / 1000,
+        images: []
+      )
+      
+      try await db
+        .collection("comments")
+        .document(post.id)
+        .setData([
+          "id": post.id,
+          "ownerId": post.ownerId,
+          "postId": postId,
+          "createdAt": post.createdAt,
+          "text": post.text
+        ])
+      
+      try await db
+        .collection("posts")
+        .document(postId)
+        .updateData([
+          "comments": FieldValue.arrayUnion([post.id])
+        ])
       
       return post
     } catch let error {
@@ -230,6 +263,38 @@ class API {
           "avatarId": fileId
         ])
       return fileId
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func getComments(postId: String) async throws -> [PostModel] {
+    do {
+      var posts: [PostModel] = []
+      let dictionary = try await db
+        .collection("comments")
+        .whereField("postId", isEqualTo: postId)
+        .order(by: "createdAt", descending: true)
+        .limit(to: 50)
+        .getDocuments().documents
+      
+      for document in dictionary {
+        if let post = try? PostModel(dictionary: document.data()) {
+          posts.append(post)
+        }
+      }
+      
+      if !posts.isEmpty {
+        let profiles = try await getProfiles(ids: Array(Set(posts.map({ $0.ownerId }))))
+        posts = posts.map { post in
+          var mut = post
+          mut.profile = profiles.first(where: { $0.id == mut.ownerId })
+          return mut
+        }
+        return posts
+      } else {
+        return []
+      }
     } catch let error {
       throw error
     }
@@ -303,12 +368,18 @@ class API {
         .collection("users")
         .whereField("username", isGreaterThanOrEqualTo: query)
         .whereField("username", isLessThanOrEqualTo: query+"\u{F7FF}")
-        .limit(to: 50)
+        .limit(to: 25)
         .getDocuments()
         .documents
       
       for document in results {
-        if let profile = try? ProfileModel(dictionary: document.data()) {
+        if var profile = try? ProfileModel(dictionary: document.data()) {
+          if let avatarId = profile.avatarId {
+            let storageRef = storage.reference()
+            let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
+            let data = try await fileRef.data(maxSize: 10 * 1024 * 1024)
+            profile.avatarData = data
+          }
           profiles.append(profile)
         }
       }

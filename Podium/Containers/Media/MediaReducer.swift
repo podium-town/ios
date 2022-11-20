@@ -10,13 +10,12 @@ import ComposableArchitecture
 let mediaReducer = Reducer<MediaState, MediaAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
     switch action {
-    case .loadImage(let fileId):
+    case .loadImage(let url):
       let profileId = state.post.ownerId
       return .task {
         await .didLoadImage(TaskResult {
-          try await API.loadImage(
-            profileId: profileId,
-            fileId: fileId
+          try await API.getImage(
+            url: url
           )
         })
       }

@@ -53,29 +53,41 @@ struct ProfileView: View {
         .padding()
         .padding(.bottom, 0)
         
-        List {
-          ForEach(viewStore.posts) { post in
-            Button {
-              
-            } label: {
-              Post(
-                profile: viewStore.profile,
-                post: post
-              )
+        if viewStore.isEmpty {
+          VStack {
+            Spacer()
+            HStack {
+              Spacer()
+              Text("No posts.")
+                .fontWeight(.medium)
+                .padding()
+              Spacer()
             }
+            Spacer()
           }
-          .listRowSeparator(.hidden)
-          .listRowInsets(EdgeInsets())
-        }
-        .listStyle(.plain)
-        .refreshable {
+        } else {
+          List {
+            ForEach(viewStore.posts) { post in
+              Button {
+                
+              } label: {
+                Post(
+                  post: post
+                )
+              }
+            }
+            .listRowSeparator(.hidden)
+            .listRowInsets(EdgeInsets())
+          }
+          .listStyle(.plain)
+          .refreshable {
 #if targetEnvironment(simulator)
-          
+            
 #else
-          await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
+            await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
 #endif
+          }
         }
-
       }
       .onAppear {
         viewStore.send(.getPosts)

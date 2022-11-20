@@ -13,21 +13,53 @@ struct ThreadView: View {
   
   var body: some View {
     WithViewStore(store) { viewStore in
-      ScrollView {
-        if let profile = viewStore.profile,
-           let post = viewStore.post {
-          Post(
-            profile: profile,
-            post: post,
-            onDelete: { post in
-              
-            },
-            onProfile: { profile in
-              
-            },
-            variant:.large
-          )
+      VStack {
+        ScrollView {
+          if let post = viewStore.post {
+            ThreadPost(
+              post: post,
+              onDelete: { post in
+                
+              },
+              onProfile: { profile in
+                
+              }
+            )
+            
+            VStack(spacing: 0) {
+              ForEach(viewStore.comments) { comment in
+                Post(
+                  post: comment
+                )
+              }
+            }
+          }
         }
+        
+        HStack {
+          TextField("Comment...", text: viewStore.binding(
+            get: \.text,
+            send: ThreadAction.textChanged
+          ))
+          .padding()
+          .background(
+            RoundedRectangle(cornerRadius: 15)
+              .foregroundColor(Color("ColorLightBackground"))
+          )
+          
+          Button {
+            self.endTextEditing()
+            viewStore.send(.send)
+          } label: {
+            Text("Send")
+              .fontWeight(.semibold)
+          }
+          .disabled(viewStore.isSendDisabled)
+        }
+        .padding()
+      }
+      .onAppear {
+        viewStore.send(.getComments)
       }
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
@@ -47,7 +79,8 @@ struct ThreadView_Previews: PreviewProvider {
     ThreadView(store: Store(
       initialState: ThreadState(
         profile: Mocks.profile,
-        post: Mocks.post
+        post: Mocks.post,
+        comments: [Mocks.comment, Mocks.comment]
       ),
       reducer: threadReducer,
       environment: AppEnvironment()

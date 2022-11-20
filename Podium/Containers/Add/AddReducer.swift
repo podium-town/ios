@@ -56,7 +56,7 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
       state.isSendPending = false
       return .none
       
-    case .didUploadMedia(.success(let ids)):
+    case .didUploadMedia(.success(let urls)):
       let text = state.text
       let ownerId = state.profile.id
       return .task {
@@ -64,7 +64,7 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
           try await API.addPost(
             text: text,
             ownerId: ownerId,
-            images: ids
+            images: urls
           )
         })
       }

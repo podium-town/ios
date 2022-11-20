@@ -59,11 +59,8 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     case .getPosts:
       state.isLoadingRefreshable = true
       if let posts = environment.localStorage.data(forKey: StorageKey.posts.rawValue),
-         let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts),
-         let profiles = environment.localStorage.data(forKey: StorageKey.profiles.rawValue),
-         let loadedProfiles = try? JSONDecoder().decode([String: ProfileModel].self, from: profiles) {
+         let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts) {
         state.posts = loadedPosts
-        state.profiles = loadedProfiles
       }
       let followingIds = state.profile.following
       return .task {
@@ -74,15 +71,11 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
         })
       }
       
-    case .didGetPosts(.success((let profiles, let posts))):
+    case .didGetPosts(.success(let posts)):
       state.isLoadingRefreshable = false
-      state.profiles = Dictionary(uniqueKeysWithValues: profiles.map{ ($0.id, $0) })
       state.posts = posts
       if let encodedPosts = try? JSONEncoder().encode(state.posts) {
         environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
-      }
-      if let encodedProfiles = try? JSONEncoder().encode(state.profiles) {
-        environment.localStorage.set(encodedProfiles, forKey: StorageKey.profiles.rawValue)
       }
       state.isEmpty = posts.count == 0
       return .none
@@ -125,11 +118,11 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       }
       return .none
       
-    case .presentThread(let isPresented, let profile, let post):
+    case .presentThread(let isPresented, let post):
       state.isThreadPresented = isPresented
       if isPresented {
         state.thread = ThreadState(
-          profile: profile,
+          profile: state.profile,
           post: post
         )
       }
@@ -157,6 +150,9 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       return .none
       
     case .media(_):
+      return .none
+      
+    case .thread(_):
       return .none
     }
   }

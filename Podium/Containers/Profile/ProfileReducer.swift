@@ -22,7 +22,14 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       
     case .didGetPosts(.success(let posts)):
       state.isLoadingRefreshable = false
-      state.posts = posts
+      state.posts = posts.map { post in
+        var mut = post
+        mut.profile = state.profile
+        return mut
+      }
+      if posts.isEmpty {
+        state.isEmpty = true
+      }
       return .none
       
     case .didGetPosts(.failure(let error)):

@@ -13,6 +13,9 @@ struct PostModel: Equatable, Identifiable {
   var ownerId: String
   var createdAt: Int64
   var images: [String]? = []
+  var comments: [String]? = []
+  var postId: String?
+  var profile: ProfileModel?
 }
 
 extension PostModel: Codable {

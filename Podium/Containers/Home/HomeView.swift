@@ -30,12 +30,10 @@ struct HomeView: View {
                   Button {
                     viewStore.send(.presentThread(
                       isPresented: true,
-                      profile: viewStore.profiles[post.ownerId]!,
                       post: post
                     ))
                   } label: {
                     Post(
-                      profile: viewStore.profiles[post.ownerId]!,
                       post: post,
                       onDelete: { post in
                         viewStore.send(.deletePost(id: post.id))
@@ -139,26 +137,26 @@ struct HomeView: View {
               isPresented: false,
               post: nil
             ))) {
-            IfLetStore(
-              store.scope(
-                state: \.mediaState,
-                action: HomeAction.media
-              ),
-              then: MediaView.init(store:)
-            )
-          }
-          .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-              Text("")
+              IfLetStore(
+                store.scope(
+                  state: \.mediaState,
+                  action: HomeAction.media
+                ),
+                then: MediaView.init(store:)
+              )
             }
-          }
-          .onAppear {
+            .toolbar {
+              ToolbarItem(placement: .navigationBarLeading) {
+                Text("")
+              }
+            }
+            .onAppear {
 #if targetEnvironment(simulator)
-            
+              
 #else
-            viewStore.send(.initialize)
+              viewStore.send(.initialize)
 #endif
-          }
+            }
           
           WithViewStore(store.scope(state: \.isThreadPresented)) { viewStore in
             NavigationLink(
@@ -173,7 +171,6 @@ struct HomeView: View {
               ),
               isActive: viewStore.binding(send: .presentThread(
                 isPresented: false,
-                profile: nil,
                 post: nil
               )),
               label: EmptyView.init
@@ -212,7 +209,7 @@ struct HomeView_Previews: PreviewProvider {
       initialState: HomeState(
         profile: Mocks.profile,
         isEmpty: false,
-        posts: [Mocks.post]
+        posts: [Mocks.post, Mocks.post]
       ),
       reducer: homeReducer,
       environment: AppEnvironment()

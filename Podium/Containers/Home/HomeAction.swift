@@ -10,12 +10,12 @@ import ComposableArchitecture
 enum HomeAction {
   case initialize
   case presentStories(isPresented: Bool)
-  case presentThread(isPresented: Bool, profile: ProfileModel?, post: PostModel?)
+  case presentThread(isPresented: Bool, post: PostModel?)
   case presentAdd(isPresented: Bool)
   case presentProfile(isPresented: Bool, profile: ProfileModel?)
   case presentMedia(isPresented: Bool, post: PostModel?)
   case getPosts
-  case didGetPosts(TaskResult<([ProfileModel], [PostModel])>)
+  case didGetPosts(TaskResult<[PostModel]>)
   case deletePost(id: String)
   case didDeletePost(TaskResult<String>)
   

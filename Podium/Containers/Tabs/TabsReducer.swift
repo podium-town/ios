@@ -34,11 +34,8 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
     switch action {
     case .getPosts:
       if let posts = environment.localStorage.data(forKey: StorageKey.posts.rawValue),
-         let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts),
-         let profiles = environment.localStorage.data(forKey: StorageKey.profiles.rawValue),
-         let loadedProfiles = try? JSONDecoder().decode([String: ProfileModel].self, from: profiles) {
+         let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts) {
         state.homeState.posts = loadedPosts
-        state.homeState.profiles = loadedProfiles
         state.homeState.isLoadingRefreshable = true
       }
       let followingIds = state.profile.following
@@ -50,15 +47,11 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
         })
       }
       
-    case .didGetPosts(.success((let profiles, let posts))):
+    case .didGetPosts(.success(let posts)):
       state.homeState.isLoadingRefreshable = false
-      state.homeState.profiles = Dictionary(uniqueKeysWithValues: profiles.map{ ($0.id, $0) })
       state.homeState.posts = posts
       if let encodedPosts = try? JSONEncoder().encode(state.homeState.posts) {
         environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
-      }
-      if let encodedProfiles = try? JSONEncoder().encode(state.homeState.profiles) {
-        environment.localStorage.set(encodedProfiles, forKey: StorageKey.profiles.rawValue)
       }
       state.homeState.isEmpty = posts.count == 0
       return .none

@@ -8,8 +8,22 @@
 import ComposableArchitecture
 
 let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combine(
+  profileReducer.optional().pullback(
+    state: \.profileState,
+    action: /ExploreAction.profile,
+    environment: { $0 }
+  ),
   Reducer { state, action, environment in
     switch action {
+    case .presentProfile(let isPresented, let profile):
+      state.isProfilePresented = isPresented
+      if isPresented, let profile = profile {
+        state.profileState = ProfileState(
+          profile: profile
+        )
+      }
+      return .none
+      
     case .searchQueryChanged(let searchQuery):
       state.searchQuery = searchQuery.lowercased()
       return state.searchQuery.count > 2 ? Effect(value: .search) : .none
@@ -78,6 +92,9 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
       return .none
       
     case .didUnfollow(.failure(let error)):
+      return .none
+      
+    case .profile(_):
       return .none
     }
   }

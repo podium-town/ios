@@ -16,4 +16,8 @@ enum ExploreAction {
   case unFollow(String)
   case didUnfollow(TaskResult<(ProfileModel, String)>)
   case clearSearch
+  case presentProfile(isPresented: Bool, profile: ProfileModel?)
+  
+  // View Actions
+  case profile(ProfileAction)
 }

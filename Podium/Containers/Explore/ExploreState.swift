@@ -10,4 +10,8 @@ struct ExploreState: Equatable {
   var searchQuery = ""
   var profiles: [ProfileModel] = []
   var pendingFollowRequests: [String] = []
+  var isProfilePresented = false
+  
+  // View States
+  var profileState: ProfileState?
 }
