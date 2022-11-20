@@ -9,6 +9,11 @@ import ComposableArchitecture
 import CoreFoundation
 
 let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combine(
+  settingsReducer.optional().pullback(
+    state: \.settingsState,
+    action: /ProfileAction.settings,
+    environment: { $0 }
+  ),
   Reducer { state, action, environment in
     switch action {
     case .getPosts:
@@ -38,6 +43,15 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       
     case .presentPicker(let isPresented):
       state.isPickerPresented = isPresented
+      return .none
+      
+    case .presentSettings(let isPresented):
+      state.isSettingsPresented = isPresented
+      if isPresented {
+        state.settingsState = SettingsState(
+          profile: state.profile
+        )
+      }
       return .none
       
     case .changeAvatar(let uiImage):

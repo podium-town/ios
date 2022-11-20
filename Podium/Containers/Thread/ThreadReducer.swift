@@ -42,9 +42,8 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       return .none
       
     case .getComments:
-      if let post = state.post,
-         let comments = post.comments,
-         !comments.isEmpty {
+      state.isLoading = true
+      if let post = state.post {
         let postId = post.id
         return .task {
           await .didGetComments(TaskResult {
@@ -57,10 +56,12 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       return .none
       
     case .didGetComments(.success(let comments)):
+      state.isLoading = false
       state.comments = comments
       return .none
       
     case .didGetComments(.failure(let error)):
+      state.isLoading = false
       return .none
     }
   }

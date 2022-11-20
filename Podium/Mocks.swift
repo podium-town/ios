@@ -14,8 +14,7 @@ struct Mocks {
     text: "You are viewing the README and repositories as a public user. You are viewing the README and repositories as a public user.",
     ownerId: "456",
     createdAt: 123,
-    images: ["ID1", "id2", "od3"],
-    comments: ["1123"]
+    images: ["ID1", "id2", "od3"]
   )
   static var postSimple = PostModel(
     id: "123",

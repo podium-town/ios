@@ -37,6 +37,10 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
   ),
   Reducer { state, action, environment in
     switch action {
+    case .dismissBanner:
+      state.bannerData = nil
+      return .none
+      
     case .initialize:
       state.stories = StoriesState()
       return .none
@@ -81,6 +85,11 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       return .none
       
     case .didGetPosts(.failure(let error)):
+      state.bannerData = BannerData(
+        title: "Error",
+        detail: error.localizedDescription,
+        type: .error
+      )
       state.isLoadingRefreshable = false
       return .none
       

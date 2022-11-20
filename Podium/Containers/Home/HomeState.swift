@@ -18,6 +18,7 @@ struct HomeState: Equatable {
   var isLoadingRefreshable = false
   var isEmpty = false
   var posts: [PostModel]
+  var bannerData: BannerData?
   
   // View States
   var add: AddState?

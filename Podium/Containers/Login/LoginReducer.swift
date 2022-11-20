@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 
 let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
@@ -19,6 +20,10 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       return .none
 
     case .resend:
+      state.isVerificationPending = false
+      state.isUsernameSelectionVisible = false
+      state.verificationId = nil
+      state.verificationCode = ""
       return .none
       
     case .usernameChanged(let username):

@@ -36,7 +36,7 @@ struct LoginView: View {
               .keyboardType(.numberPad)
               
               Button {
-                
+                viewStore.send(.resend)
               } label: {
                 Text("Resend")
               }
@@ -118,13 +118,10 @@ struct LoginView: View {
             VStack {
               Text("Enter your desired username")
               
-              TextField("", text: viewStore.binding(
+              CustomTextField("", text: viewStore.binding(
                 get: \.username,
                 send: LoginAction.usernameChanged
               ))
-              .textFieldStyle(PodiumTextFieldStyle(isEditing: true))
-              .textInputAutocapitalization(.never)
-              .disableAutocorrection(true)
               
               Button {
                 viewStore.send(.setUsername)

@@ -198,6 +198,10 @@ struct HomeView: View {
             )
           }
         }
+        .banner(data: viewStore.binding(
+          get: \.bannerData,
+          send: HomeAction.dismissBanner
+        ))
       }
     }
   }

@@ -43,10 +43,12 @@ struct TabsView: View {
               .frame(width: 26, height: 26, alignment: .center)
           }
         
-        ProfileView(store: store.scope(
-          state: \.profileState,
-          action: TabsAction.profile
-        ))
+        NavigationView {
+          ProfileView(store: store.scope(
+            state: \.profileState,
+            action: TabsAction.profile
+          ))
+        }
           .tabItem {
             Image("profile")
               .resizable()

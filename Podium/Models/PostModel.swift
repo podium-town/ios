@@ -12,8 +12,7 @@ struct PostModel: Equatable, Identifiable {
   var text: String
   var ownerId: String
   var createdAt: Int64
-  var images: [String]? = []
-  var comments: [String]? = []
+  var images: [String] = []
   var postId: String?
   var profile: ProfileModel?
 }

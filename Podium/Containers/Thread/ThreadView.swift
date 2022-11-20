@@ -27,10 +27,16 @@ struct ThreadView: View {
             )
             
             VStack(spacing: 0) {
-              ForEach(viewStore.comments) { comment in
-                Post(
-                  post: comment
-                )
+              if viewStore.isLoading {
+                VStack(alignment: .center) {
+                  ProgressView()
+                }
+              } else {
+                ForEach(viewStore.comments) { comment in
+                  Post(
+                    post: comment
+                  )
+                }
               }
             }
           }

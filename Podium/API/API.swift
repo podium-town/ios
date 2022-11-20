@@ -212,7 +212,8 @@ class API {
           "ownerId": post.ownerId,
           "postId": postId,
           "createdAt": post.createdAt,
-          "text": post.text
+          "text": post.text,
+          "images": post.images
         ])
       
       try await db

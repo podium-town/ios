@@ -11,4 +11,5 @@ struct ThreadState: Equatable {
   var text = ""
   var isSendDisabled = true
   var comments: [PostModel] = []
+  var isLoading = false
 }
