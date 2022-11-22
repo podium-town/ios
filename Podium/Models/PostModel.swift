@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 struct PostModel: Equatable, Identifiable {
   var id: String
@@ -15,6 +16,7 @@ struct PostModel: Equatable, Identifiable {
   var images: [String] = []
   var postId: String?
   var profile: ProfileModel?
+  var isLoading: Bool? = false
 }
 
 extension PostModel: Codable {

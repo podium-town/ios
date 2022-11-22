@@ -44,9 +44,9 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       }
       
     case .didVerifyPhone(.success(let verificationId)):
+      state.isVerificationPending = false
       environment.localStorage.set(verificationId, forKey: StorageKey.authVerificationID.rawValue)
       state.verificationId = verificationId
-      state.isVerificationPending = false
       return .none
       
     case .didVerifyPhone(.failure(let error)):

@@ -14,6 +14,16 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
     action: /ProfileAction.settings,
     environment: { $0 }
   ),
+  threadReducer.optional().pullback(
+    state: \.threadState,
+    action: /ProfileAction.thread,
+    environment: { $0 }
+  ),
+  mediaReducer.optional().pullback(
+    state: \.mediaState,
+    action: /ProfileAction.media,
+    environment: { $0 }
+  ),
   Reducer { state, action, environment in
     switch action {
     case .getPosts:
@@ -45,11 +55,30 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       state.isPickerPresented = isPresented
       return .none
       
+    case .presentMedia(let isPresented, let post):
+      state.isMediaPresented = isPresented
+      if isPresented, let post = post {
+        state.mediaState = MediaState(
+          post: post
+        )
+      }
+      return .none
+      
     case .presentSettings(let isPresented):
       state.isSettingsPresented = isPresented
       if isPresented {
         state.settingsState = SettingsState(
           profile: state.profile
+        )
+      }
+      return .none
+      
+    case .presentThread(let isPresented, let post):
+      state.isThreadPresented = isPresented
+      if isPresented, let post = post {
+        state.threadState = ThreadState(
+          profile: state.profile,
+          post: post
         )
       }
       return .none
@@ -62,6 +91,12 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
           uiImage: uiImage
         )
       }
+      return .none
+      
+    case .thread(_):
+      return .none
+      
+    case .media(_):
       return .none
     }
   }

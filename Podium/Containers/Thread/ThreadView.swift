@@ -11,6 +11,8 @@ import ComposableArchitecture
 struct ThreadView: View {
   let store: Store<ThreadState, ThreadAction>
   
+  @State private var isMenuOpen: Bool = false
+  
   var body: some View {
     WithViewStore(store) { viewStore in
       VStack {
@@ -70,10 +72,34 @@ struct ThreadView: View {
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
         ToolbarItem(placement: .navigationBarTrailing) {
-          Image("more")
-            .resizable()
-            .frame(width: 18, height: 18)
-            .scaledToFill()
+          Menu {
+            if viewStore.post.ownerId == viewStore.profile.id {
+              Button("Delete post") {
+                viewStore.send(.deletePost(post: viewStore.post))
+              }
+            }
+            Button("Report post") {
+              
+            }
+          } label: {
+            Image("more")
+              .resizable()
+              .frame(width: 18, height: 18)
+              .scaledToFill()
+          }
+          .onTapGesture {
+            isMenuOpen = true
+          }
+        }
+      }
+      .overlay{
+        if isMenuOpen {
+          Color.white.opacity(0.001)
+            .ignoresSafeArea()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onTapGesture {
+              isMenuOpen = false
+            }
         }
       }
     }

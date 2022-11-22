@@ -18,11 +18,10 @@ struct MediaView: View {
           if let loadedImage = viewStore.loadedImages[fileId] {
             Image(uiImage: UIImage(data: loadedImage)!)
               .resizable()
-              .scaledToFill()
-              .padding()
+              .scaledToFit()
+              .ignoresSafeArea()
           } else {
-            RoundedRectangle(cornerRadius: 15)
-              .foregroundColor(Color("ColorLightBackground"))
+            ProgressView()
               .onAppear {
                 viewStore.send(.loadImage(
                   fileId: fileId
@@ -32,6 +31,8 @@ struct MediaView: View {
         }
       }
       .tabViewStyle(.page)
+      .padding()
+      .ignoresSafeArea()
       .background(Color("ColorBackground"))
     }
   }

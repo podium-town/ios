@@ -13,8 +13,12 @@ enum ProfileAction {
   case didGetPosts(TaskResult<[PostModel]>)
   case presentPicker(isPresented: Bool)
   case presentSettings(isPresented: Bool)
+  case presentThread(isPresented: Bool, post: PostModel?)
+  case presentMedia(isPresented: Bool, post: PostModel?)
   case changeAvatar(UIImage)
   
   // View Actions
   case settings(SettingsAction)
+  case thread(ThreadAction)
+  case media(MediaAction)
 }

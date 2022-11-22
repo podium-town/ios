@@ -28,11 +28,11 @@ struct TabsView: View {
           state: \.exploreState,
           action: TabsAction.explore
         ))
-          .tabItem {
-            Image("search")
-              .resizable()
-              .frame(width: 26, height: 26, alignment: .center)
-          }
+        .tabItem {
+          Image("search")
+            .resizable()
+            .frame(width: 26, height: 26, alignment: .center)
+        }
         
         Text("⌛ Coming soon...")
           .fontWeight(.medium)
@@ -49,11 +49,11 @@ struct TabsView: View {
             action: TabsAction.profile
           ))
         }
-          .tabItem {
-            Image("profile")
-              .resizable()
-              .frame(width: 26, height: 26, alignment: .center)
-          }
+        .tabItem {
+          Image("profile")
+            .resizable()
+            .frame(width: 26, height: 26, alignment: .center)
+        }
       }
       .tabViewStyle(
         backgroundColor: Color("ColorBackground")

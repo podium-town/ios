@@ -11,9 +11,13 @@ struct ProfileState: Equatable {
   var isPickerPresented = false
   var isLoadingRefreshable = false
   var isSettingsPresented = false
+  var isThreadPresented = false
+  var isMediaPresented = false
   var isEmpty = false
   var isSelf = false
   
   // View States
   var settingsState: SettingsState?
+  var threadState: ThreadState?
+  var mediaState: MediaState?
 }

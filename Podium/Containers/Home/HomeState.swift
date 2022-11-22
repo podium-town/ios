@@ -23,7 +23,7 @@ struct HomeState: Equatable {
   // View States
   var add: AddState?
   var stories: StoriesState?
-  var thread: ThreadState?
+  var threadState: ThreadState?
   var profileState: ProfileState?
   var mediaState: MediaState?
 }

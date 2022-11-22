@@ -10,8 +10,9 @@ import UIKit
 
 enum AddAction {
   case addPost
+  case addedPost(PostModel)
   case didAddPost(TaskResult<PostModel>)
-  case didUploadMedia(TaskResult<[String]>)
+  case didUploadMedia(TaskResult<PostModel>)
   case textChanged(String)
   case presentPicker(isPresented: Bool)
   case addImage(UIImage)

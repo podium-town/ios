@@ -21,7 +21,7 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     environment: { $0 }
   ),
   threadReducer.optional().pullback(
-    state: \.thread,
+    state: \.threadState,
     action: /HomeAction.thread,
     environment: { $0 }
   ),
@@ -45,11 +45,11 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       state.stories = StoriesState()
       return .none
       
-    case .deletePost(let id):
+    case .deletePost(let post):
       return .task {
         await .didDeletePost(TaskResult {
           try await API.deletePost(
-            id: id
+            post: post
           )
         })
       }
@@ -129,8 +129,8 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       
     case .presentThread(let isPresented, let post):
       state.isThreadPresented = isPresented
-      if isPresented {
-        state.thread = ThreadState(
+      if isPresented, let post = post {
+        state.threadState = ThreadState(
           profile: state.profile,
           post: post
         )
@@ -142,10 +142,30 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       
     case .add(.addPost):
       state.isAddPresented = false
-      return Effect(value: .getPosts)
+      return .none
       
-    case .add(.didAddPost(.success(let post))):
-      state.posts.append(post)
+    case .add(.addedPost(let post)):
+      var mut = post
+      mut.isLoading = true
+      state.posts.insert(mut, at: 0)
+      return .none
+      
+    case .add(.didAddPost(.success(let added))):
+      state.posts = state.posts.map { post in
+        if post.id == added.id {
+          var mut = post
+          mut.isLoading = false
+          mut.images = added.images
+          return mut
+        }
+        return post
+      }
+      if let encodedPosts = try? JSONEncoder().encode(state.posts) {
+        environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
+      }
+      return .none
+      
+    case .add(.didAddPost(.failure(let error))):
       return Effect(value: .getPosts)
       
     case .add(.dismiss):
@@ -159,6 +179,11 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       return .none
       
     case .media(_):
+      return .none
+      
+    case .thread(.deletePost(let post)):
+      state.isThreadPresented = false
+      state.posts = state.posts.filter({ $0.id != post.id })
       return .none
       
     case .thread(_):

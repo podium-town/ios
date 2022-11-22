@@ -16,7 +16,7 @@ enum HomeAction {
   case presentMedia(isPresented: Bool, post: PostModel?)
   case getPosts
   case didGetPosts(TaskResult<[PostModel]>)
-  case deletePost(id: String)
+  case deletePost(post: PostModel)
   case didDeletePost(TaskResult<String>)
   case dismissBanner
   

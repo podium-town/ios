@@ -56,6 +56,7 @@
 		828E351A291C55540089AD1A /* AddAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828E3519291C55540089AD1A /* AddAction.swift */; };
 		828E351C291C55640089AD1A /* AddReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828E351B291C55640089AD1A /* AddReducer.swift */; };
 		828E351E291C55780089AD1A /* AddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828E351D291C55780089AD1A /* AddView.swift */; };
+		82954746292C28AA006600F3 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82954745292C28AA006600F3 /* String+Extensions.swift */; };
 		82BBC979291ABAFF008DB479 /* ThreadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BBC978291ABAFF008DB479 /* ThreadState.swift */; };
 		82BBC97B291ABB11008DB479 /* ThreadAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BBC97A291ABB11008DB479 /* ThreadAction.swift */; };
 		82BBC97D291ABB21008DB479 /* ThreadReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BBC97C291ABB21008DB479 /* ThreadReducer.swift */; };
@@ -136,6 +137,7 @@
 		828E3519291C55540089AD1A /* AddAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAction.swift; sourceTree = "<group>"; };
 		828E351B291C55640089AD1A /* AddReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReducer.swift; sourceTree = "<group>"; };
 		828E351D291C55780089AD1A /* AddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddView.swift; sourceTree = "<group>"; };
+		82954745292C28AA006600F3 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
 		82BBC978291ABAFF008DB479 /* ThreadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadState.swift; sourceTree = "<group>"; };
 		82BBC97A291ABB11008DB479 /* ThreadAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadAction.swift; sourceTree = "<group>"; };
 		82BBC97C291ABB21008DB479 /* ThreadReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadReducer.swift; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 				828E3514291C53870089AD1A /* Date+Extensions.swift */,
 				82793775291C5DEC00FD5148 /* ViewStore+Extensions.swift */,
 				82F2AE5E29244D1C00A4524E /* UIImage+Extensions.swift */,
+				82954745292C28AA006600F3 /* String+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -622,6 +625,7 @@
 				82259219291AA05200D17E30 /* HomeView.swift in Sources */,
 				822591FA291A9B9F00D17E30 /* AppState.swift in Sources */,
 				82BBC98D291AC9A2008DB479 /* AppError.swift in Sources */,
+				82954746292C28AA006600F3 /* String+Extensions.swift in Sources */,
 				827C9CAF292A4DC6008599A2 /* CustomTextField.swift in Sources */,
 				82793785291D64E300FD5148 /* PhoneNumberTextField.swift in Sources */,
 				8225922B291AAC5900D17E30 /* LoginReducer.swift in Sources */,
@@ -768,7 +772,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -805,7 +809,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 12;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;

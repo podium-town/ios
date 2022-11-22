@@ -10,7 +10,9 @@ import ComposableArchitecture
 enum ThreadAction {
   case textChanged(String)
   case send
+  case sended(PostModel)
   case didSend(TaskResult<PostModel>)
   case getComments
   case didGetComments(TaskResult<[PostModel]>)
+  case deletePost(post: PostModel)
 }

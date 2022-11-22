@@ -12,9 +12,9 @@ struct HomeView: View {
   let store: Store<HomeState, HomeAction>
   
   var body: some View {
-    WithViewStore(store) { viewStore in
-      NavigationView {
-        ZStack {
+    NavigationView {
+      ZStack {
+        WithViewStore(store) { viewStore in
           VStack(spacing: 0) {
             if viewStore.isEmpty {
               VStack {
@@ -36,7 +36,7 @@ struct HomeView: View {
                     Post(
                       post: post,
                       onDelete: { post in
-                        viewStore.send(.deletePost(id: post.id))
+                        viewStore.send(.deletePost(post: post))
                       },
                       onProfile: { profile in
                         viewStore.send(.presentProfile(
@@ -157,53 +157,55 @@ struct HomeView: View {
               viewStore.send(.initialize)
 #endif
             }
-          
-          WithViewStore(store.scope(state: \.isThreadPresented)) { viewStore in
-            NavigationLink(
-              destination: IfLetStore(
-                store.scope(
-                  state: \.thread,
-                  action: HomeAction.thread
-                ),
-                then: { store in
-                  ThreadView(store: store)
-                }
+            .banner(data: viewStore.binding(
+              get: \.bannerData,
+              send: HomeAction.dismissBanner
+            ))
+        }
+        
+        WithViewStore(store.scope(state: \.isThreadPresented)) { viewStore in
+          NavigationLink(
+            destination: IfLetStore(
+              store.scope(
+                state: \.threadState,
+                action: HomeAction.thread
               ),
-              isActive: viewStore.binding(send: .presentThread(
+              then: { store in
+                ThreadView(store: store)
+              }
+            ),
+            isActive: viewStore.binding(
+              send: .presentThread(
                 isPresented: false,
                 post: nil
               )),
-              label: EmptyView.init
-            )
-          }
-          
-          WithViewStore(store.scope(state: \.isProfilePresented)) { viewStore in
-            NavigationLink(
-              destination: IfLetStore(
-                store.scope(
-                  state: \.profileState,
-                  action: HomeAction.profile
-                ),
-                then: { store in
-                  ProfileView(store: store)
-                }
-              ),
-              isActive: viewStore.binding(
-                send: .presentProfile(
-                  isPresented: false,
-                  profile: nil
-                )
-              ),
-              label: EmptyView.init
-            )
-          }
+            label: EmptyView.init
+          )
         }
-        .banner(data: viewStore.binding(
-          get: \.bannerData,
-          send: HomeAction.dismissBanner
-        ))
+        
+        WithViewStore(store.scope(state: \.isProfilePresented)) { viewStore in
+          NavigationLink(
+            destination: IfLetStore(
+              store.scope(
+                state: \.profileState,
+                action: HomeAction.profile
+              ),
+              then: { store in
+                ProfileView(store: store)
+              }
+            ),
+            isActive: viewStore.binding(
+              send: .presentProfile(
+                isPresented: false,
+                profile: nil
+              )
+            ),
+            label: EmptyView.init
+          )
+        }
       }
     }
+    .navigationViewStyle(StackNavigationViewStyle())
   }
 }
 

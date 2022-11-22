@@ -11,23 +11,27 @@ import UIKit
 struct Mocks {
   static var post = PostModel(
     id: "123",
-    text: "You are viewing the README and repositories as a public user. You are viewing the README and repositories as a public user.",
+    text: "You are viewing the #README and repositories as a public user. You are viewing the README and repositories as a public #user.",
     ownerId: "456",
     createdAt: 123,
-    images: ["ID1", "id2", "od3"]
+    images: ["ID1", "id2", "od3"],
+    profile: Mocks.profile,
+    isLoading: true
   )
   static var postSimple = PostModel(
     id: "123",
     text: "You are viewing the README and repositories as a public user. You are viewing the README and repositories as a public user.",
     ownerId: "456",
-    createdAt: 123
+    createdAt: 123,
+    profile: Mocks.profile
   )
   static var comment = PostModel(
     id: "1123",
     text: "I'm a test comment.",
     ownerId: "456",
     createdAt: 123,
-    postId: "123"
+    postId: "123",
+    profile: Mocks.profile
   )
   static var profile = ProfileModel(
     id: "456",

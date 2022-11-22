@@ -28,111 +28,44 @@ struct ExploreView: View {
                 .background(Color("ColorBackground"))
               ) {
                 VStack(alignment: .leading) {
-                  HStack {
-                    VStack {
-                      HStack {
-                        Spacer()
-                        Text("Peding")
-                        Spacer()
-                      }
-                    }
+                  RoundedRectangle(cornerRadius: 15)
                     .frame(height: 120)
-                    .background(
-                      RoundedRectangle(cornerRadius: 13)
-                        .foregroundColor(Color("ColorLightAccent"))
-                    )
-                    
-                    Spacer()
-                    
-                    VStack {
-                      HStack {
-                        Spacer()
-                        Text("Peding")
-                        Spacer()
+                    .overlay(
+                      ZStack {
+                        Image("welcome")
+                          .resizable()
+                          .scaledToFill()
+                          .frame(height: 120)
+                          .clipShape(RoundedRectangle(cornerRadius: 15))
+                        
+                        Text("#welcome")
+                          .fontWeight(.semibold)
+                          
+                        VStack {
+                          Spacer()
+                          HStack {
+                            Spacer()
+                            Text("@jach")
+                              .fontWeight(.medium)
+                              .padding(10)
+                          }
+                        }
                       }
-                    }
-                    .frame(height: 120)
-                    .background(
-                      RoundedRectangle(cornerRadius: 13)
-                        .foregroundColor(Color("ColorLightAccent"))
                     )
-                    
-                    Spacer()
-                    
-                    VStack {
-                      HStack {
-                        Spacer()
-                        Text("Peding")
-                        Spacer()
-                      }
-                    }
-                    .frame(height: 120)
-                    .background(
-                      RoundedRectangle(cornerRadius: 13)
-                        .foregroundColor(Color("ColorLightAccent"))
-                    )
-                  }
                   
-                  Text("🌎 Global")
+                  Text("🌎 Trends")
                     .fontWeight(.semibold)
                     .padding(.top, 18)
                   
                   ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                      Text("asdsada")
+                      Text("#elon")
+                        .fontWeight(.medium)
                         .padding(.horizontal)
                         .padding(.vertical, 10)
                         .background(
                           RoundedRectangle(cornerRadius: 24)
-                            .foregroundColor(.gray)
-                        )
-                      
-                      Text("asdsada")
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                        .background(
-                          RoundedRectangle(cornerRadius: 24)
-                            .foregroundColor(.gray)
-                        )
-                      
-                      Text("asdsada")
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                        .background(
-                          RoundedRectangle(cornerRadius: 24)
-                            .foregroundColor(.gray)
-                        )
-                      
-                      Text("asdsada")
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                        .background(
-                          RoundedRectangle(cornerRadius: 24)
-                            .foregroundColor(.gray)
-                        )
-                      
-                      Text("asdsada")
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                        .background(
-                          RoundedRectangle(cornerRadius: 24)
-                            .foregroundColor(.gray)
-                        )
-                      
-                      Text("asdsada")
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                        .background(
-                          RoundedRectangle(cornerRadius: 24)
-                            .foregroundColor(.gray)
-                        )
-                      
-                      Text("asdsada")
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                        .background(
-                          RoundedRectangle(cornerRadius: 24)
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color("ColorLightBackground"))
                         )
                     }
                   }

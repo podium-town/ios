@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import Combine
+import Foundation
 
 let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
@@ -16,26 +17,46 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       state.isSendDisabled = state.text.count < 3
       return .none
       
-    case .send:
-      state.isSendDisabled = true
-      let text = state.text
-      state.text = ""
-      if let postId = state.post?.id {
-        let ownerId = state.profile.id
-        return .task {
-          await .didSend(TaskResult {
-            try await API.addComment(
-              text: text,
-              ownerId: ownerId,
-              postId: postId
-            )
-          })
-        }
-      } else {
-        return .none
+    case .deletePost(let post):
+      return .fireAndForget {
+        try await API.deletePost(post: post)
       }
       
-    case .didSend(.success(let post)):
+    case .send:
+      state.isSendDisabled = true
+      let comment = PostModel(
+        id: UUID().uuidString,
+        text: state.text,
+        ownerId: state.profile.id,
+        createdAt: Date().millisecondsSince1970 / 1000,
+        images: [],
+        profile: state.profile,
+        isLoading: true
+      )
+      state.text = ""
+      state.comments.insert(comment, at: 0)
+      return Effect(value: .sended(comment))
+      
+    case .sended(let comment):
+      let postId = state.post.id
+      return .task {
+        await .didSend(TaskResult {
+          try await API.addComment(
+            comment: comment,
+            postId: postId
+          )
+        })
+      }
+      
+    case .didSend(.success(let added)):
+      state.comments = state.comments.map { comment in
+        if comment.id == added.id {
+          var mut = comment
+          mut.isLoading = false
+          return mut
+        }
+        return comment
+      }
       return .none
       
     case .didSend(.failure(let error)):
@@ -43,17 +64,14 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       
     case .getComments:
       state.isLoading = true
-      if let post = state.post {
-        let postId = post.id
-        return .task {
-          await .didGetComments(TaskResult {
-            try await API.getComments(
-              postId: postId
-            )
-          })
-        }
+      let postId = state.post.id
+      return .task {
+        await .didGetComments(TaskResult {
+          try await API.getComments(
+            postId: postId
+          )
+        })
       }
-      return .none
       
     case .didGetComments(.success(let comments)):
       state.isLoading = false

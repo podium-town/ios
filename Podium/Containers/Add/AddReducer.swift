@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import Foundation
 
 let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
@@ -23,25 +24,32 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
       return .none
       
     case .addPost:
-      state.isSendPending = true
-      let text = state.text
-      let ownerId = state.profile.id
+      let post = PostModel(
+        id: UUID().uuidString,
+        text: state.text,
+        ownerId: state.profile.id,
+        createdAt: Date().millisecondsSince1970 / 1000,
+        images: state.images.map({ _ in return "preview" }),
+        profile: state.profile
+      )
+      return Effect(value: .addedPost(post))
+      
+    case .addedPost(let post):
       if state.images.isEmpty {
         return .task {
           await .didAddPost(TaskResult {
             try await API.addPost(
-              text: text,
-              ownerId: ownerId,
-              images: []
+              post: post
             )
           })
         }
       } else {
+        let ownerId = state.profile.id
         let images = state.images
         return .task {
           await .didUploadMedia(TaskResult {
             try await API.uploadMedia(
-              profileId: ownerId,
+              post: post,
               images: images
             )
           })
@@ -56,15 +64,11 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
       state.isSendPending = false
       return .none
       
-    case .didUploadMedia(.success(let urls)):
-      let text = state.text
-      let ownerId = state.profile.id
+    case .didUploadMedia(.success(let post)):
       return .task {
         await .didAddPost(TaskResult {
           try await API.addPost(
-            text: text,
-            ownerId: ownerId,
-            images: urls
+            post: post
           )
         })
       }

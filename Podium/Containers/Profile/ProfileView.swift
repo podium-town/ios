@@ -14,12 +14,14 @@ struct ProfileView: View {
   @State private var tab = 0
   
   var body: some View {
-    WithViewStore(store) { viewStore in
-      ZStack {
+    ZStack {
+      WithViewStore(store) { viewStore in
         VStack(alignment: .leading, spacing: 0) {
           HStack(spacing: 18) {
             Button {
-              viewStore.send(.presentPicker(isPresented: true))
+              if viewStore.isSelf {
+                viewStore.send(.presentPicker(isPresented: true))
+              }
             } label: {
               Image(uiImage: viewStore.profile.avatarData == nil ? UIImage(named: "avatar")! : UIImage(data: viewStore.profile.avatarData!)!)
                 .resizable()
@@ -83,11 +85,19 @@ struct ProfileView: View {
               List {
                 ForEach(viewStore.posts) { post in
                   Button {
-                    
+                    viewStore.send(.presentThread(
+                      isPresented: true,
+                      post: post
+                    ))
                   } label: {
                     Post(
-                      post: post
-                    )
+                      post: post,
+                      onImage: { post in
+                        viewStore.send(.presentMedia(
+                          isPresented: true,
+                          post: post
+                        ))
+                      })
                   }
                 }
                 .listRowSeparator(.hidden)
@@ -130,27 +140,62 @@ struct ProfileView: View {
             }
           }
         }
-        
-        WithViewStore(store.scope(state: \.isSettingsPresented)) { viewStore in
-          NavigationLink(
-            destination: IfLetStore(
+        .sheet(isPresented: viewStore.binding(
+          get: \.isMediaPresented,
+          send: ProfileAction.presentMedia(
+            isPresented: false,
+            post: nil
+          ))) {
+            IfLetStore(
               store.scope(
-                state: \.settingsState,
-                action: ProfileAction.settings
+                state: \.mediaState,
+                action: ProfileAction.media
               ),
-              then: { store in
-                SettingsView(store: store)
-              }
-            ),
-            isActive: viewStore.binding(
-              send: .presentSettings(isPresented: false)
-            ),
-            label: EmptyView.init
-          )
+              then: MediaView.init(store:)
+            )
+          }
+        .onAppear {
+          viewStore.send(.getPosts)
         }
       }
-      .onAppear {
-        viewStore.send(.getPosts)
+      
+      WithViewStore(store.scope(state: \.isSettingsPresented)) { viewStore in
+        NavigationLink(
+          destination: IfLetStore(
+            store.scope(
+              state: \.settingsState,
+              action: ProfileAction.settings
+            ),
+            then: { store in
+              SettingsView(store: store)
+            }
+          ),
+          isActive: viewStore.binding(
+            send: .presentSettings(isPresented: false)
+          ),
+          label: EmptyView.init
+        )
+      }
+      
+      WithViewStore(store.scope(state: \.isThreadPresented)) { viewStore in
+        NavigationLink(
+          destination: IfLetStore(
+            store.scope(
+              state: \.threadState,
+              action: ProfileAction.thread
+            ),
+            then: { store in
+              ThreadView(store: store)
+            }
+          ),
+          isActive: viewStore.binding(
+            send: .presentThread(
+              isPresented: false,
+              post: nil
+            )
+          ),
+          label: EmptyView.init
+        )
       }
     }
   }

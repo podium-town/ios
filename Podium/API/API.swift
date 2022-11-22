@@ -72,18 +72,21 @@ class API {
     }
   }
   
-  static func uploadMedia(profileId: String, images: [UIImage]) async throws -> [String] {
+  static func uploadMedia(post: PostModel, images: [UIImage]) async throws -> PostModel {
+    var mut = post
     do {
       var urls: [String] = []
       for image in images {
         let fileId = UUID().uuidString
         let storageRef = storage.reference()
+        let profileId = post.ownerId
         let fileRef = storageRef.child("\(profileId)/\(fileId).png")
         _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.7)!)
         let url = try await fileRef.downloadURL()
         urls.append(url.absoluteString)
       }
-      return urls
+      mut.images = urls
+      return mut
     } catch let error {
       throw error
     }
@@ -152,7 +155,7 @@ class API {
     do {
       var posts = try await getPosts(followingIds: ids)
       if !posts.isEmpty {
-        var profiles = try await getProfiles(ids: Array(Set(posts.map({ $0.ownerId }))))
+        let profiles = try await getProfiles(ids: Array(Set(posts.map({ $0.ownerId }))))
         posts = posts.map { post in
           var mut = post
           mut.profile = profiles.first(where: { $0.id == mut.ownerId })
@@ -167,16 +170,8 @@ class API {
     }
   }
   
-  static func addPost(text: String, ownerId: String, images: [String]?) async throws -> PostModel {
+  static func addPost(post: PostModel) async throws -> PostModel {
     do {
-      let post = PostModel(
-        id: UUID().uuidString,
-        text: text,
-        ownerId: ownerId,
-        createdAt: Date().millisecondsSince1970 / 1000,
-        images: images ?? []
-      )
-      
       try await db
         .collection("posts")
         .document(post.id)
@@ -188,42 +183,46 @@ class API {
           "images": post.images
         ], merge: true)
       
+      let matches = post.text.matchingStrings(regex: "#[a-zA-Z]+").compactMap({ $0.first })
+      for hashtag in matches {
+        try await db
+          .collection("hashtags")
+          .document(hashtag)
+          .setData([
+            "hashtag": hashtag,
+            "createdAt": Int(Date().millisecondsSince1970) / 1000,
+            "posts" : FieldValue.arrayUnion([post.id])
+          ], merge: true)
+      }
+      
       return post
     } catch let error {
       throw error
     }
   }
   
-  static func addComment(text: String, ownerId: String, postId: String) async throws -> PostModel {
+  static func addComment(comment: PostModel, postId: String) async throws -> PostModel {
     do {
-      let post = PostModel(
-        id: UUID().uuidString,
-        text: text,
-        ownerId: ownerId,
-        createdAt: Date().millisecondsSince1970 / 1000,
-        images: []
-      )
-      
       try await db
         .collection("comments")
-        .document(post.id)
+        .document(comment.id)
         .setData([
-          "id": post.id,
-          "ownerId": post.ownerId,
+          "id": comment.id,
+          "ownerId": comment.ownerId,
           "postId": postId,
-          "createdAt": post.createdAt,
-          "text": post.text,
-          "images": post.images
+          "createdAt": comment.createdAt,
+          "text": comment.text,
+          "images": comment.images
         ])
       
       try await db
         .collection("posts")
         .document(postId)
         .updateData([
-          "comments": FieldValue.arrayUnion([post.id])
+          "comments": FieldValue.arrayUnion([comment.id])
         ])
       
-      return post
+      return comment
     } catch let error {
       throw error
     }
@@ -349,14 +348,34 @@ class API {
     }
   }
   
-  static func deletePost(id: String) async throws -> String {
+  static func deletePost(post: PostModel) async throws -> String {
     do {
       try await db
         .collection("posts")
-        .document(id)
+        .document(post.id)
         .delete()
       
-      return id
+      let comments = try await db
+        .collection("comments")
+        .whereField("postId", isEqualTo: post.id)
+        .getDocuments()
+        .documents
+      
+      for comment in comments {
+        try await comment.reference.delete()
+      }
+      
+      let matches = post.text.matchingStrings(regex: "#[a-zA-Z]+").compactMap({ $0.first })
+      for hashtag in matches {
+        try await db
+          .collection("hashtags")
+          .document(hashtag)
+          .updateData([
+            "posts": FieldValue.arrayRemove([post.id])
+          ])
+      }
+      
+      return post.id
     } catch let error {
       throw error
     }
