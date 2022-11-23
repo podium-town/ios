@@ -128,6 +128,23 @@ class API {
     }
   }
   
+  static func getProfile(id: String) async throws -> ProfileModel {
+    do {
+      let document = try await db
+        .collection("users")
+        .document(id)
+        .getDocument()
+        
+      if let data = document.data(),
+         let profile = try? ProfileModel(dictionary: data) {
+        return profile
+      }
+      throw AppError.general
+    } catch let error {
+      throw error
+    }
+  }
+  
   static func getPosts(followingIds: [String]) async throws -> [PostModel] {
     do {
       var posts: [PostModel] = []
@@ -168,6 +185,67 @@ class API {
     } catch let error {
       throw error
     }
+  }
+  
+  static func listenPosts(ids: [String], completion: @escaping (_ posts: [PostModel]) -> Void) async throws {
+    let profiles = try await getProfiles(ids: ids)
+    db
+      .collection("posts")
+      .whereField("ownerId", in: ids)
+      .order(by: "createdAt", descending: true)
+      .addSnapshotListener({ querySnapshot, error in
+        var posts: [PostModel] = []
+        if let documents = querySnapshot?.documentChanges {
+          for document in documents {
+            if document.type == .added,
+               var post = try? PostModel(dictionary: document.document.data()) {
+              post.profile = profiles.first(where: { $0.id == post.ownerId })
+              posts.append(post)
+            }
+          }
+          if(!posts.isEmpty) {
+            completion(posts)
+          }
+        }
+      })
+  }
+  
+  static func listenComments(post: PostModel, completion: @escaping (_ comments: [PostModel]) -> Void) async throws {
+    
+    db
+      .collection("comments")
+      .whereField("postId", isEqualTo: post.id)
+      .order(by: "createdAt", descending: true)
+      .addSnapshotListener({ querySnapshot, error in
+        var comments: [PostModel] = []
+        let group = DispatchGroup()
+        if let documents = querySnapshot?.documentChanges {
+          for document in documents {
+            if document.type == .added,
+               var comment = try? PostModel(dictionary: document.document.data()) {
+              group.enter()
+              db
+                .collection("users")
+                .document(post.ownerId)
+                .getDocument { querySnapshot, error in
+                  if let querySnapshot = querySnapshot {
+                    if let data = querySnapshot.data(),
+                       let profile = try? ProfileModel(dictionary: data) {
+                      comment.profile = profile
+                      comments.append(comment)
+                      group.leave()
+                    }
+                  }
+                }
+            }
+          }
+          group.notify(queue: .main) {
+            if !comments.isEmpty {
+              completion(comments)
+            }
+          }
+        }
+      })
   }
   
   static func addPost(post: PostModel) async throws -> PostModel {
@@ -213,13 +291,6 @@ class API {
           "createdAt": comment.createdAt,
           "text": comment.text,
           "images": comment.images
-        ])
-      
-      try await db
-        .collection("posts")
-        .document(postId)
-        .updateData([
-          "comments": FieldValue.arrayUnion([comment.id])
         ])
       
       return comment

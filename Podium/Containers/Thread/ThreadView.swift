@@ -16,19 +16,19 @@ struct ThreadView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       VStack {
-        ScrollView {
-          if let post = viewStore.post {
-            ThreadPost(
-              post: post,
-              onDelete: { post in
-                
-              },
-              onProfile: { profile in
-                
-              }
-            )
-            
-            VStack(spacing: 0) {
+        List {
+          VStack {
+            if let post = viewStore.post {
+              ThreadPost(
+                post: post,
+                onDelete: { post in
+                  
+                },
+                onProfile: { profile in
+                  
+                }
+              )
+              
               if viewStore.isLoading {
                 VStack(alignment: .center) {
                   ProgressView()
@@ -42,7 +42,10 @@ struct ThreadView: View {
               }
             }
           }
+          .listRowSeparator(.hidden)
+          .listRowInsets(EdgeInsets())
         }
+        .listStyle(.plain)
         
         HStack {
           TextField("Comment...", text: viewStore.binding(
@@ -68,6 +71,13 @@ struct ThreadView: View {
       }
       .onAppear {
         viewStore.send(.getComments)
+        Task {
+          do {
+            try await API.listenComments(post: viewStore.post) { comments in
+              viewStore.send(.addComments(comments: comments))
+            }
+          }
+        }
       }
       .navigationBarTitleDisplayMode(.inline)
       .toolbar {
@@ -112,7 +122,10 @@ struct ThreadView_Previews: PreviewProvider {
       initialState: ThreadState(
         profile: Mocks.profile,
         post: Mocks.post,
-        comments: [Mocks.comment, Mocks.comment]
+        comments: [
+          Mocks.comment,
+          Mocks.comment
+        ]
       ),
       reducer: threadReducer,
       environment: AppEnvironment()

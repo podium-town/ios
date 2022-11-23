@@ -10,6 +10,7 @@ import ComposableArchitecture
 enum TabsAction {
   case getPosts
   case didGetPosts(TaskResult<[PostModel]>)
+  case addPosts(posts: [PostModel])
   
   // View Actions
   case home(HomeAction)

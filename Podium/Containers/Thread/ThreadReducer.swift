@@ -17,6 +17,10 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       state.isSendDisabled = state.text.count < 3
       return .none
       
+    case .addComments(let comments):
+      state.comments.insert(contentsOf: comments.filter({ $0.ownerId != state.profile.id }), at: 0)
+      return .none
+      
     case .deletePost(let post):
       return .fireAndForget {
         try await API.deletePost(post: post)

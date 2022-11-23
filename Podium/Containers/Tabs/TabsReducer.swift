@@ -32,6 +32,10 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
   ),
   Reducer { state, action, environment in
     switch action {
+    case .addPosts(let posts):
+      state.homeState.posts.insert(contentsOf: posts.filter({ $0.ownerId != state.profile.id }), at: 0)
+      return .none
+      
     case .getPosts:
       if let posts = environment.localStorage.data(forKey: StorageKey.posts.rawValue),
          let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts) {

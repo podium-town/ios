@@ -15,4 +15,5 @@ enum ThreadAction {
   case getComments
   case didGetComments(TaskResult<[PostModel]>)
   case deletePost(post: PostModel)
+  case addComments(comments: [PostModel])
 }

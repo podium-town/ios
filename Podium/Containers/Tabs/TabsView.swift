@@ -60,6 +60,13 @@ struct TabsView: View {
       )
       .onAppear {
         viewStore.send(.getPosts)
+        Task {
+          do {
+            try await API.listenPosts(ids: viewStore.profile.following) { posts in
+              viewStore.send(.addPosts(posts: posts))
+            }
+          }
+        }
       }
     }
   }
