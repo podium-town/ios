@@ -13,8 +13,10 @@ enum PostVariant {
 }
 
 struct Post: View {
+  var isSelf: Bool
   var post: PostModel
   var onDelete: (_ post: PostModel) -> Void
+  var onReport: (_ post: PostModel) -> Void
   var onProfile: (_ profile: ProfileModel) -> Void
   var onImage: (_ post: PostModel) -> Void
   var onMenuTap: () -> Void
@@ -65,12 +67,14 @@ struct Post: View {
                 Spacer()
                 
                 Menu {
+                  if isSelf {
                     Button("Delete post") {
                       onDelete(post)
                     }
+                  }
                   
                   Button("Report post") {
-                    
+                    onReport(post)
                   }
                 } label: {
                   Image("more")
@@ -108,7 +112,7 @@ struct Post: View {
                           Image(uiImage: UIImage(data: loadedImage)!)
                             .resizable()
                             .scaledToFill()
-                            .frame(height: 160)
+                            .frame(maxHeight: 260)
                             .clipShape(RoundedRectangle(cornerRadius: 15))
                             .allowsHitTesting(false)
                         }
@@ -155,15 +159,19 @@ struct Post_Previews: PreviewProvider {
   static var previews: some View {
     VStack(spacing: 0) {
       Post(
+        isSelf: false,
         post: Mocks.postSimple,
         onDelete: { _ in },
+        onReport: { _ in },
         onProfile: { _ in },
         onImage: { _ in },
         onMenuTap: {}
       )
       Post(
+        isSelf: false,
         post: Mocks.post,
         onDelete: { _ in },
+        onReport: { _ in },
         onProfile: { _ in },
         onImage: { _ in },
         onMenuTap: {}

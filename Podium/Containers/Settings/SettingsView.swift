@@ -24,7 +24,19 @@ struct SettingsView: View {
           Spacer()
         }) {
           Button {
-            
+
+          } label: {
+            HStack {
+              Text("Username")
+              
+              Spacer()
+              
+              Text("@\(viewStore.profile.username ?? "")")
+                .fontWeight(.semibold)
+            }
+          }
+          Button {
+            viewStore.send(.logout)
           } label: {
             Text("Logout")
               .foregroundColor(.red)

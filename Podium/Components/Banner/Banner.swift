@@ -22,7 +22,7 @@ enum BannerType {
   var tintColor: Color {
     switch self {
     case .info:
-      return Color(red: 67/255, green: 154/255, blue: 215/255)
+      return Color.accentColor
     case .success:
       return Color.green
     case .warning:

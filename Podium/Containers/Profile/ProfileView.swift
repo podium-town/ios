@@ -58,77 +58,63 @@ struct ProfileView: View {
                     .foregroundColor(Color("ColorText"))
                 }
               } else {
-                if viewStore.fromProfile.following.contains(viewStore.profile.id) {
-                  Button {
+                Button {
+                  if viewStore.fromProfile.following.contains(viewStore.profile.id) {
                     viewStore.send(.unfollow)
-                  } label: {
-                    Text("Unfollow")
-                      .fontWeight(.semibold)
-                      .foregroundColor(Color("ColorTextInverted"))
-                      .padding(.vertical, 8)
-                      .padding(.horizontal, 12)
-                      .background(
-                        RoundedRectangle(cornerRadius: 23)
-                      )
-                  }
-                  .disabled(viewStore.isPendingFollowing)
-                  .opacity(viewStore.isPendingFollowing ? 0.5 : 1)
-                } else {
-                  Button {
+                  } else {
                     viewStore.send(.follow)
-                  } label: {
-                    Text("Follow")
-                      .fontWeight(.semibold)
-                      .foregroundColor(Color("ColorTextInverted"))
-                      .padding(.vertical, 8)
-                      .padding(.horizontal, 12)
-                      .background(
-                        RoundedRectangle(cornerRadius: 23)
-                      )
                   }
-                  .disabled(viewStore.isPendingFollowing)
-                  .opacity(viewStore.isPendingFollowing ? 0.5 : 1)
+                } label: {
+                  Text(viewStore.fromProfile.following.contains(viewStore.profile.id) ? "Unfollow" : "Follow")
+                    .fontWeight(.semibold)
+                    .foregroundColor(Color("ColorTextInverted"))
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 12)
+                    .background(
+                      RoundedRectangle(cornerRadius: 23)
+                    )
                 }
+                .disabled(viewStore.isPendingFollowing)
+                .opacity(viewStore.isPendingFollowing ? 0.5 : 1)
               }
             }
           }
           .padding(24)
           
-          Picker("Filter entries", selection: $tab) {
-            Text("Latest").tag(0)
-            Text("Media").tag(1)
-          }
-          .pickerStyle(.segmented)
-          .padding()
-          .padding(.bottom, 0)
-          
-          if viewStore.isEmpty {
-            VStack {
-              Spacer()
-              HStack {
+          VStack {
+            Picker("Filter entries", selection: $tab) {
+              Text("Latest").tag(0)
+              Text("Media").tag(1)
+            }
+            .pickerStyle(.segmented)
+            .padding()
+            .padding(.bottom, 0)
+            
+            if viewStore.isEmpty {
+              VStack {
                 Spacer()
-                Text("No posts.")
-                  .fontWeight(.medium)
-                  .padding()
+                HStack {
+                  Spacer()
+                  Text("No posts.")
+                    .fontWeight(.medium)
+                    .padding()
+                  Spacer()
+                }
                 Spacer()
               }
-              Spacer()
-            }
-          } else if viewStore.isLoading {
-            VStack {
-              Spacer()
-              HStack {
+            } else if viewStore.isLoading {
+              VStack {
                 Spacer()
-                ProgressView()
+                HStack {
+                  Spacer()
+                  ProgressView()
+                  Spacer()
+                }
                 Spacer()
               }
-              Spacer()
-            }
-          } else {
-            switch tab {
-            case 0:
+            } else {
               List {
-                ForEach(viewStore.posts) { post in
+                ForEach(filterData(posts: viewStore.posts)) { post in
                   Button {
                     viewStore.send(.presentThread(
                       isPresented: true,
@@ -136,9 +122,13 @@ struct ProfileView: View {
                     ))
                   } label: {
                     Post(
+                      isSelf: viewStore.fromProfile.id == post.ownerId,
                       post: post,
                       onDelete: { post in
                         viewStore.send(.deletePost(post: post))
+                      },
+                      onReport: { post in
+                        viewStore.send(.reportPost(post: post))
                       },
                       onProfile: { profile in
                         
@@ -166,47 +156,6 @@ struct ProfileView: View {
                 await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
 #endif
               }
-              
-            case 1:
-              List {
-                ForEach(viewStore.posts.filter({ !$0.images.isEmpty })) { post in
-                  Button {
-                    
-                  } label: {
-                    Post(
-                      post: post,
-                      onDelete: { post in
-                        viewStore.send(.deletePost(post: post))
-                      },
-                      onProfile: { profile in
-                        
-                      },
-                      onImage: { post in
-                        viewStore.send(.presentMedia(
-                          isPresented: true,
-                          post: post
-                        ))
-                      },
-                      onMenuTap: {
-                        viewStore.send(.onMenuOpen)
-                      }
-                    )
-                  }
-                }
-                .listRowSeparator(.hidden)
-                .listRowInsets(EdgeInsets())
-              }
-              .listStyle(.plain)
-              .refreshable {
-#if targetEnvironment(simulator)
-                
-#else
-                await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
-#endif
-              }
-              
-            default:
-              Text("No data")
             }
           }
         }
@@ -228,7 +177,12 @@ struct ProfileView: View {
           viewStore.send(.getPosts)
         }
         .padding(.bottom, 18)
+        .banner(data: viewStore.binding(
+          get: \.bannerData,
+          send: ProfileAction.dismissBanner
+        ))
       }
+      .navigationBarTitleDisplayMode(.inline)
       .navigationTitle("Profile")
       
       WithViewStore(store.scope(state: \.isSettingsPresented)) { viewStore in
@@ -269,6 +223,19 @@ struct ProfileView: View {
           label: EmptyView.init
         )
       }
+    }
+  }
+  
+  func filterData(posts: [PostModel]) -> [PostModel] {
+    switch tab {
+    case 0:
+      return posts
+      
+    case 1:
+      return posts.filter({ !$0.images.isEmpty })
+      
+    default:
+      return []
     }
   }
 }

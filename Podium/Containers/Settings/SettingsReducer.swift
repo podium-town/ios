@@ -11,8 +11,7 @@ import CoreFoundation
 let settingsReducer = Reducer<SettingsState, SettingsAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
     switch action {
-    
-    default:
+    case .logout:
       return .none
     }
   }

@@ -64,7 +64,7 @@ struct ThreadPost: View {
                     Image(uiImage: UIImage(data: loadedImage)!)
                       .resizable()
                       .scaledToFill()
-                      .frame(height: 160)
+                      .frame(maxHeight: 260)
                       .clipShape(RoundedRectangle(cornerRadius: 15))
                       .allowsHitTesting(false)
                   }

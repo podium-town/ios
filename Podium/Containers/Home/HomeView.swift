@@ -34,9 +34,13 @@ struct HomeView: View {
                     ))
                   } label: {
                     Post(
+                      isSelf: viewStore.profile.id == post.ownerId,
                       post: post,
                       onDelete: { post in
                         viewStore.send(.deletePost(post: post))
+                      },
+                      onReport: { post in
+                        viewStore.send(.reportPost(post: post))
                       },
                       onProfile: { profile in
                         viewStore.send(.presentProfile(
@@ -77,7 +81,7 @@ struct HomeView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                   HStack {
                     Button {
-                      
+                      viewStore.send(.presentStories(isPresented: true))
                     } label: {
                       StoryAvatar(
                         profile: viewStore.profile,
@@ -134,6 +138,7 @@ struct HomeView: View {
             }
           }
           .navigationBarTitleDisplayMode(.inline)
+          .navigationBarHidden(true)
           .sheet(isPresented: viewStore.binding(
             get: \.isMediaPresented,
             send: HomeAction.presentMedia(
@@ -147,11 +152,6 @@ struct HomeView: View {
                 ),
                 then: MediaView.init(store:)
               )
-            }
-            .toolbar {
-              ToolbarItem(placement: .navigationBarLeading) {
-                Text("")
-              }
             }
             .onAppear {
 #if targetEnvironment(simulator)
@@ -207,6 +207,7 @@ struct HomeView: View {
           )
         }
       }
+      .padding(.top, 1)
     }
     .navigationViewStyle(StackNavigationViewStyle())
   }

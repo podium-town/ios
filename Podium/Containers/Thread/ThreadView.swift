@@ -42,9 +42,13 @@ struct ThreadView: View {
               } else {
                 ForEach(viewStore.comments) { comment in
                   Post(
+                    isSelf: viewStore.profile.id == comment.ownerId,
                     post: comment,
                     onDelete: { comment in
                       viewStore.send(.deleteComment(comment: comment))
+                    },
+                    onReport: { comment in
+                      viewStore.send(.reportComment(comment: comment))
                     },
                     onProfile: { profile in
                       
@@ -66,7 +70,7 @@ struct ThreadView: View {
         }
         
         HStack {
-          TextField("Comment...", text: viewStore.binding(
+          TextField("Reply...", text: viewStore.binding(
             get: \.text,
             send: ThreadAction.textChanged
           ))
@@ -107,7 +111,7 @@ struct ThreadView: View {
               }
             }
             Button("Report post") {
-              
+              viewStore.send(.reportPost(post: viewStore.post))
             }
           } label: {
             Image("more")

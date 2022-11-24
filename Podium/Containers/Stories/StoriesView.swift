@@ -13,17 +13,57 @@ struct StoriesView: View {
   
   var body: some View {
     WithViewStore(store) { viewStore in
-      VStack {
-        Spacer()
-        HStack {
+      ZStack {
+        Color.black
+          .overlay(
+            Image("welcome")
+              .resizable()
+              .scaledToFill()
+          )
+          .edgesIgnoringSafeArea(.all)
+        
+        VStack {
+          HStack {
+            ForEach(1..<4) { story in
+              RoundedRectangle(cornerRadius: 15)
+                .frame(height: 4)
+                .opacity(0.5)
+            }
+          }
+          
+          HStack {
+            Image("welcome")
+              .resizable()
+              .scaledToFill()
+              .frame(width: 32, height: 32)
+              .clipShape(Circle())
+            
+            Text("fomtord")
+              .fontWeight(.semibold)
+            
+            Spacer()
+            
+            Text("5h")
+          }
+          
           Spacer()
-          Text("Hmm")
-          Spacer()
+          
+          HStack {
+            Spacer()
+            Button {
+              
+            } label: {
+              Image("heart")
+                .resizable()
+                .frame(width: 24, height: 24)
+            }
+            .padding(.horizontal)
+          }
         }
-        Spacer()
+        .padding()
+        .foregroundColor(.white)
       }
       .background(Color.black)
-      .edgesIgnoringSafeArea(.all)
     }
   }
 }

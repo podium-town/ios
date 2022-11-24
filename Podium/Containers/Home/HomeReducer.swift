@@ -58,9 +58,46 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       }
       
     case .didDeletePost(.success(let id)):
+      state.bannerData = BannerData(
+        title: "Delete",
+        detail: "Your post has been deleted.",
+        type: .info
+      )
       return Effect(value: .getPosts)
       
     case .didDeletePost(.failure(let error)):
+      state.bannerData = BannerData(
+        title: "Delete",
+        detail: "Error while deleting post.",
+        type: .error
+      )
+      return Effect(value: .getPosts)
+      
+    case .reportPost(let post):
+      let reporterId = state.profile.id
+      return .task {
+        await .didReportPost(TaskResult {
+          try await API.reportPost(
+            reporterId: reporterId,
+            post: post
+          )
+        })
+      }
+      
+    case .didReportPost(.success(let id)):
+      state.bannerData = BannerData(
+        title: "Report",
+        detail: "Your report has been sent.",
+        type: .info
+      )
+      return .none
+      
+    case .didReportPost(.failure(let error)):
+      state.bannerData = BannerData(
+        title: "Report",
+        detail: "Error while reporting post.",
+        type: .error
+      )
       return .none
       
     case .getPosts:

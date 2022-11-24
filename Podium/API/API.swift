@@ -280,9 +280,7 @@ class API {
             }
           }
           group.notify(queue: .main) {
-            if !comments.isEmpty {
-              completion(comments)
-            }
+            completion(comments)
           }
         }
       })
@@ -487,6 +485,34 @@ class API {
       }
       
       return post.id
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func reportPost(reporterId: String, post: PostModel) async throws -> String {
+    do {
+      try await db
+        .collection("reports")
+        .document(post.id)
+        .setData([
+          "reporters": FieldValue.arrayUnion([reporterId])
+        ], merge: true)
+      return post.id
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func reportComment(reporterId: String, comment: PostModel) async throws -> String {
+    do {
+      try await db
+        .collection("reports")
+        .document(comment.id)
+        .setData([
+          "reporters": FieldValue.arrayUnion([reporterId])
+        ], merge: true)
+      return comment.id
     } catch let error {
       throw error
     }

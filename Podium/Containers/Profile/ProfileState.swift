@@ -17,6 +17,7 @@ struct ProfileState: Equatable {
   var isEmpty = false
   var isLoading = false
   var isPendingFollowing = false
+  var bannerData: BannerData?
   
   // View States
   var settingsState: SettingsState?

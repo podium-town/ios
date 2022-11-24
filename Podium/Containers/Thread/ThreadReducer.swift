@@ -107,6 +107,36 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       
     case .media(_):
       return .none
+      
+    case .reportPost(post: let post):
+      let reporterId = state.profile.id
+      return .fireAndForget {
+        try await API.reportPost(
+          reporterId: reporterId,
+          post: post
+        )
+      }
+      
+    case .didReportPost(.success(let post)):
+      return .none
+      
+    case .didReportPost(.failure(let error)):
+      return .none
+      
+    case .reportComment(let comment):
+      let reporterId = state.profile.id
+      return .fireAndForget {
+        try await API.reportComment(
+          reporterId: reporterId,
+          comment: comment
+        )
+      }
+      
+    case .didReportComment(.success(let comment)):
+      return .none
+      
+    case .didReportComment(.failure(let comment)):
+      return .none
     }
   }
 )

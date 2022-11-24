@@ -19,10 +19,13 @@ enum ProfileAction {
   case onMenuOpen
   case deletePost(post: PostModel)
   case didDeletePost(TaskResult<String>)
+  case reportPost(post: PostModel)
+  case didReportPost(TaskResult<String>)
   case follow
   case didFollow(TaskResult<(ProfileModel, String)>)
   case unfollow
   case didUnfollow(TaskResult<(ProfileModel, String)>)
+  case dismissBanner
   
   // View Actions
   case settings(SettingsAction)

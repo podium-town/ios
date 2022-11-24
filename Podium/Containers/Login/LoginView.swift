@@ -43,6 +43,7 @@ struct LoginView: View {
             }
             
             Button {
+              self.endTextEditing()
               viewStore.send(.signIn)
             } label: {
               HStack {
@@ -74,6 +75,8 @@ struct LoginView: View {
               .flagHidden(false)
               .prefixHidden(false)
               .flagSelectable(true)
+              .foregroundColor(Color("ColorTextInverted"))
+              .accentColor(Color("ColorTextInverted"))
               .padding()
               .background(
                 RoundedRectangle(cornerRadius: 16)
@@ -92,11 +95,9 @@ struct LoginView: View {
                   )
               )
             }
-            .onAppear {
-              self.endTextEditing()
-            }
             
             Button {
+              self.endTextEditing()
               viewStore.send(.verifyPhone)
             } label: {
               HStack {
@@ -124,6 +125,7 @@ struct LoginView: View {
               ))
               
               Button {
+                self.endTextEditing()
                 viewStore.send(.setUsername)
               } label: {
                 HStack {
@@ -137,7 +139,8 @@ struct LoginView: View {
                   Spacer()
                 }
               }
-              .disabled(viewStore.isVerificationPending)
+              .opacity(viewStore.isVerificationPending || !viewStore.isUsernameValidated ? 0.5 : 1)
+              .disabled(viewStore.isVerificationPending || !viewStore.isUsernameValidated)
               .buttonStyle(PodiumButton())
             }
           }
@@ -148,17 +151,15 @@ struct LoginView: View {
           Text("By signing in you accept Terms of Service and Privacy Policy.")
             .foregroundColor(.gray)
             .font(.caption)
-          
-          Spacer()
         }
+        .banner(data: viewStore.binding(
+          get: \.bannerData,
+          send: LoginAction.dismissBanner
+        ))
         .padding()
         .padding(.top, 220)
         .foregroundColor(.white)
       }
-      .banner(data: viewStore.binding(
-        get: \.bannerData,
-        send: LoginAction.dismissBanner
-      ))
       .background(
         Image("loginbg")
           .resizable()

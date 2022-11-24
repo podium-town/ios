@@ -28,6 +28,11 @@ let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
       
     case .usernameChanged(let username):
       state.username = username
+      if username.count > 1 {
+        state.isUsernameValidated = true
+      } else {
+        state.isUsernameValidated = false
+      }
       return .none
     
     case .verificationCodeChanged(let verificationCode):

@@ -15,6 +15,10 @@ indirect enum ThreadAction {
   case getComments
   case didGetComments(TaskResult<[PostModel]>)
   case deletePost(post: PostModel)
+  case reportPost(post: PostModel)
+  case reportComment(comment: PostModel)
+  case didReportComment(TaskResult<PostModel>)
+  case didReportPost(TaskResult<PostModel>)
   case deleteComment(comment: PostModel)
   case addComments(comments: [PostModel])
   case openMenu

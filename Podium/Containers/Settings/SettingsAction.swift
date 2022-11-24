@@ -6,5 +6,5 @@
 //
 
 enum SettingsAction {
-  
+  case logout
 }

@@ -8,6 +8,7 @@
 struct LoginState: Equatable {
   var isVerificationPending = false
   var isUsernameSelectionVisible = false
+  var isUsernameValidated = false
   var verificationId: String?
   var profile: ProfileModel?
   var phoneNumber = ""

@@ -87,9 +87,40 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       }
       
     case .didDeletePost(.success(let id)):
+      state.bannerData = BannerData(
+        title: "Deleted",
+        detail: "Your post has been deleted.",
+        type: .info
+      )
       return Effect(value: .getPosts)
       
     case .didDeletePost(.failure(let error)):
+      return .none
+      
+    case .reportPost(let post):
+      let reporterId = state.profile.id
+      return .task {
+        await .didReportPost(TaskResult {
+          try await API.reportPost(
+            reporterId: reporterId,
+            post: post
+          )
+        })
+      }
+      
+    case .didReportPost(.success(let id)):
+      state.bannerData = BannerData(
+        title: "Report",
+        detail: "Your report has been sent.",
+        type: .info
+      )
+      return .none
+      
+    case .didReportPost(.failure(let error)):
+      return .none
+      
+    case .dismissBanner:
+      state.bannerData = nil
       return .none
       
     case .getPosts:
@@ -166,6 +197,9 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       return .none
       
     case .media(_):
+      return .none
+      
+    case .settings(_):
       return .none
     }
   }
