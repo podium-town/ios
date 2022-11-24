@@ -8,9 +8,13 @@
 import ComposableArchitecture
 
 enum TabsAction {
+  case initialize
   case getPosts
   case didGetPosts(TaskResult<[PostModel]>)
   case addPosts(posts: [PostModel])
+  case onMenuClose
+  case getProfile
+  case didGetProfile(TaskResult<ProfileModel>)
   
   // View Actions
   case home(HomeAction)

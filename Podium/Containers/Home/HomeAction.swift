@@ -19,6 +19,7 @@ enum HomeAction {
   case deletePost(post: PostModel)
   case didDeletePost(TaskResult<String>)
   case dismissBanner
+  case onMenuOpen
   
   // View Actions
   case add(AddAction)

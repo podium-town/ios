@@ -49,6 +49,7 @@ struct TabsView: View {
             action: TabsAction.profile
           ))
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .tabItem {
           Image("profile")
             .resizable()
@@ -59,13 +60,29 @@ struct TabsView: View {
         backgroundColor: Color("ColorBackground")
       )
       .onAppear {
-        viewStore.send(.getPosts)
+        viewStore.send(.initialize)
+        viewStore.send(.getProfile)
         Task {
           do {
             try await API.listenPosts(ids: viewStore.profile.following) { posts in
               viewStore.send(.addPosts(posts: posts))
             }
           }
+        }
+      }
+      .overlay {
+        if viewStore.isMenuOpen {
+          Color.white.opacity(0.001)
+            .ignoresSafeArea()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .onTapGesture {
+              viewStore.send(.onMenuClose)
+            }
+            .gesture(DragGesture(minimumDistance: 5, coordinateSpace: .global)
+              .onEnded { value in
+                viewStore.send(.onMenuClose)
+              }
+            )
         }
       }
     }
@@ -82,6 +99,7 @@ struct TabsView_Previews: PreviewProvider {
           posts: [Mocks.post]
         ),
         profileState: ProfileState(
+          fromProfile: Mocks.profile,
           profile: Mocks.profile
         ),
         addState: AddState(

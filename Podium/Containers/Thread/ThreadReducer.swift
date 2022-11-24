@@ -10,6 +10,11 @@ import Combine
 import Foundation
 
 let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
+  mediaReducer.optional().pullback(
+    state: \.mediaState,
+    action: /ThreadAction.media,
+    environment: { $0 }
+  ),
   Reducer { state, action, environment in
     switch action {
     case .textChanged(let text):
@@ -17,13 +22,33 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       state.isSendDisabled = state.text.count < 3
       return .none
       
+    case .presentMedia(let isPresented, let post):
+      state.isMediaPresented = isPresented
+      if isPresented, let post = post {
+        state.mediaState = MediaState(
+          post: post
+        )
+      }
+      return .none
+      
+    case .attachListener:
+      state.isLoading = true
+      return .none
+      
     case .addComments(let comments):
-      state.comments.insert(contentsOf: comments.filter({ $0.ownerId != state.profile.id }), at: 0)
+      state.isLoading = false
+      state.comments.insert(contentsOf: comments, at: 0)
       return .none
       
     case .deletePost(let post):
       return .fireAndForget {
         try await API.deletePost(post: post)
+      }
+      
+    case .deleteComment(let comment):
+      state.comments.removeAll(where: { $0.id == comment.id })
+      return .fireAndForget {
+        try await API.deleteComment(comment: comment)
       }
       
     case .send:
@@ -38,7 +63,6 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
         isLoading: true
       )
       state.text = ""
-      state.comments.insert(comment, at: 0)
       return Effect(value: .sended(comment))
       
     case .sended(let comment):
@@ -53,17 +77,12 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       }
       
     case .didSend(.success(let added)):
-      state.comments = state.comments.map { comment in
-        if comment.id == added.id {
-          var mut = comment
-          mut.isLoading = false
-          return mut
-        }
-        return comment
-      }
       return .none
       
     case .didSend(.failure(let error)):
+      return .none
+      
+    case .openMenu:
       return .none
       
     case .getComments:
@@ -84,6 +103,9 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       
     case .didGetComments(.failure(let error)):
       state.isLoading = false
+      return .none
+      
+    case .media(_):
       return .none
     }
   }

@@ -37,6 +37,7 @@
 		82259233291AB2FF00D17E30 /* StoriesReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82259232291AB2FF00D17E30 /* StoriesReducer.swift */; };
 		826030E6291B015B006007C3 /* LocalStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826030E5291B015B006007C3 /* LocalStorageKey.swift */; };
 		8263AE77291BA7CA0074B033 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8263AE76291BA7CA0074B033 /* GoogleService-Info.plist */; };
+		826F330B292EBA1F005B1E6B /* HashtagModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826F330A292EBA1F005B1E6B /* HashtagModel.swift */; };
 		82793776291C5DEC00FD5148 /* ViewStore+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82793775291C5DEC00FD5148 /* ViewStore+Extensions.swift */; };
 		82793782291D60BB00FD5148 /* Banner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82793781291D60BB00FD5148 /* Banner.swift */; };
 		82793785291D64E300FD5148 /* PhoneNumberTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82793784291D64E300FD5148 /* PhoneNumberTextField.swift */; };
@@ -119,6 +120,7 @@
 		82259232291AB2FF00D17E30 /* StoriesReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesReducer.swift; sourceTree = "<group>"; };
 		826030E5291B015B006007C3 /* LocalStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorageKey.swift; sourceTree = "<group>"; };
 		8263AE76291BA7CA0074B033 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		826F330A292EBA1F005B1E6B /* HashtagModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagModel.swift; sourceTree = "<group>"; };
 		82793775291C5DEC00FD5148 /* ViewStore+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewStore+Extensions.swift"; sourceTree = "<group>"; };
 		82793781291D60BB00FD5148 /* Banner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Banner.swift; sourceTree = "<group>"; };
 		82793784291D64E300FD5148 /* PhoneNumberTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneNumberTextField.swift; sourceTree = "<group>"; };
@@ -423,6 +425,7 @@
 				82BBC98C291AC9A2008DB479 /* AppError.swift */,
 				82BBC99E291AE481008DB479 /* ProfileModel.swift */,
 				826030E5291B015B006007C3 /* LocalStorageKey.swift */,
+				826F330A292EBA1F005B1E6B /* HashtagModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -608,6 +611,7 @@
 				82793787291D668200FD5148 /* iPhoneNumberField+ViewModifiers.swift in Sources */,
 				82793776291C5DEC00FD5148 /* ViewStore+Extensions.swift in Sources */,
 				82259202291A9BFA00D17E30 /* AppView.swift in Sources */,
+				826F330B292EBA1F005B1E6B /* HashtagModel.swift in Sources */,
 				82259209291A9CB800D17E30 /* TabsReducer.swift in Sources */,
 				82BBC99F291AE481008DB479 /* ProfileModel.swift in Sources */,
 				828E351E291C55780089AD1A /* AddView.swift in Sources */,
@@ -772,7 +776,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -809,7 +813,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 22;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;

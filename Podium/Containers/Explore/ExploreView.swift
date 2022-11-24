@@ -59,15 +59,20 @@ struct ExploreView: View {
                   
                   ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
-                      Text("#elon")
-                        .fontWeight(.medium)
-                        .padding(.horizontal)
-                        .padding(.vertical, 10)
-                        .background(
-                          RoundedRectangle(cornerRadius: 24)
-                            .foregroundColor(Color("ColorLightBackground"))
-                        )
+                      ForEach(viewStore.hashtags) { tag in
+                        Text(tag.hashtag)
+                          .fontWeight(.medium)
+                          .padding(.horizontal)
+                          .padding(.vertical, 10)
+                          .background(
+                            RoundedRectangle(cornerRadius: 24)
+                              .foregroundColor(Color("ColorLightBackground"))
+                          )
+                      }
                     }
+                  }
+                  .onAppear {
+                    viewStore.send(.getTopHashtags)
                   }
                   
                   Text("🤗 Profiles")
@@ -121,6 +126,7 @@ struct ExploreView: View {
           }
         }
       }
+      .navigationViewStyle(StackNavigationViewStyle())
     }
   }
 }

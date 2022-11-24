@@ -33,7 +33,7 @@ struct ExploreProfile: View {
         } label: {
           Text("Unfollow")
             .fontWeight(.semibold)
-            .foregroundColor(.white)
+            .foregroundColor(Color("ColorTextInverted"))
             .padding(.vertical, 8)
             .padding(.horizontal, 12)
             .background(
@@ -48,7 +48,7 @@ struct ExploreProfile: View {
         } label: {
           Text("Follow")
             .fontWeight(.semibold)
-            .foregroundColor(.white)
+            .foregroundColor(Color("ColorTextInverted"))
             .padding(.vertical, 8)
             .padding(.horizontal, 12)
             .background(

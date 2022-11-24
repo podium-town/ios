@@ -11,6 +11,7 @@ struct ExploreState: Equatable {
   var profiles: [ProfileModel] = []
   var pendingFollowRequests: [String] = []
   var isProfilePresented = false
+  var hashtags: [HashtagModel] = []
   
   // View States
   var profileState: ProfileState?

@@ -14,7 +14,15 @@ struct SettingsView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       List {
-        Section(header: Text("Settings")) {
+        Section(header: Text("Settings"), footer: HStack {
+          Spacer()
+          Image("logo")
+          .resizable()
+          .frame(width: 42, height: 42)
+          .clipShape(RoundedRectangle(cornerRadius: 15))
+          .padding(.top, 8)
+          Spacer()
+        }) {
           Button {
             
           } label: {

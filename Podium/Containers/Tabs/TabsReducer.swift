@@ -32,8 +32,42 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
   ),
   Reducer { state, action, environment in
     switch action {
+    case .getProfile:
+      let id = state.profile.id
+      return .task {
+        await .didGetProfile(TaskResult {
+          try await API.getProfile(
+            id: id
+          )
+        })
+      }
+      
+    case .didGetProfile(.success(let profile)):
+      state.profile = profile
+      state.profileState.fromProfile = profile
+      state.exploreState.profile = profile
+      state.homeState.profile = profile
+      environment.localStorage.removeObject(forKey: StorageKey.authVerificationID.rawValue)
+      if let encoded = profile.encoded() {
+        environment.localStorage.set(encoded, forKey: StorageKey.profile.rawValue)
+      }
+      return .none
+      
+    case .didGetProfile(.failure(let error)):
+      return .none
+      
+    case .initialize:
+//      if let posts = environment.localStorage.data(forKey: StorageKey.posts.rawValue),
+//         let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts) {
+//        state.homeState.posts = loadedPosts
+//      }
+      return .none
+      
     case .addPosts(let posts):
-      state.homeState.posts.insert(contentsOf: posts.filter({ $0.ownerId != state.profile.id }), at: 0)
+      state.homeState.posts.insert(contentsOf: posts, at: 0)
+      if let encodedPosts = try? JSONEncoder().encode(state.homeState.posts) {
+        environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
+      }
       return .none
       
     case .getPosts:
@@ -64,6 +98,34 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.homeState.isLoadingRefreshable = false
       state.homeState.isEmpty = state.homeState.posts.count == 0
       return .none
+      
+    case .home(.onMenuOpen):
+      state.isMenuOpen = true
+      return .none
+      
+    case .home(.thread(.openMenu)):
+      state.isMenuOpen = true
+      return .none
+      
+    case .onMenuClose:
+      state.isMenuOpen = false
+      return .none
+      
+    case .home(.profile(.didFollow(.success((let from, let id))))):
+      state.profile.following.append(id)
+      state.exploreState.profile.following.append(id)
+      state.homeState.profile.following.append(id)
+      state.profileState.fromProfile.following.append(id)
+      state.homeState.profileState?.fromProfile.following.append(id)
+      return Effect(value: .getPosts)
+      
+    case .home(.profile(.didUnfollow(.success((let from, let id))))):
+      state.profile.following.removeAll(where: { $0 == id })
+      state.exploreState.profile.following.removeAll(where: { $0 == id })
+      state.homeState.profile.following.removeAll(where: { $0 == id })
+      state.homeState.profileState?.fromProfile.following.removeAll(where: { $0 == id })
+      state.profileState.fromProfile.following.removeAll(where: { $0 == id })
+      return Effect(value: .getPosts)
         
     case .home(_):
       return .none
@@ -86,6 +148,24 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       }
       return .none
       
+    case .profile(.onMenuOpen):
+      state.isMenuOpen = true
+      return .none
+      
+    case .profile(.didFollow(.success((let from, let id)))):
+      state.profile.following.append(id)
+      state.exploreState.profile.following.append(id)
+      state.homeState.profile.following.append(id)
+      state.profileState.fromProfile.following.append(id)
+      return Effect(value: .getPosts)
+      
+    case .profile(.didUnfollow(.success((let from, let id)))):
+      state.profile.following.removeAll(where: { $0 == id })
+      state.exploreState.profile.following.removeAll(where: { $0 == id })
+      state.homeState.profile.following.removeAll(where: { $0 == id })
+      state.profileState.fromProfile.following.removeAll(where: { $0 == id })
+      return Effect(value: .getPosts)
+      
     case .profile(_):
       return .none
       
@@ -93,12 +173,30 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.profile.following.append(id)
       state.exploreState.profile.following.append(id)
       state.homeState.profile.following.append(id)
+      state.profileState.fromProfile.following.append(id)
       return Effect(value: .getPosts)
       
     case .explore(.didUnfollow(.success((let from, let id)))):
       state.profile.following.removeAll(where: { $0 == id })
       state.exploreState.profile.following.removeAll(where: { $0 == id })
       state.homeState.profile.following.removeAll(where: { $0 == id })
+      state.profileState.fromProfile.following.removeAll(where: { $0 == id })
+      return Effect(value: .getPosts)
+      
+    case .explore(.profile(.didFollow(.success((let from, let id))))):
+      state.profile.following.append(id)
+      state.exploreState.profile.following.append(id)
+      state.exploreState.profileState?.fromProfile.following.append(id)
+      state.homeState.profile.following.append(id)
+      state.profileState.fromProfile.following.append(id)
+      return Effect(value: .getPosts)
+      
+    case .explore(.profile(.didUnfollow(.success((let from, let id))))):
+      state.profile.following.removeAll(where: { $0 == id })
+      state.exploreState.profile.following.removeAll(where: { $0 == id })
+      state.exploreState.profileState?.fromProfile.following.removeAll(where: { $0 == id })
+      state.homeState.profile.following.removeAll(where: { $0 == id })
+      state.profileState.fromProfile.following.removeAll(where: { $0 == id })
       return Effect(value: .getPosts)
       
     case .explore(_):

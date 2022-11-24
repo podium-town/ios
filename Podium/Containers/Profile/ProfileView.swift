@@ -17,16 +17,16 @@ struct ProfileView: View {
     ZStack {
       WithViewStore(store) { viewStore in
         VStack(alignment: .leading, spacing: 0) {
-          HStack(spacing: 18) {
+          HStack(spacing: 12) {
             Button {
-              if viewStore.isSelf {
+              if viewStore.fromProfile.id == viewStore.profile.id {
                 viewStore.send(.presentPicker(isPresented: true))
               }
             } label: {
               Image(uiImage: viewStore.profile.avatarData == nil ? UIImage(named: "avatar")! : UIImage(data: viewStore.profile.avatarData!)!)
                 .resizable()
                 .scaledToFill()
-                .frame(width: 100, height: 100)
+                .frame(width: 80, height: 80)
                 .clipShape(Circle())
             }
             .sheet(isPresented: viewStore.binding(
@@ -43,17 +43,52 @@ struct ProfileView: View {
             Text(viewStore.profile.username ?? viewStore.profile.id)
               .font(.title2)
               .fontWeight(.semibold)
+              .lineLimit(1)
             
             Spacer()
             
-            if viewStore.isSelf {
-              Button {
-                viewStore.send(.presentSettings(isPresented: true))
-              } label: {
-                Image("settings")
-                  .resizable()
-                  .frame(width: 24, height: 24)
-                  .foregroundColor(Color("ColorText"))
+            HStack {
+              if viewStore.fromProfile.id == viewStore.profile.id {
+                Button {
+                  viewStore.send(.presentSettings(isPresented: true))
+                } label: {
+                  Image("settings")
+                    .resizable()
+                    .frame(width: 24, height: 24)
+                    .foregroundColor(Color("ColorText"))
+                }
+              } else {
+                if viewStore.fromProfile.following.contains(viewStore.profile.id) {
+                  Button {
+                    viewStore.send(.unfollow)
+                  } label: {
+                    Text("Unfollow")
+                      .fontWeight(.semibold)
+                      .foregroundColor(Color("ColorTextInverted"))
+                      .padding(.vertical, 8)
+                      .padding(.horizontal, 12)
+                      .background(
+                        RoundedRectangle(cornerRadius: 23)
+                      )
+                  }
+                  .disabled(viewStore.isPendingFollowing)
+                  .opacity(viewStore.isPendingFollowing ? 0.5 : 1)
+                } else {
+                  Button {
+                    viewStore.send(.follow)
+                  } label: {
+                    Text("Follow")
+                      .fontWeight(.semibold)
+                      .foregroundColor(Color("ColorTextInverted"))
+                      .padding(.vertical, 8)
+                      .padding(.horizontal, 12)
+                      .background(
+                        RoundedRectangle(cornerRadius: 23)
+                      )
+                  }
+                  .disabled(viewStore.isPendingFollowing)
+                  .opacity(viewStore.isPendingFollowing ? 0.5 : 1)
+                }
               }
             }
           }
@@ -79,6 +114,16 @@ struct ProfileView: View {
               }
               Spacer()
             }
+          } else if viewStore.isLoading {
+            VStack {
+              Spacer()
+              HStack {
+                Spacer()
+                ProgressView()
+                Spacer()
+              }
+              Spacer()
+            }
           } else {
             switch tab {
             case 0:
@@ -92,12 +137,22 @@ struct ProfileView: View {
                   } label: {
                     Post(
                       post: post,
+                      onDelete: { post in
+                        viewStore.send(.deletePost(post: post))
+                      },
+                      onProfile: { profile in
+                        
+                      },
                       onImage: { post in
                         viewStore.send(.presentMedia(
                           isPresented: true,
                           post: post
                         ))
-                      })
+                      },
+                      onMenuTap: {
+                        viewStore.send(.onMenuOpen)
+                      }
+                    )
                   }
                 }
                 .listRowSeparator(.hidden)
@@ -119,7 +174,22 @@ struct ProfileView: View {
                     
                   } label: {
                     Post(
-                      post: post
+                      post: post,
+                      onDelete: { post in
+                        viewStore.send(.deletePost(post: post))
+                      },
+                      onProfile: { profile in
+                        
+                      },
+                      onImage: { post in
+                        viewStore.send(.presentMedia(
+                          isPresented: true,
+                          post: post
+                        ))
+                      },
+                      onMenuTap: {
+                        viewStore.send(.onMenuOpen)
+                      }
                     )
                   }
                 }
@@ -157,7 +227,9 @@ struct ProfileView: View {
         .onAppear {
           viewStore.send(.getPosts)
         }
+        .padding(.bottom, 18)
       }
+      .navigationTitle("Profile")
       
       WithViewStore(store.scope(state: \.isSettingsPresented)) { viewStore in
         NavigationLink(
@@ -205,7 +277,8 @@ struct ProfileView_Previews: PreviewProvider {
   static var previews: some View {
     ProfileView(store: Store(
       initialState: ProfileState(
-        profile: Mocks.profile,
+        fromProfile: Mocks.profile,
+        profile: Mocks.profile2,
         posts: [Mocks.post]
       ),
       reducer: profileReducer,

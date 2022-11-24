@@ -9,9 +9,9 @@ import SwiftUI
 
 struct ThreadPost: View {
   var post: PostModel
-  var onDelete: ((_ post: PostModel) -> Void)?
-  var onProfile: ((_ profile: ProfileModel) -> Void)?
-  var onImage: ((_ post: PostModel) -> Void)?
+  var onDelete: (_ post: PostModel) -> Void
+  var onProfile: (_ profile: ProfileModel) -> Void
+  var onImage: (_ post: PostModel) -> Void
   
   @State private var loadedImages: [String: Data] = [:]
   
@@ -20,7 +20,7 @@ struct ThreadPost: View {
       HStack(alignment: .center) {
         if let profile = post.profile {
           Button {
-            onProfile?(profile)
+            onProfile(profile)
           } label: {
             Image(uiImage: (profile.avatarData != nil) ? UIImage(data: profile.avatarData!)! : UIImage(named: "avatar")!)
               .resizable()
@@ -59,7 +59,7 @@ struct ThreadPost: View {
               ForEach(images, id: \.self) { url in
                 if let loadedImage = loadedImages[url] {
                   Button {
-                    onImage?(post)
+                    onImage(post)
                   } label: {
                     Image(uiImage: UIImage(data: loadedImage)!)
                       .resizable()
@@ -100,12 +100,14 @@ struct ThreadPost_Previews: PreviewProvider {
       ThreadPost(
         post: Mocks.postSimple,
         onDelete: { _ in },
-        onProfile: { _ in }
+        onProfile: { _ in },
+        onImage: { _ in }
       )
       ThreadPost(
         post: Mocks.post,
         onDelete: { _ in },
-        onProfile: { _ in }
+        onProfile: { _ in },
+        onImage: { _ in }
       )
     }
   }

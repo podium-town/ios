@@ -35,7 +35,12 @@ struct Mocks {
   )
   static var profile = ProfileModel(
     id: "456",
-    username: "username",
+    username: "username_long",
+    createdAt: 12312321
+  )
+  static var profile2 = ProfileModel(
+    id: "4563",
+    username: "username_long",
     createdAt: 12312321
   )
 }

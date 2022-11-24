@@ -130,16 +130,23 @@ class API {
   
   static func getProfile(id: String) async throws -> ProfileModel {
     do {
-      let document = try await db
+      let dictionary = try await db
         .collection("users")
         .document(id)
         .getDocument()
-        
-      if let data = document.data(),
-         let profile = try? ProfileModel(dictionary: data) {
+        .data()
+      
+      if let dictionary = dictionary,
+         var profile = try? ProfileModel(dictionary: dictionary) {
+        if let avatarId = profile.avatarId {
+          let storageRef = storage.reference()
+          let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
+          let data = try await fileRef.data(maxSize: 10 * 1024 * 1024)
+          profile.avatarData = data
+        }
         return profile
       }
-      throw AppError.general
+      throw AppError.profileNotExists
     } catch let error {
       throw error
     }
@@ -187,6 +194,26 @@ class API {
     }
   }
   
+  static func getTopHashtags() async throws -> [HashtagModel] {
+    do {
+      var tags: [HashtagModel] = []
+      let dictionary = try await db
+        .collection("hashtags")
+        .order(by: "posts", descending: true)
+        .limit(to: 20)
+        .getDocuments().documents
+      
+      for document in dictionary {
+        if let tag = try? HashtagModel(dictionary: document.data()) {
+          tags.append(tag)
+        }
+      }
+      return tags
+    } catch let error {
+      throw error
+    }
+  }
+  
   static func listenPosts(ids: [String], completion: @escaping (_ posts: [PostModel]) -> Void) async throws {
     let profiles = try await getProfiles(ids: ids)
     db
@@ -226,14 +253,27 @@ class API {
               group.enter()
               db
                 .collection("users")
-                .document(post.ownerId)
+                .document(comment.ownerId)
                 .getDocument { querySnapshot, error in
                   if let querySnapshot = querySnapshot {
                     if let data = querySnapshot.data(),
-                       let profile = try? ProfileModel(dictionary: data) {
-                      comment.profile = profile
-                      comments.append(comment)
-                      group.leave()
+                       var profile = try? ProfileModel(dictionary: data) {
+                      if let avatarId = profile.avatarId {
+                        let storageRef = storage.reference()
+                        let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
+                        fileRef.getData(maxSize: 10 * 1024 * 1024) { data, error in
+                          if let data = data {
+                            profile.avatarData = data
+                          }
+                          comment.profile = profile
+                          comments.append(comment)
+                          group.leave()
+                        }
+                      } else {
+                        comment.profile = profile
+                        comments.append(comment)
+                        group.leave()
+                      }
                     }
                   }
                 }
@@ -447,6 +487,29 @@ class API {
       }
       
       return post.id
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func deleteComment(comment: PostModel) async throws -> String {
+    do {
+      try await db
+        .collection("comments")
+        .document(comment.id)
+        .delete()
+      
+      let matches = comment.text.matchingStrings(regex: "#[a-zA-Z]+").compactMap({ $0.first })
+      for hashtag in matches {
+        try await db
+          .collection("hashtags")
+          .document(hashtag)
+          .updateData([
+            "posts": FieldValue.arrayRemove([comment.id])
+          ])
+      }
+      
+      return comment.id
     } catch let error {
       throw error
     }

@@ -26,8 +26,75 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
   ),
   Reducer { state, action, environment in
     switch action {
+    case .follow:
+      state.isPendingFollowing = true
+      let from = state.fromProfile
+      let to = state.profile
+      return .task {
+        await .didFollow(TaskResult {
+          try await API.follow(
+            from: from,
+            id: to.id
+          )
+        })
+      }
+      
+    case .didFollow(.success((let from, let id))):
+      state.isPendingFollowing = false
+      if let encoded = from.encoded() {
+        environment.localStorage.set(encoded, forKey: StorageKey.profile.rawValue)
+      }
+      return .none
+      
+    case .didFollow(.failure(let error)):
+      state.isPendingFollowing = false
+      return .none
+      
+    case .unfollow:
+      state.isPendingFollowing = true
+      let from = state.fromProfile
+      let to = state.profile
+      return .task {
+        await .didUnfollow(TaskResult {
+          try await API.unFollow(
+            from: from,
+            id: to.id
+          )
+        })
+      }
+      
+    case .didUnfollow(.success((let from, let id))):
+      state.isPendingFollowing = false
+      if let encoded = from.encoded() {
+        environment.localStorage.set(encoded, forKey: StorageKey.profile.rawValue)
+      }
+      return .none
+      
+    case .didUnfollow(.failure(let error)):
+      state.isPendingFollowing = false
+      return .none
+      
+    case .onMenuOpen:
+      return .none
+      
+    case .deletePost(let post):
+      return .task {
+        await .didDeletePost(TaskResult {
+          try await API.deletePost(
+            post: post
+          )
+        })
+      }
+      
+    case .didDeletePost(.success(let id)):
+      return Effect(value: .getPosts)
+      
+    case .didDeletePost(.failure(let error)):
+      return .none
+      
     case .getPosts:
       state.isLoadingRefreshable = true
+      state.isLoading = true
       let id = state.profile.id
       return .task {
         await .didGetPosts(TaskResult {
@@ -36,6 +103,7 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       }
       
     case .didGetPosts(.success(let posts)):
+      state.isLoading = false
       state.isLoadingRefreshable = false
       state.posts = posts.map { post in
         var mut = post
@@ -49,6 +117,7 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       
     case .didGetPosts(.failure(let error)):
       state.isLoadingRefreshable = false
+      state.isLoading = false
       return .none
       
     case .presentPicker(let isPresented):

@@ -7,6 +7,7 @@
 
 struct TabsState: Equatable {
   var profile: ProfileModel
+  var isMenuOpen = false
   
   // View States
   var homeState: HomeState

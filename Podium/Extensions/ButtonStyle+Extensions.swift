@@ -12,17 +12,8 @@ struct PodiumButton: ButtonStyle {
     configuration.label
       .padding(.vertical, 20)
       .padding(.horizontal, 12)
-      .background(LinearGradient(
-        gradient: .init(
-          colors: [
-            Color("ColorGradient1"),
-            Color("ColorGradient2")
-          ]
-        ),
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
-      ))
-      .foregroundColor(.white)
+      .background(Color("ColorText"))
+      .foregroundColor(Color("ColorTextInverted"))
       .font(.body.bold())
       .clipShape(RoundedRectangle(cornerRadius: 16))
       .scaleEffect(configuration.isPressed ? 1.05 : 1)
@@ -37,20 +28,11 @@ struct PodiumButtonSecondary: ButtonStyle {
       .padding()
       .background(RoundedRectangle(cornerRadius: 16)
         .strokeBorder(
-          LinearGradient(
-            gradient: .init(
-              colors: [
-                Color("ColorGradient1"),
-                Color("ColorGradient2")
-              ]
-            ),
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-          ),
+          Color("ColorText"),
           lineWidth: 2
         )
       )
-      .foregroundColor(.accentColor)
+      .foregroundColor(Color("ColorTextInverted"))
       .font(.body.bold())
       .clipShape(RoundedRectangle(cornerRadius: 16))
       .scaleEffect(configuration.isPressed ? 1.05 : 1)

@@ -64,6 +64,7 @@ struct AddView: View {
               Image("media")
                 .resizable()
                 .frame(width: 28, height: 28)
+                .foregroundColor(Color("ColorText"))
             }
             .buttonStyle(PodiumButtonSecondary())
             .disabled(viewStore.images.count > 3)

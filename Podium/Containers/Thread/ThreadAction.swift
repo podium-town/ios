@@ -7,7 +7,7 @@
 
 import ComposableArchitecture
 
-enum ThreadAction {
+indirect enum ThreadAction {
   case textChanged(String)
   case send
   case sended(PostModel)
@@ -15,5 +15,12 @@ enum ThreadAction {
   case getComments
   case didGetComments(TaskResult<[PostModel]>)
   case deletePost(post: PostModel)
+  case deleteComment(comment: PostModel)
   case addComments(comments: [PostModel])
+  case openMenu
+  case attachListener
+  case presentMedia(isPresented: Bool, post: PostModel?)
+  
+  // View Actions
+  case media(MediaAction)
 }

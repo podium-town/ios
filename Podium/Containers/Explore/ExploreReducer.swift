@@ -15,10 +15,26 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
   ),
   Reducer { state, action, environment in
     switch action {
+    case .getTopHashtags:
+      return .task {
+        await .didGetTopHashtags(TaskResult {
+          try await API.getTopHashtags()
+        })
+      }
+      
+    case .didGetTopHashtags(.success(let hashtags)):
+      state.hashtags = hashtags
+      return .none
+      
+    case .didGetTopHashtags(.failure(let error)):
+      return .none
+      
     case .presentProfile(let isPresented, let profile):
+      let fromProfile = state.profile
       state.isProfilePresented = isPresented
       if isPresented, let profile = profile {
         state.profileState = ProfileState(
+          fromProfile: fromProfile,
           profile: profile
         )
       }

@@ -12,4 +12,8 @@ struct ThreadState: Equatable {
   var isSendDisabled = true
   var comments: [PostModel] = []
   var isLoading = false
+  var isMediaPresented = false
+  
+  // View States
+  var mediaState: MediaState?
 }

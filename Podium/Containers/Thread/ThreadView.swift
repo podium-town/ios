@@ -16,8 +16,8 @@ struct ThreadView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       VStack {
-        List {
-          VStack {
+        ScrollView {
+          VStack(spacing: 0) {
             if let post = viewStore.post {
               ThreadPost(
                 post: post,
@@ -26,6 +26,12 @@ struct ThreadView: View {
                 },
                 onProfile: { profile in
                   
+                },
+                onImage: { post in
+                  viewStore.send(.presentMedia(
+                    isPresented: true,
+                    post: post
+                  ))
                 }
               )
               
@@ -36,16 +42,28 @@ struct ThreadView: View {
               } else {
                 ForEach(viewStore.comments) { comment in
                   Post(
-                    post: comment
+                    post: comment,
+                    onDelete: { comment in
+                      viewStore.send(.deleteComment(comment: comment))
+                    },
+                    onProfile: { profile in
+                      
+                    },
+                    onImage: { post in
+                      viewStore.send(.presentMedia(
+                        isPresented: true,
+                        post: post
+                      ))
+                    },
+                    onMenuTap: {
+                      viewStore.send(.openMenu)
+                    }
                   )
                 }
               }
             }
           }
-          .listRowSeparator(.hidden)
-          .listRowInsets(EdgeInsets())
         }
-        .listStyle(.plain)
         
         HStack {
           TextField("Comment...", text: viewStore.binding(
@@ -70,9 +88,9 @@ struct ThreadView: View {
         .padding()
       }
       .onAppear {
-        viewStore.send(.getComments)
         Task {
           do {
+            viewStore.send(.attachListener)
             try await API.listenComments(post: viewStore.post) { comments in
               viewStore.send(.addComments(comments: comments))
             }
@@ -98,20 +116,24 @@ struct ThreadView: View {
               .scaledToFill()
           }
           .onTapGesture {
-            isMenuOpen = true
+            viewStore.send(.openMenu)
           }
         }
       }
-      .overlay{
-        if isMenuOpen {
-          Color.white.opacity(0.001)
-            .ignoresSafeArea()
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .onTapGesture {
-              isMenuOpen = false
-            }
+      .sheet(isPresented: viewStore.binding(
+        get: \.isMediaPresented,
+        send: ThreadAction.presentMedia(
+          isPresented: false,
+          post: nil
+        ))) {
+          IfLetStore(
+            store.scope(
+              state: \.mediaState,
+              action: ThreadAction.media
+            ),
+            then: MediaView.init(store:)
+          )
         }
-      }
     }
   }
 }

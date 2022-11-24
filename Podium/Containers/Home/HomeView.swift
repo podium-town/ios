@@ -49,6 +49,9 @@ struct HomeView: View {
                           isPresented: true,
                           post: post
                         ))
+                      },
+                      onMenuTap: {
+                        viewStore.send(.onMenuOpen)
                       }
                     )
                   }
@@ -98,7 +101,7 @@ struct HomeView: View {
                       .padding(20)
                       .background(Color.accentColor)
                   }
-                  .foregroundColor(Color.white)
+                  .foregroundColor(Color("ColorTextInverted"))
                   .clipShape(Circle())
                   .padding(.trailing)
                   .shadow(radius: 5)

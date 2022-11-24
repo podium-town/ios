@@ -14,9 +14,10 @@ enum PostVariant {
 
 struct Post: View {
   var post: PostModel
-  var onDelete: ((_ post: PostModel) -> Void)?
-  var onProfile: ((_ profile: ProfileModel) -> Void)?
-  var onImage: ((_ post: PostModel) -> Void)?
+  var onDelete: (_ post: PostModel) -> Void
+  var onProfile: (_ profile: ProfileModel) -> Void
+  var onImage: (_ post: PostModel) -> Void
+  var onMenuTap: () -> Void
   
   @State private var loadedImages: [String: Data] = [:]
   @State private var animateGradient = false
@@ -44,7 +45,7 @@ struct Post: View {
           
           HStack(alignment: .top, spacing: 12) {
             Button {
-              onProfile?(profile)
+              onProfile(profile)
             } label: {
               Image(uiImage: (profile.avatarData != nil) ? UIImage(data: profile.avatarData!)! : UIImage(named: "avatar")!)
                 .resizable()
@@ -53,6 +54,7 @@ struct Post: View {
                 .clipShape(Circle())
                 .clipped()
             }
+            .padding(.top, 2)
             
             VStack(alignment: .leading, spacing: 0) {
               HStack(spacing: 0) {
@@ -62,6 +64,28 @@ struct Post: View {
                 
                 Spacer()
                 
+                Menu {
+                    Button("Delete post") {
+                      onDelete(post)
+                    }
+                  
+                  Button("Report post") {
+                    
+                  }
+                } label: {
+                  Image("more")
+                    .resizable()
+                    .frame(width: 18, height: 18)
+                    .scaledToFill()
+                }
+                .padding(.bottom, 6)
+                .padding(.top, 4)
+                .padding(.horizontal, 12)
+                .foregroundColor(.gray)
+                .onTapGesture {
+                  onMenuTap()
+                }
+                
                 Text(
                   Date(timeIntervalSince1970: TimeInterval(
                     integerLiteral: post.createdAt
@@ -70,7 +94,6 @@ struct Post: View {
                 .foregroundColor(.gray)
                 .font(.caption)
               }
-              .padding(.bottom, 4)
               
               Text(post.text)
               
@@ -80,7 +103,7 @@ struct Post: View {
                     ForEach(images, id: \.self) { url in
                       if let loadedImage = loadedImages[url] {
                         Button {
-                          onImage?(post)
+                          onImage(post)
                         } label: {
                           Image(uiImage: UIImage(data: loadedImage)!)
                             .resizable()
@@ -115,7 +138,9 @@ struct Post: View {
               }
             }
           }
-          .padding(12)
+          .padding(.horizontal, 12)
+          .padding(.bottom, 12)
+          .padding(.top, 8)
         }
       }
       
@@ -132,12 +157,16 @@ struct Post_Previews: PreviewProvider {
       Post(
         post: Mocks.postSimple,
         onDelete: { _ in },
-        onProfile: { _ in }
+        onProfile: { _ in },
+        onImage: { _ in },
+        onMenuTap: {}
       )
       Post(
         post: Mocks.post,
         onDelete: { _ in },
-        onProfile: { _ in }
+        onProfile: { _ in },
+        onImage: { _ in },
+        onMenuTap: {}
       )
     }
   }

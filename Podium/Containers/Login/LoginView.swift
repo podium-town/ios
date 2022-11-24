@@ -13,7 +13,7 @@ struct LoginView: View {
   
   var body: some View {
     WithViewStore(store) { viewStore in
-      ZStack {
+      ScrollView {
         VStack(alignment: .leading) {
           Text("Podium")
             .font(.largeTitle.bold())
@@ -148,13 +148,22 @@ struct LoginView: View {
           Text("By signing in you accept Terms of Service and Privacy Policy.")
             .foregroundColor(.gray)
             .font(.caption)
+          
+          Spacer()
         }
         .padding()
+        .padding(.top, 220)
+        .foregroundColor(.white)
       }
       .banner(data: viewStore.binding(
         get: \.bannerData,
         send: LoginAction.dismissBanner
       ))
+      .background(
+        Image("loginbg")
+          .resizable()
+      )
+      .ignoresSafeArea()
     }
   }
 }

@@ -27,7 +27,7 @@ struct StoryAvatar: View {
             .overlay(
               Image("plus")
                 .resizable()
-                .foregroundColor(.white)
+                .foregroundColor(Color("ColorTextInverted"))
                 .frame(width: 10, height: 10)
             )
           Spacer()

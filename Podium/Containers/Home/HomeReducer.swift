@@ -37,6 +37,9 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
   ),
   Reducer { state, action, environment in
     switch action {
+    case .onMenuOpen:
+      return .none
+      
     case .dismissBanner:
       state.bannerData = nil
       return .none
@@ -112,9 +115,11 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       return .none
       
     case .presentProfile(let isPresented, let profile):
+      let fromProfile = state.profile
       state.isProfilePresented = isPresented
       if isPresented, let profile = profile {
         state.profileState = ProfileState(
+          fromProfile: fromProfile,
           profile: profile
         )
       }
@@ -147,7 +152,6 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     case .add(.addedPost(let post)):
       var mut = post
       mut.isLoading = true
-      state.posts.insert(mut, at: 0)
       return .none
       
     case .add(.didAddPost(.success(let added))):

@@ -6,6 +6,7 @@
 //
 
 struct ProfileState: Equatable {
+  var fromProfile: ProfileModel
   var profile: ProfileModel
   var posts: [PostModel] = []
   var isPickerPresented = false
@@ -14,7 +15,8 @@ struct ProfileState: Equatable {
   var isThreadPresented = false
   var isMediaPresented = false
   var isEmpty = false
-  var isSelf = false
+  var isLoading = false
+  var isPendingFollowing = false
   
   // View States
   var settingsState: SettingsState?
