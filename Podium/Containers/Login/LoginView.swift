@@ -58,7 +58,7 @@ struct LoginView: View {
               }
             }
             .disabled(viewStore.isVerificationPending)
-            .buttonStyle(PodiumButton())
+            .buttonStyle(PodiumButtonSignIn())
             .onAppear {
               self.endTextEditing()
             }
@@ -112,7 +112,7 @@ struct LoginView: View {
               }
             }
             .disabled(viewStore.isVerificationPending)
-            .buttonStyle(PodiumButton())
+            .buttonStyle(PodiumButtonSignIn())
           }
           
           if viewStore.isUsernameSelectionVisible {
@@ -141,7 +141,7 @@ struct LoginView: View {
               }
               .opacity(viewStore.isVerificationPending || !viewStore.isUsernameValidated ? 0.5 : 1)
               .disabled(viewStore.isVerificationPending || !viewStore.isUsernameValidated)
-              .buttonStyle(PodiumButton())
+              .buttonStyle(PodiumButtonSignIn())
             }
           }
           

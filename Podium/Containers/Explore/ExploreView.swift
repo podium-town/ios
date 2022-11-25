@@ -29,9 +29,13 @@ struct ExploreView: View {
               ) {
                 VStack(alignment: .leading) {
                   if viewStore.searchQuery.count > 0 {
-                    Text("🤗 Profiles")
-                      .fontWeight(.medium)
-                      .padding(.top, 18)
+                    HStack {
+                      Text("🤗 Profiles")
+                        .fontWeight(.medium)
+                        .padding(.top, 18)
+                      
+                      Spacer()
+                    }
                     
                     ForEach(viewStore.profiles) { profile in
                       Button {

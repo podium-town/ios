@@ -80,13 +80,18 @@ struct HomeView: View {
               ZStack {
                 ScrollView(.horizontal, showsIndicators: false) {
                   HStack {
-                    Button {
-                      viewStore.send(.presentStories(isPresented: true))
-                    } label: {
-                      StoryAvatar(
-                        profile: viewStore.profile,
-                        isAddVisible: true
-                      )
+                    ForEach(Array(viewStore.stories), id: \.key) { id, posts in
+                      Button {
+                        viewStore.send(.presentStories(
+                          isPresented: true,
+                          profile: posts.first!.profile!
+                        ))
+                      } label: {
+                        StoryAvatar(
+                          profile: posts.first!.profile!,
+                          isAddVisible: viewStore.profile.id == id
+                        )
+                      }
                     }
                   }
                   .padding(.horizontal)
@@ -126,11 +131,14 @@ struct HomeView: View {
             }
             .sheet(isPresented: viewStore.binding(
               get: \.isStoriesPresented,
-              send: HomeAction.presentStories
+              send: HomeAction.presentStories(
+                isPresented: false,
+                profile: nil
+              )
             )) {
               IfLetStore(
                 store.scope(
-                  state: \.stories,
+                  state: \.storiesState,
                   action: HomeAction.stories
                 ),
                 then: StoriesView.init(store:)

@@ -692,8 +692,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "152"
+            endingLineNumber = "152"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -708,8 +708,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -884,8 +884,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "156"
-            endingLineNumber = "156"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1264,8 +1264,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "119"
-            endingLineNumber = "119"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1280,8 +1280,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1722,8 +1722,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "202"
-            endingLineNumber = "202"
+            startingLineNumber = "250"
+            endingLineNumber = "250"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -2201,6 +2201,70 @@
                   startingLineNumber = "122"
                   endingLineNumber = "122"
                   offsetFromSymbolStart = "76">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3DFC8E0A-C7B4-4CBC-AA0D-7C1DF0D068BB"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/Containers/Stories/StoriesReducer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1FD1DC8E-E2E0-4FBC-A824-61AB9B2D1F1C"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/Containers/Home/HomeReducer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "unknown"
+            landmarkType = "0">
+            <Locations>
+               <Location
+                  uuid = "1FD1DC8E-E2E0-4FBC-A824-61AB9B2D1F1C - 805f1f37e92e633e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #6 (inout Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.HomeAction, Swift.Never&gt; in variable initialization expression of Podium.homeReducer : ComposableArchitecture.AnyReducer&lt;Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment&gt;"
+                  moduleName = "Podium"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Home/HomeReducer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "44"
+                  endingLineNumber = "44"
+                  offsetFromSymbolStart = "2736">
+               </Location>
+               <Location
+                  uuid = "1FD1DC8E-E2E0-4FBC-A824-61AB9B2D1F1C - 3cc502827062492c"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 @Sendable () async -&gt; Podium.HomeAction in closure #6 (inout Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.HomeAction, Swift.Never&gt; in variable initialization expression of Podium.homeReducer : ComposableArchitecture.AnyReducer&lt;Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment&gt;"
+                  moduleName = "Podium"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Home/HomeReducer.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "45"
+                  endingLineNumber = "45"
+                  offsetFromSymbolStart = "88">
                </Location>
             </Locations>
          </BreakpointContent>

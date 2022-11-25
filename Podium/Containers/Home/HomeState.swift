@@ -19,10 +19,12 @@ struct HomeState: Equatable {
   var isEmpty = false
   var posts: [PostModel]
   var bannerData: BannerData?
+  var stories: [String: [StoryModel]] = [:]
+  var urls: [String] = []
   
   // View States
   var add: AddState?
-  var stories: StoriesState?
+  var storiesState: StoriesState?
   var threadState: ThreadState?
   var profileState: ProfileState?
   var mediaState: MediaState?

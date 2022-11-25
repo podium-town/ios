@@ -11,7 +11,7 @@ import Foundation
 
 let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
   storiesReducer.optional().pullback(
-    state: \.stories,
+    state: \.storiesState,
     action: /HomeAction.stories,
     environment: { $0 }
   ),
@@ -37,6 +37,28 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
   ),
   Reducer { state, action, environment in
     switch action {
+    case .prefetchStories:
+      let index = min(state.urls.count, 5)
+      let fileUrls = Array(state.urls.prefix(upTo: index))
+      return .task {
+        await .didPrefetchStories(TaskResult {
+          try await API.prefetchStories(
+            fileUrls: fileUrls
+          )
+        })
+      }
+      
+    case .didPrefetchStories(.success(let results)):
+      for result in results {
+        state.storiesState?.loadedMedia[result.key] = result.value
+        state.urls.removeAll(where: { $0 == result.key })
+        state.storiesState?.urls.removeAll(where: { $0 == result.key })
+      }
+      return .none
+      
+    case .didPrefetchStories(.failure(let error)):
+      return .none
+      
     case .onMenuOpen:
       return .none
       
@@ -45,7 +67,30 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       return .none
       
     case .initialize:
-      state.stories = StoriesState()
+      state.storiesState = StoriesState(
+        profile: state.profile,
+        stories: [:]
+      )
+      return Effect(value: .getStories)
+      
+    case .getStories:
+      let ids = state.profile.following
+      return .task {
+        await .didGetStories(TaskResult {
+          try await API.getStories(
+            ids: ids
+          )
+        })
+      }
+      
+    case .didGetStories(.success((let stories, let urls))):
+      state.stories = stories
+      state.urls.append(contentsOf: urls)
+      state.storiesState?.stories = stories
+      state.storiesState?.urls.append(contentsOf: urls)
+      return Effect(value: .prefetchStories)
+      
+    case .didGetStories(.failure(let error)):
       return .none
       
     case .deletePost(let post):
@@ -162,10 +207,10 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       }
       return .none
       
-    case .presentStories(let isPresented):
+    case .presentStories(let isPresented, let profile):
       state.isStoriesPresented = isPresented
-      if isPresented {
-        state.stories = StoriesState()
+      if let profile = profile {
+        state.storiesState?.currentProfile = profile.id
       }
       return .none
       
@@ -178,6 +223,9 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
         )
       }
       return .none
+      
+    case .stories(.didAddStory(.success(let fileId))):
+      return Effect(value: .getStories)
       
     case .stories(_):
       return .none

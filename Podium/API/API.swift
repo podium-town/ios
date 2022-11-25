@@ -569,4 +569,76 @@ class API {
       throw error
     }
   }
+  
+  static func addStory(profileId: String, image: UIImage) async throws -> String {
+    do {
+      let storyId = UUID().uuidString
+      let fileId = UUID().uuidString
+      let storageRef = storage.reference()
+      let fileRef = storageRef.child("\(profileId)/\(fileId).png")
+      _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.7)!)
+      let url = try await fileRef.downloadURL()
+      
+      try await db
+        .collection("stories")
+        .document(storyId)
+        .setData([
+          "id": storyId,
+          "ownerId": profileId,
+          "url": url.absoluteString,
+          "createdAt": Int(Date().millisecondsSince1970) / 1000,
+        ], merge: true)
+      
+      return storyId
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func getStories(ids: [String]) async throws -> ([String: [StoryModel]], [String]) {
+    do {
+      var stories: [String: [StoryModel]] = [:]
+      var urls: [String] = []
+      
+      let profiles = try await getProfiles(ids: ids)
+      let dictionary = try await db
+        .collection("stories")
+        .whereField("ownerId", in: ids)
+        .getDocuments()
+        .documents
+      
+      for document in dictionary {
+        if var story = try? StoryModel(dictionary: document.data()) {
+          story.profile = profiles.first(where: { $0.id == story.ownerId })
+          if let profile = story.profile {
+            urls.append(story.url)
+            if stories[profile.id] == nil {
+              stories[profile.id] = [story]
+            } else {
+              stories[profile.id]?.append(story)
+            }
+          }
+        }
+      }
+      
+      return (stories, urls)
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func prefetchStories(fileUrls: [String]) async throws -> [String: Data] {
+    do {
+      var prefetched: [String: Data] = [:]
+      
+      for url in fileUrls {
+        let (fileUrl, data) = try await getImage(url: url)
+        prefetched[fileUrl] = data
+      }
+      
+      return prefetched
+    } catch let error {
+      throw error
+    }
+  }
 }

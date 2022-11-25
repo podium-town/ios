@@ -17,22 +17,23 @@ struct StoryAvatar: View {
       .scaledToFill()
       .frame(width: 58, height: 58)
       .clipShape(Circle())
-      .overlay(isAddVisible ?
-               VStack {
-        Spacer()
-        HStack {
-          Circle()
-            .frame(width: 18, height: 18)
-            .foregroundColor(.accentColor)
-            .overlay(
-              Image("plus")
-                .resizable()
-                .foregroundColor(Color("ColorTextInverted"))
-                .frame(width: 10, height: 10)
-            )
+      .overlay(
+        isAddVisible ?
+        VStack {
           Spacer()
-        }
-      } : nil
+          HStack {
+            Circle()
+              .frame(width: 18, height: 18)
+              .foregroundColor(.accentColor)
+              .overlay(
+                Image("plus")
+                  .resizable()
+                  .foregroundColor(Color("ColorTextInverted"))
+                  .frame(width: 10, height: 10)
+              )
+            Spacer()
+          }
+        } : nil
       )
   }
 }

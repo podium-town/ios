@@ -43,4 +43,11 @@ struct Mocks {
     username: "username_long",
     createdAt: 12312321
   )
+  static var story = StoryModel(
+    id: "0x0",
+    url: "sadsada",
+    ownerId: "456",
+    createdAt: 123,
+    profile: Mocks.profile
+  )
 }
