@@ -62,12 +62,13 @@ struct TabsView: View {
       .onAppear {
         viewStore.send(.initialize)
         viewStore.send(.getProfile)
-        Task {
-          do {
-            try await API.listenPosts(ids: viewStore.profile.following) { posts in
-              viewStore.send(.addPosts(posts: posts))
-            }
-          }
+        API.listenPosts(ids: viewStore.profile.following) { posts in
+          viewStore.send(.addPosts(posts: posts))
+        }
+        API.listenStories(ids: viewStore.profile.following) { (st, storiesToRemove) in
+          let (stories, urls) = st
+          viewStore.send(.addStories(stories: stories, urls: urls))
+          viewStore.send(.removeStories(stories: storiesToRemove))
         }
       }
       .overlay {

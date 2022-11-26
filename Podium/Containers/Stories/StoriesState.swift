@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 
 struct StoriesState: Equatable {
+  var isSelf: Bool { profile.id == currentProfile }
   var profile: ProfileModel
   var loadedMedia: [String: Data] = [:]
   var stories: [String: [StoryModel]]
@@ -16,7 +17,8 @@ struct StoriesState: Equatable {
   var currentStory: StoryModel?
   var profilesIterator: IndexingIterator<[Array<String>.Element]>?
   var storiesIterator: IndexingIterator<[Array<StoryModel>.Element]>?
-  var urls: [String] = []
+  var urls: [StoryUrlModel] = []
   var isPickerPresented = false
   var images: [UIImage] = []
+  var isLoading = false
 }

@@ -685,70 +685,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F3441100-7EC0-4019-B78E-A4A38B8C1CE3"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Home/HomeReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "152"
-            endingLineNumber = "152"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "07B5BF84-C738-4E17-84CD-CF4604ACB0C8"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Home/HomeReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "150"
-            endingLineNumber = "150"
-            landmarkName = "unknown"
-            landmarkType = "0">
-            <Locations>
-               <Location
-                  uuid = "07B5BF84-C738-4E17-84CD-CF4604ACB0C8 - 33ce1c88ec8d34fa"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #4 (inout Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.HomeAction, Swift.Never&gt; in variable initialization expression of Podium.homeReducer : ComposableArchitecture.AnyReducer&lt;Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Home/HomeReducer.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "50"
-                  endingLineNumber = "50"
-                  offsetFromSymbolStart = "1860">
-               </Location>
-               <Location
-                  uuid = "07B5BF84-C738-4E17-84CD-CF4604ACB0C8 - 33ce1c88ec8d34fa"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #4 (inout Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.HomeAction, Swift.Never&gt; in variable initialization expression of Podium.homeReducer : ComposableArchitecture.AnyReducer&lt;Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Home/HomeReducer.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "50"
-                  endingLineNumber = "50"
-                  offsetFromSymbolStart = "1984">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "25336967-7320-46DB-9C25-4D20E15FFC17"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -820,8 +756,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "243"
+            endingLineNumber = "243"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -836,8 +772,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "146"
-            endingLineNumber = "146"
+            startingLineNumber = "246"
+            endingLineNumber = "246"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -884,8 +820,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "201"
-            endingLineNumber = "201"
+            startingLineNumber = "149"
+            endingLineNumber = "149"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -916,8 +852,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
+            startingLineNumber = "241"
+            endingLineNumber = "241"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -950,54 +886,6 @@
                   startingLineNumber = "81"
                   endingLineNumber = "81"
                   offsetFromSymbolStart = "4480">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "9B32895C-8B60-4261-BD92-F1248E9EF7F2"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
-            landmarkName = "unknown"
-            landmarkType = "0">
-            <Locations>
-               <Location
-                  uuid = "9B32895C-8B60-4261-BD92-F1248E9EF7F2 - 6d7c55468596e923"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #5 (inout Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.TabsAction, Swift.Never&gt; in variable initialization expression of Podium.tabsReducer : ComposableArchitecture.AnyReducer&lt;Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Tabs/TabsReducer.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "36"
-                  endingLineNumber = "36"
-                  offsetFromSymbolStart = "912">
-               </Location>
-               <Location
-                  uuid = "9B32895C-8B60-4261-BD92-F1248E9EF7F2 - 6d7c55468596e923"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #5 (inout Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.TabsAction, Swift.Never&gt; in variable initialization expression of Podium.tabsReducer : ComposableArchitecture.AnyReducer&lt;Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Tabs/TabsReducer.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "36"
-                  endingLineNumber = "36"
-                  offsetFromSymbolStart = "1032">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -1177,86 +1065,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4F094FC0-78C5-4C68-8537-9D34D0C01FBB"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "375838F2-473D-4D9F-901F-B95E595CF6E2"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "80"
-            endingLineNumber = "80"
-            landmarkName = "unknown"
-            landmarkType = "0">
-            <Locations>
-               <Location
-                  uuid = "375838F2-473D-4D9F-901F-B95E595CF6E2 - 6d7c55468596e85a"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #5 (inout Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.TabsAction, Swift.Never&gt; in variable initialization expression of Podium.tabsReducer : ComposableArchitecture.AnyReducer&lt;Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Tabs/TabsReducer.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "45"
-                  endingLineNumber = "45"
-                  offsetFromSymbolStart = "2004">
-               </Location>
-               <Location
-                  uuid = "375838F2-473D-4D9F-901F-B95E595CF6E2 - 5016c998280ce02f"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 @Sendable () async -&gt; Podium.TabsAction in closure #5 (inout Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.TabsAction, Swift.Never&gt; in variable initialization expression of Podium.tabsReducer : ComposableArchitecture.AnyReducer&lt;Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Tabs/TabsReducer.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "45"
-                  endingLineNumber = "45"
-                  offsetFromSymbolStart = "0">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "241777D8-6256-4E51-B7C9-4A130B12F655"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "90"
-            endingLineNumber = "90"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "33AB8970-B7C7-4A30-A148-DA971021D330"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -1264,8 +1072,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "164"
-            endingLineNumber = "164"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1280,8 +1088,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "178"
-            endingLineNumber = "178"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1487,8 +1295,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "342"
-            endingLineNumber = "342"
+            startingLineNumber = "369"
+            endingLineNumber = "369"
             landmarkName = "setUsername(profile:username:)"
             landmarkType = "7">
             <Locations>
@@ -1550,8 +1358,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "358"
-            endingLineNumber = "358"
+            startingLineNumber = "385"
+            endingLineNumber = "385"
             landmarkName = "setUsername(profile:username:)"
             landmarkType = "7">
             <Locations>
@@ -1722,8 +1530,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "250"
-            endingLineNumber = "250"
+            startingLineNumber = "199"
+            endingLineNumber = "199"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1738,8 +1546,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "314"
-            endingLineNumber = "314"
+            startingLineNumber = "341"
+            endingLineNumber = "341"
             landmarkName = "addPost(post:)"
             landmarkType = "7">
             <Locations>
@@ -1816,8 +1624,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "303"
-            endingLineNumber = "303"
+            startingLineNumber = "330"
+            endingLineNumber = "330"
             landmarkName = "addPost(post:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1832,8 +1640,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "304"
-            endingLineNumber = "304"
+            startingLineNumber = "331"
+            endingLineNumber = "331"
             landmarkName = "addPost(post:)"
             landmarkType = "7">
             <Locations>
@@ -1880,25 +1688,9 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "478"
-            endingLineNumber = "478"
+            startingLineNumber = "505"
+            endingLineNumber = "505"
             landmarkName = "deletePost(post:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "7D375721-B038-468B-86AB-BD5B268F6AB8"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/API/API.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "234"
-            endingLineNumber = "234"
-            landmarkName = "listenPosts(ids:completion:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1912,8 +1704,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "252"
-            endingLineNumber = "252"
+            startingLineNumber = "279"
+            endingLineNumber = "279"
             landmarkName = "listenComments(post:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1928,8 +1720,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "250"
-            endingLineNumber = "250"
+            startingLineNumber = "277"
+            endingLineNumber = "277"
             landmarkName = "listenComments(post:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1944,8 +1736,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "249"
-            endingLineNumber = "249"
+            startingLineNumber = "276"
+            endingLineNumber = "276"
             landmarkName = "listenComments(post:completion:)"
             landmarkType = "7">
             <Locations>
@@ -1992,8 +1784,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
+            startingLineNumber = "269"
+            endingLineNumber = "269"
             landmarkName = "listenComments(post:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -2008,8 +1800,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "241"
-            endingLineNumber = "241"
+            startingLineNumber = "268"
+            endingLineNumber = "268"
             landmarkName = "listenComments(post:completion:)"
             landmarkType = "7">
             <Locations>
@@ -2064,70 +1856,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9E3F7DBA-ED26-4F98-B2C5-B598E8195979"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "60"
-            endingLineNumber = "60"
-            landmarkName = "unknown"
-            landmarkType = "0">
-            <Locations>
-               <Location
-                  uuid = "9E3F7DBA-ED26-4F98-B2C5-B598E8195979 - 6d7c55468596e923"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #5 (inout Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.TabsAction, Swift.Never&gt; in variable initialization expression of Podium.tabsReducer : ComposableArchitecture.AnyReducer&lt;Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Tabs/TabsReducer.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "36"
-                  endingLineNumber = "36"
-                  offsetFromSymbolStart = "1984">
-               </Location>
-               <Location
-                  uuid = "9E3F7DBA-ED26-4F98-B2C5-B598E8195979 - 6d7c55468596e923"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #5 (inout Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.TabsAction, Swift.Never&gt; in variable initialization expression of Podium.tabsReducer : ComposableArchitecture.AnyReducer&lt;Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Tabs/TabsReducer.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "36"
-                  endingLineNumber = "36"
-                  offsetFromSymbolStart = "2108">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "CA54814F-32D7-4EF6-BD1D-385E158E5757"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "77685707-8ABB-4C72-A00C-224285DCCDE2"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -2135,8 +1863,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
+            startingLineNumber = "263"
+            endingLineNumber = "263"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -2151,8 +1879,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
+            startingLineNumber = "209"
+            endingLineNumber = "209"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -2167,8 +1895,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "123"
-            endingLineNumber = "123"
+            startingLineNumber = "220"
+            endingLineNumber = "220"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -2215,8 +1943,8 @@
             filePath = "Podium/Containers/Stories/StoriesReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -2224,49 +1952,225 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "1FD1DC8E-E2E0-4FBC-A824-61AB9B2D1F1C"
+            uuid = "0B115F8D-61AB-4D47-8BB2-D16CACF95A84"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Home/HomeReducer.swift"
+            filePath = "Podium/Containers/Stories/StoriesReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "43"
-            endingLineNumber = "43"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AF69E971-2226-4B5C-BBD1-13FEA1B652B9"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "84"
+            endingLineNumber = "84"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "13039698-FB47-438A-8C6E-0C730E57A571"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "47"
+            endingLineNumber = "47"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "924C96BF-587F-49E1-A0F6-4ADD82990F32"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "29E7FA4E-F553-46B0-AB9F-509FA6D7ED81"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/Containers/Stories/StoriesReducer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "90"
+            endingLineNumber = "90"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "529F4DE4-2FDF-4AAF-B605-92C179C11379"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
                <Location
-                  uuid = "1FD1DC8E-E2E0-4FBC-A824-61AB9B2D1F1C - 805f1f37e92e633e"
+                  uuid = "529F4DE4-2FDF-4AAF-B605-92C179C11379 - 6d7c55468596f8a3"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #6 (inout Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.HomeAction, Swift.Never&gt; in variable initialization expression of Podium.homeReducer : ComposableArchitecture.AnyReducer&lt;Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment&gt;"
+                  symbolName = "closure #5 (inout Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.TabsAction, Swift.Never&gt; in variable initialization expression of Podium.tabsReducer : ComposableArchitecture.AnyReducer&lt;Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment&gt;"
                   moduleName = "Podium"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Home/HomeReducer.swift"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Tabs/TabsReducer.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "44"
-                  endingLineNumber = "44"
-                  offsetFromSymbolStart = "2736">
+                  startingLineNumber = "164"
+                  endingLineNumber = "164"
+                  offsetFromSymbolStart = "14076">
                </Location>
                <Location
-                  uuid = "1FD1DC8E-E2E0-4FBC-A824-61AB9B2D1F1C - 3cc502827062492c"
+                  uuid = "529F4DE4-2FDF-4AAF-B605-92C179C11379 - 3d1f890315aa38c3"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #2 @Sendable () async -&gt; Podium.HomeAction in closure #6 (inout Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.HomeAction, Swift.Never&gt; in variable initialization expression of Podium.homeReducer : ComposableArchitecture.AnyReducer&lt;Podium.HomeState, Podium.HomeAction, Podium.AppEnvironment&gt;"
+                  symbolName = "closure #7 (Swift.Array&lt;Podium.StoryModel&gt;) -&gt; Swift.Array&lt;Podium.StoryModel&gt; in closure #5 (inout Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment) -&gt; ComposableArchitecture.EffectPublisher&lt;Podium.TabsAction, Swift.Never&gt; in variable initialization expression of Podium.tabsReducer : ComposableArchitecture.AnyReducer&lt;Podium.TabsState, Podium.TabsAction, Podium.AppEnvironment&gt;"
                   moduleName = "Podium"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Home/HomeReducer.swift"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/Containers/Tabs/TabsReducer.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "45"
-                  endingLineNumber = "45"
-                  offsetFromSymbolStart = "88">
+                  startingLineNumber = "170"
+                  endingLineNumber = "170"
+                  offsetFromSymbolStart = "32">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "50C66F14-BC2D-4F7B-B9B9-8B5236B3C405"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/API/API.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "652"
+            endingLineNumber = "652"
+            landmarkName = "listenStories(ids:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "50C66F14-BC2D-4F7B-B9B9-8B5236B3C405 - 283047f27a95c8c2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRDocumentSnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in closure #1 (Swift.Optional&lt;__C.FIRQuerySnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in static Podium.API.listenStories(ids: Swift.Array&lt;Swift.String&gt;, completion: ((Swift.Dictionary&lt;Swift.String, Swift.Array&lt;Podium.StoryModel&gt;&gt;, Swift.Array&lt;Podium.StoryUrlModel&gt;), Swift.Dictionary&lt;Swift.String, Swift.Array&lt;Podium.StoryModel&gt;&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "Podium"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "626"
+                  endingLineNumber = "626"
+                  offsetFromSymbolStart = "160">
+               </Location>
+               <Location
+                  uuid = "50C66F14-BC2D-4F7B-B9B9-8B5236B3C405 - 283047f27a95c8c2"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Swift.Optional&lt;__C.FIRDocumentSnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in closure #1 (Swift.Optional&lt;__C.FIRQuerySnapshot&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in static Podium.API.listenStories(ids: Swift.Array&lt;Swift.String&gt;, completion: ((Swift.Dictionary&lt;Swift.String, Swift.Array&lt;Podium.StoryModel&gt;&gt;, Swift.Array&lt;Podium.StoryUrlModel&gt;), Swift.Dictionary&lt;Swift.String, Swift.Array&lt;Podium.StoryModel&gt;&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "Podium"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "626"
+                  endingLineNumber = "626"
+                  offsetFromSymbolStart = "388">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1D2E2729-55E0-40D7-AFC6-108B66D0AF6E"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/API/API.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "648"
+            endingLineNumber = "648"
+            landmarkName = "listenStories(ids:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "584AC802-75E8-4778-8481-97D79B6674FA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "unknown"
+            landmarkType = "0">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "1E1DFBEB-352D-42A5-9945-9FE753116A3C"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/Containers/Tabs/TabsView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "70"
+            endingLineNumber = "70"
+            landmarkName = "body"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

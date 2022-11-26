@@ -9,7 +9,6 @@ import ComposableArchitecture
 import Foundation
 
 enum HomeAction {
-  case initialize
   case presentStories(isPresented: Bool, profile: ProfileModel?)
   case presentThread(isPresented: Bool, post: PostModel?)
   case presentAdd(isPresented: Bool)
@@ -23,10 +22,6 @@ enum HomeAction {
   case didReportPost(TaskResult<String>)
   case dismissBanner
   case onMenuOpen
-  case getStories
-  case didGetStories(TaskResult<([String: [StoryModel]], [String])>)
-  case prefetchStories
-  case didPrefetchStories(TaskResult<[String: Data]>)
   
   // View Actions
   case add(AddAction)

@@ -81,7 +81,7 @@ class API {
         let storageRef = storage.reference()
         let profileId = post.ownerId
         let fileRef = storageRef.child("\(profileId)/\(fileId).png")
-        _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.7)!)
+        _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.5)!)
         let url = try await fileRef.downloadURL()
         urls.append(url.absoluteString)
       }
@@ -214,24 +214,51 @@ class API {
     }
   }
   
-  static func listenPosts(ids: [String], completion: @escaping (_ posts: [PostModel]) -> Void) async throws {
-    let profiles = try await getProfiles(ids: ids)
+  static func listenPosts(ids: [String], completion: @escaping (_ posts: [PostModel]) -> Void) {
     db
       .collection("posts")
       .whereField("ownerId", in: ids)
       .order(by: "createdAt", descending: true)
       .addSnapshotListener({ querySnapshot, error in
         var posts: [PostModel] = []
+        let group = DispatchGroup()
         if let documents = querySnapshot?.documentChanges {
           for document in documents {
             if document.type == .added,
                var post = try? PostModel(dictionary: document.document.data()) {
-              post.profile = profiles.first(where: { $0.id == post.ownerId })
-              posts.append(post)
+              group.enter()
+              db
+                .collection("users")
+                .document(post.ownerId)
+                .getDocument { querySnapshot, error in
+                  if let querySnapshot = querySnapshot {
+                    if let data = querySnapshot.data(),
+                       var profile = try? ProfileModel(dictionary: data) {
+                      if let avatarId = profile.avatarId {
+                        let storageRef = storage.reference()
+                        let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
+                        fileRef.getData(maxSize: 10 * 1024 * 1024) { data, error in
+                          if let data = data {
+                            profile.avatarData = data
+                          }
+                          post.profile = profile
+                          posts.append(post)
+                          group.leave()
+                        }
+                      } else {
+                        post.profile = profile
+                        posts.append(post)
+                        group.leave()
+                      }
+                    }
+                  }
+                }
             }
           }
-          if(!posts.isEmpty) {
-            completion(posts)
+          group.notify(queue: .main) {
+            if(!posts.isEmpty) {
+              completion(posts)
+            }
           }
         }
       })
@@ -570,57 +597,132 @@ class API {
     }
   }
   
-  static func addStory(profileId: String, image: UIImage) async throws -> String {
+  static func addStory(profileId: String, image: UIImage) async throws -> (String, StoryModel) {
     do {
-      let storyId = UUID().uuidString
+      var story = StoryModel(
+        id: UUID().uuidString,
+        url: "",
+        ownerId: profileId,
+        createdAt: Int64(Int(Date().millisecondsSince1970) / 1000)
+      )
+      
       let fileId = UUID().uuidString
       let storageRef = storage.reference()
-      let fileRef = storageRef.child("\(profileId)/\(fileId).png")
-      _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.7)!)
+      let fileRef = storageRef.child("\(profileId)/stories/\(fileId).png")
+      _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.5)!)
       let url = try await fileRef.downloadURL()
+      story.url = url.absoluteString
       
       try await db
         .collection("stories")
-        .document(storyId)
+        .document(story.id)
         .setData([
-          "id": storyId,
-          "ownerId": profileId,
-          "url": url.absoluteString,
-          "createdAt": Int(Date().millisecondsSince1970) / 1000,
+          "id": story.id,
+          "ownerId": story.ownerId,
+          "url": story.url,
+          "createdAt": story.createdAt,
         ], merge: true)
       
-      return storyId
+      return (profileId, story)
     } catch let error {
       throw error
     }
   }
   
-  static func getStories(ids: [String]) async throws -> ([String: [StoryModel]], [String]) {
-    do {
-      var stories: [String: [StoryModel]] = [:]
-      var urls: [String] = []
-      
-      let profiles = try await getProfiles(ids: ids)
-      let dictionary = try await db
-        .collection("stories")
-        .whereField("ownerId", in: ids)
-        .getDocuments()
-        .documents
-      
-      for document in dictionary {
-        if var story = try? StoryModel(dictionary: document.data()) {
-          story.profile = profiles.first(where: { $0.id == story.ownerId })
-          if let profile = story.profile {
-            urls.append(story.url)
-            if stories[profile.id] == nil {
-              stories[profile.id] = [story]
-            } else {
-              stories[profile.id]?.append(story)
+  static func listenStories(ids: [String], completion: @escaping (_ storiesToAdd: ([String: [StoryModel]], [StoryUrlModel]), _ storiesToRemove: [String: [StoryModel]]) -> Void) {
+    db
+      .collection("stories")
+      .whereField("ownerId", in: ids)
+      .order(by: "createdAt")
+      .addSnapshotListener({ querySnapshot, error in
+        var urls: [StoryUrlModel] = []
+        var stories: [String: [StoryModel]] = [:]
+        var toRemove: [String: [StoryModel]] = [:]
+        let group = DispatchGroup()
+        
+        if let documents = querySnapshot?.documentChanges {
+          for document in documents {
+            if document.type == .added,
+               var story = try? StoryModel(dictionary: document.document.data()) {
+              group.enter()
+              db
+                .collection("users")
+                .document(story.ownerId)
+                .getDocument { profileSnap, error in
+                  if let profileData = profileSnap?.data(),
+                     var profile = try? ProfileModel(dictionary: profileData) {
+                    if let avatarId = profile.avatarId {
+                      let storageRef = storage.reference()
+                      let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
+                      fileRef.getData(maxSize: 10 * 1024 * 1024) { data, err in
+                        if let data = data {
+                          profile.avatarData = data
+                        }
+                        story.profile = profile
+                        urls.append(StoryUrlModel(
+                          url: story.url,
+                          createdAt: story.createdAt
+                        ))
+                        if stories[profile.id] == nil {
+                          stories[profile.id] = [story]
+                        } else {
+                          stories[profile.id]?.append(story)
+                        }
+                        group.leave()
+                      }
+                    } else {
+                      group.leave()
+                    }
+                  }
+                }
+            } else if document.type == .removed {
+              if let story = try? StoryModel(dictionary: document.document.data()) {
+                if toRemove[story.ownerId] == nil {
+                  toRemove[story.ownerId] = [story]
+                } else {
+                  toRemove[story.ownerId]?.append(story)
+                }
+              }
             }
           }
         }
-      }
+        
+        group.notify(queue: DispatchQueue.global()) {
+          completion((stories, urls), toRemove)
+        }
+      })
+  }
+  
+  static func getStories(ids: [String]) async throws -> ([String: [StoryModel]], [StoryUrlModel]) {
+    do {
+      var stories: [String: [StoryModel]] = [:]
+      var urls: [StoryUrlModel] = []
+      let profiles = try await getProfiles(ids: ids)
       
+      let results = try await db
+        .collection("stories")
+        .whereField("ownerId", in: ids)
+        .order(by: "createdAt")
+        .limit(to: 25)
+        .getDocuments()
+        .documents
+      
+      for document in results {
+        if var story = try? StoryModel(dictionary: document.data()) {
+          urls.append(StoryUrlModel(
+            url: story.url,
+            createdAt: story.createdAt
+          ))
+          if let profile = profiles.first(where: { $0.id == story.ownerId }) {
+            story.profile = profile
+          }
+          if stories[story.ownerId] == nil {
+            stories[story.ownerId] = [story]
+          } else {
+            stories[story.ownerId]?.append(story)
+          }
+        }
+      }
       return (stories, urls)
     } catch let error {
       throw error
@@ -628,17 +730,22 @@ class API {
   }
   
   static func prefetchStories(fileUrls: [String]) async throws -> [String: Data] {
-    do {
+    try await withThrowingTaskGroup(of: (String, Data).self) { group in
       var prefetched: [String: Data] = [:]
       
       for url in fileUrls {
-        let (fileUrl, data) = try await getImage(url: url)
+        group.addTask {
+          let (fileUrl, data) = try await getImage(url: url)
+          return (fileUrl, data)
+        }
+      }
+      
+      for try await value in group {
+        let (fileUrl, data) = value
         prefetched[fileUrl] = data
       }
       
       return prefetched
-    } catch let error {
-      throw error
     }
   }
 }

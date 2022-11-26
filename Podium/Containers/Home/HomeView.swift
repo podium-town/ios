@@ -80,21 +80,46 @@ struct HomeView: View {
               ZStack {
                 ScrollView(.horizontal, showsIndicators: false) {
                   HStack {
-                    ForEach(Array(viewStore.stories), id: \.key) { id, posts in
+                    if viewStore.stories.isEmpty {
+                      StoryAvatar(
+                        profile: viewStore.profile,
+                        isAddVisible: true
+                      )
+                      .opacity(0.5)
+                      .overlay(
+                        ProgressView()
+                      )
+                    } else {
                       Button {
                         viewStore.send(.presentStories(
                           isPresented: true,
-                          profile: posts.first!.profile!
+                          profile: viewStore.profile
                         ))
                       } label: {
                         StoryAvatar(
-                          profile: posts.first!.profile!,
-                          isAddVisible: viewStore.profile.id == id
+                          profile: viewStore.profile,
+                          isAddVisible: true
                         )
+                      }
+                      ForEach(Array(viewStore.stories), id: \.key) { id, posts in
+                        if let profile = posts.first?.profile, id != viewStore.profile.id {
+                          Button {
+                            viewStore.send(.presentStories(
+                              isPresented: true,
+                              profile: profile
+                            ))
+                          } label: {
+                            StoryAvatar(
+                              profile: profile,
+                              isAddVisible: id == viewStore.profile.id
+                            )
+                          }
+                        }
                       }
                     }
                   }
                   .padding(.horizontal)
+                  .animation(.default)
                 }
                 .padding(.top, 16)
                 .padding(.bottom, 18)
@@ -160,13 +185,6 @@ struct HomeView: View {
                 ),
                 then: MediaView.init(store:)
               )
-            }
-            .onAppear {
-#if targetEnvironment(simulator)
-              
-#else
-              viewStore.send(.initialize)
-#endif
             }
             .banner(data: viewStore.binding(
               get: \.bannerData,

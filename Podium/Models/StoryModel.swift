@@ -14,6 +14,7 @@ struct StoryModel: Equatable, Identifiable {
   var createdAt: Int64
   var profile: ProfileModel?
   var data: Data?
+  var seenBy: [String]? = []
 }
 
 extension StoryModel: Codable {

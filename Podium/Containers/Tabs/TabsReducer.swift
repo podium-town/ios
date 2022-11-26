@@ -32,6 +32,27 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
   ),
   Reducer { state, action, environment in
     switch action {
+    case .prefetchStories:
+      let index = min(state.urls.count, 5)
+      let fileUrls = Array(state.urls.sorted(by: { $0.createdAt > $1.createdAt }).prefix(upTo: index))
+      return .task {
+        await .didPrefetchStories(TaskResult {
+          try await API.prefetchStories(
+            fileUrls: fileUrls.map({ $0.url })
+          )
+        })
+      }
+      
+    case .didPrefetchStories(.success(let results)):
+      for result in results {
+        state.homeState.storiesState?.loadedMedia[result.key] = result.value
+        state.homeState.storiesState?.urls.removeAll(where: { $0.url == result.key })
+      }
+      return .none
+      
+    case .didPrefetchStories(.failure(let error)):
+      return .none
+      
     case .getProfile:
       let id = state.profile.id
       return .task {
@@ -41,6 +62,31 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
           )
         })
       }
+      
+    case .removeStories(let stories):
+      for (profileId, story) in stories {
+        story.forEach { st in
+          state.stories[profileId]?.removeAll(where: { $0.id == st.id })
+          state.homeState.stories[profileId]?.removeAll(where: { $0.id == st.id })
+          state.homeState.storiesState?.stories[profileId]?.removeAll(where: { $0.id == st.id })
+          state.urls.removeAll(where: { $0.url == st.url})
+          state.homeState.storiesState?.urls.removeAll(where: { $0.url == st.url})
+        }
+      }
+      return Effect(value: .prefetchStories)
+      
+    case .addStories(let stories, let urls):
+      var defaultStories = stories
+      if !defaultStories.contains(where: { $0.key == state.profile.id }) {
+        defaultStories[state.profile.id] = []
+      }
+      
+      state.stories.merge(defaultStories, uniquingKeysWith: +)
+      state.homeState.stories.merge(defaultStories, uniquingKeysWith: +)
+      state.homeState.storiesState?.stories.merge(defaultStories, uniquingKeysWith: +)
+      state.urls.append(contentsOf: urls)
+      state.homeState.storiesState?.urls.append(contentsOf: urls)
+      return Effect(value: .prefetchStories)
       
     case .didGetProfile(.success(let profile)):
       state.profile = profile
@@ -57,17 +103,43 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       return .none
       
     case .initialize:
-//      if let posts = environment.localStorage.data(forKey: StorageKey.posts.rawValue),
-//         let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts) {
-//        state.homeState.posts = loadedPosts
-//      }
+      state.homeState.storiesState = StoriesState(
+        profile: state.profile,
+        stories: [:]
+      )
       return .none
       
     case .addPosts(let posts):
-      state.homeState.posts.insert(contentsOf: posts, at: 0)
+      state.homeState.posts.insert(contentsOf: posts.sorted(by: { $0.createdAt > $1.createdAt }), at: 0)
       if let encodedPosts = try? JSONEncoder().encode(state.homeState.posts) {
         environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
       }
+      return .none
+      
+    case .getStories:
+      let followingIds = state.profile.following
+      return .task {
+        await .didGetStories(TaskResult {
+          try await API.getStories(
+            ids: followingIds
+          )
+        })
+      }
+      
+    case .didGetStories(.success((let stories, let urls))):
+      var defaultStories = stories
+      if !defaultStories.contains(where: { $0.key == state.profile.id }) {
+        defaultStories[state.profile.id] = []
+      }
+      
+      state.stories = defaultStories
+      state.homeState.stories = defaultStories
+      state.homeState.storiesState?.stories = defaultStories
+      state.urls = urls
+      state.homeState.storiesState?.urls = urls
+      return Effect(value: .prefetchStories)
+      
+    case .didGetStories(.failure(let error)):
       return .none
       
     case .getPosts:
@@ -99,6 +171,12 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.homeState.isEmpty = state.homeState.posts.count == 0
       return .none
       
+    case .home(.getPosts):
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
+      
     case .home(.onMenuOpen):
       state.isMenuOpen = true
       return .none
@@ -111,13 +189,32 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.isMenuOpen = false
       return .none
       
+    case .home(.stories(.nextStory)):
+      if let storiesState = state.homeState.storiesState,
+         let currentStory = storiesState.currentStory,
+         let xs = storiesState.stories[currentStory.ownerId] {
+        
+        state.homeState.storiesState?.stories[currentStory.ownerId] = xs.map {
+          if $0.id == currentStory.id {
+            var mut = $0
+            mut.seenBy?.append(state.profile.id)
+            return mut
+          }
+          return $0
+        }
+      }
+      return .none
+      
     case .home(.profile(.didFollow(.success((let from, let id))))):
       state.profile.following.append(id)
       state.exploreState.profile.following.append(id)
       state.homeState.profile.following.append(id)
       state.profileState.fromProfile.following.append(id)
       state.homeState.profileState?.fromProfile.following.append(id)
-      return Effect(value: .getPosts)
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
       
     case .home(.profile(.didUnfollow(.success((let from, let id))))):
       state.profile.following.removeAll(where: { $0 == id })
@@ -125,7 +222,10 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.homeState.profile.following.removeAll(where: { $0 == id })
       state.homeState.profileState?.fromProfile.following.removeAll(where: { $0 == id })
       state.profileState.fromProfile.following.removeAll(where: { $0 == id })
-      return Effect(value: .getPosts)
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
         
     case .home(_):
       return .none
@@ -157,14 +257,17 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.exploreState.profile.following.append(id)
       state.homeState.profile.following.append(id)
       state.profileState.fromProfile.following.append(id)
-      return Effect(value: .getPosts)
+      return Effect(value: .getStories)
       
     case .profile(.didUnfollow(.success((let from, let id)))):
       state.profile.following.removeAll(where: { $0 == id })
       state.exploreState.profile.following.removeAll(where: { $0 == id })
       state.homeState.profile.following.removeAll(where: { $0 == id })
       state.profileState.fromProfile.following.removeAll(where: { $0 == id })
-      return Effect(value: .getPosts)
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
       
     case .profile(_):
       return .none
@@ -174,14 +277,20 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.exploreState.profile.following.append(id)
       state.homeState.profile.following.append(id)
       state.profileState.fromProfile.following.append(id)
-      return Effect(value: .getPosts)
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
       
     case .explore(.didUnfollow(.success((let from, let id)))):
       state.profile.following.removeAll(where: { $0 == id })
       state.exploreState.profile.following.removeAll(where: { $0 == id })
       state.homeState.profile.following.removeAll(where: { $0 == id })
       state.profileState.fromProfile.following.removeAll(where: { $0 == id })
-      return Effect(value: .getPosts)
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
       
     case .explore(.profile(.didFollow(.success((let from, let id))))):
       state.profile.following.append(id)
@@ -189,7 +298,10 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.exploreState.profileState?.fromProfile.following.append(id)
       state.homeState.profile.following.append(id)
       state.profileState.fromProfile.following.append(id)
-      return Effect(value: .getPosts)
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
       
     case .explore(.profile(.didUnfollow(.success((let from, let id))))):
       state.profile.following.removeAll(where: { $0 == id })
@@ -197,7 +309,10 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.exploreState.profileState?.fromProfile.following.removeAll(where: { $0 == id })
       state.homeState.profile.following.removeAll(where: { $0 == id })
       state.profileState.fromProfile.following.removeAll(where: { $0 == id })
-      return Effect(value: .getPosts)
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
       
     case .explore(_):
       return .none

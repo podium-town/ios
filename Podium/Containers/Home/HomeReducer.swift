@@ -36,61 +36,12 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     environment: { $0 }
   ),
   Reducer { state, action, environment in
-    switch action {
-    case .prefetchStories:
-      let index = min(state.urls.count, 5)
-      let fileUrls = Array(state.urls.prefix(upTo: index))
-      return .task {
-        await .didPrefetchStories(TaskResult {
-          try await API.prefetchStories(
-            fileUrls: fileUrls
-          )
-        })
-      }
-      
-    case .didPrefetchStories(.success(let results)):
-      for result in results {
-        state.storiesState?.loadedMedia[result.key] = result.value
-        state.urls.removeAll(where: { $0 == result.key })
-        state.storiesState?.urls.removeAll(where: { $0 == result.key })
-      }
-      return .none
-      
-    case .didPrefetchStories(.failure(let error)):
-      return .none
-      
+    switch action {  
     case .onMenuOpen:
       return .none
       
     case .dismissBanner:
       state.bannerData = nil
-      return .none
-      
-    case .initialize:
-      state.storiesState = StoriesState(
-        profile: state.profile,
-        stories: [:]
-      )
-      return Effect(value: .getStories)
-      
-    case .getStories:
-      let ids = state.profile.following
-      return .task {
-        await .didGetStories(TaskResult {
-          try await API.getStories(
-            ids: ids
-          )
-        })
-      }
-      
-    case .didGetStories(.success((let stories, let urls))):
-      state.stories = stories
-      state.urls.append(contentsOf: urls)
-      state.storiesState?.stories = stories
-      state.storiesState?.urls.append(contentsOf: urls)
-      return Effect(value: .prefetchStories)
-      
-    case .didGetStories(.failure(let error)):
       return .none
       
     case .deletePost(let post):
@@ -147,25 +98,22 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       
     case .getPosts:
       state.isLoadingRefreshable = true
-      if let posts = environment.localStorage.data(forKey: StorageKey.posts.rawValue),
-         let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts) {
-        state.posts = loadedPosts
-      }
-      let followingIds = state.profile.following
-      return .task {
-        await .didGetPosts(TaskResult {
-          try await API.getPostsProfiles(
-            ids: followingIds
-          )
-        })
-      }
+      return .none
+//      let followingIds = state.profile.following
+//      return .task {
+//        await .didGetPosts(TaskResult {
+//          try await API.getPostsProfiles(
+//            ids: followingIds
+//          )
+//        })
+//      }
       
     case .didGetPosts(.success(let posts)):
       state.isLoadingRefreshable = false
-      state.posts = posts
-      if let encodedPosts = try? JSONEncoder().encode(state.posts) {
-        environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
-      }
+//      state.posts = posts
+//      if let encodedPosts = try? JSONEncoder().encode(state.posts) {
+//        environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
+//      }
       state.isEmpty = posts.count == 0
       return .none
       
@@ -224,8 +172,9 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       }
       return .none
       
-    case .stories(.didAddStory(.success(let fileId))):
-      return Effect(value: .getStories)
+    case .stories(.dismiss):
+      state.isStoriesPresented = false
+      return .none
       
     case .stories(_):
       return .none

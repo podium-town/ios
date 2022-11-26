@@ -20,7 +20,6 @@ struct HomeState: Equatable {
   var posts: [PostModel]
   var bannerData: BannerData?
   var stories: [String: [StoryModel]] = [:]
-  var urls: [String] = []
   
   // View States
   var add: AddState?

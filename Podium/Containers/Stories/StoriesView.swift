@@ -14,16 +14,26 @@ struct StoriesView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       ZStack {
-        if let currentStory = viewStore.currentStory {
-          if !viewStore.images.isEmpty {
-            Color.black
-              .overlay(
-                Image(uiImage: viewStore.images.first!)
-                  .resizable()
-                  .scaledToFill()
-              )
-              .edgesIgnoringSafeArea(.all)
-          } else if let data = viewStore.loadedMedia[currentStory.url] {
+        if let create = viewStore.images.first {
+          Color.black
+            .overlay(
+              Image(uiImage: create)
+                .resizable()
+                .scaledToFill()
+            )
+            .edgesIgnoringSafeArea(.all)
+          
+          CreateView(
+            onAdd: {
+              viewStore.send(.addStory)
+            },
+            onDismiss: {
+              viewStore.send(.dismissCreate)
+            }
+          )
+        } else if let currentStory = viewStore.currentStory,
+                  let currentProfile = currentStory.profile {
+          if let data = viewStore.loadedMedia[currentStory.url] {
             Color.black
               .overlay(
                 Image(uiImage: UIImage(data: data)!)
@@ -61,71 +71,69 @@ struct StoriesView: View {
               }
             }
           }
-        } else {
-          Color.black
-            .overlay(
-              Text("No more stories")
-                .foregroundColor(.white)
-                .fontWeight(.medium)
-            )
-        }
-        
-        if viewStore.images.isEmpty {
-          StoriesViewer(
-            profile: viewStore.profile,
-            isPresented: viewStore.binding(
-              get: \.isPickerPresented,
-              send: StoriesAction.presentPicker(isPresented:)
-            ),
-            currentStory: viewStore.currentStory,
-            stories: viewStore.stories,
-            onPresent: {
-              viewStore.send(.presentPicker(isPresented: true))
-            },
-            onAddImage: { image in
-              viewStore.send(.addImage(image))
-            }
-          )
-        } else {
+          
           VStack {
             HStack {
-              Spacer()
-              Button {
-                viewStore.send(.dismissCreate)
-              } label: {
-                Image("close")
-                  .resizable()
-                  .frame(width: 32, height: 32)
-                  .foregroundColor(.white)
+              ForEach(viewStore.stories[currentProfile.id] ?? []) { story in
+                RoundedRectangle(cornerRadius: 15)
+                  .frame(height: 4)
+                  .opacity(currentStory.id == story.id ? 0.8 : 0.5)
               }
             }
-            .padding(24)
+            
+            HStack {
+              Image(uiImage: (currentProfile.avatarData != nil) ? UIImage(data: currentProfile.avatarData!)! : UIImage(named: "avatar")!)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 32, height: 32)
+                .clipShape(Circle())
+              
+              Text(currentProfile.username ?? "")
+                .fontWeight(.semibold)
+              
+              Spacer()
+              
+              Text(Date(timeIntervalSince1970: TimeInterval(currentStory.createdAt)).timeAgoDisplay())
+            }
             
             Spacer()
             
-            HStack {
-              Spacer()
-              Button {
-                viewStore.send(.addStory)
-              } label: {
-                HStack {
-                  Text("Add")
-                    .fontWeight(.medium)
-                    .font(.title3)
-                  
-                  Image("send")
-                    .resizable()
-                    .frame(width: 24, height: 24)
+            if currentProfile.id == viewStore.profile.id {
+              CreateBar(
+                isLoading: viewStore.isLoading,
+                isPresented: viewStore.binding(
+                  get: \.isPickerPresented,
+                  send: StoriesAction.presentPicker(isPresented:)
+                ),
+                onPicker: {
+                  viewStore.send(.presentPicker(isPresented: true))
+                },
+                onAddImage: { image in
+                  viewStore.send(.addImage(image))
                 }
-                .foregroundColor(.black)
-                .padding(.vertical, 10)
-                .padding(.horizontal, 18)
-                .background(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 99))
-              }
+              )
             }
-            .padding(24)
           }
+          .padding()
+        } else {
+          VStack {
+            Spacer()
+            CreateBar(
+              isLoading: viewStore.isLoading,
+              isPresented: viewStore.binding(
+                get: \.isPickerPresented,
+                send: StoriesAction.presentPicker(isPresented:)
+              ),
+              onPicker: {
+                viewStore.send(.presentPicker(isPresented: true))
+              },
+              onAddImage: { image in
+                viewStore.send(.addImage(image))
+              }
+            )
+            .padding()
+          }
+          .background(Color.black)
         }
       }
       .background(Color.black)
@@ -143,7 +151,7 @@ struct StoriesView_Previews: PreviewProvider {
         profile: Mocks.profile,
         stories: ["456" : [Mocks.story, Mocks.story]],
         currentProfile: "456",
-        images: [UIImage(named: "welcome")!]
+        images: []
       ),
       reducer: storiesReducer,
       environment: AppEnvironment()

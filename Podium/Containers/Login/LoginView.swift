@@ -75,8 +75,8 @@ struct LoginView: View {
               .flagHidden(false)
               .prefixHidden(false)
               .flagSelectable(true)
-              .foregroundColor(Color("ColorTextInverted"))
-              .accentColor(Color("ColorTextInverted"))
+              .foregroundColor(Color.white)
+              .accentColor(Color.white)
               .padding()
               .background(
                 RoundedRectangle(cornerRadius: 16)

@@ -12,13 +12,16 @@ import UIKit
 let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
     switch action {
+    case .dismiss:
+      return .none
+      
     case .dismissCreate:
       state.images = []
       return .none
       
     case .prefetchStories:
       let index = min(state.urls.count, 5)
-      let fileUrls = Array(state.urls.prefix(upTo: index))
+      let fileUrls = Array(state.urls.prefix(upTo: index)).map({ $0.url })
       return .task {
         await .didPrefetchStories(TaskResult {
           try await API.prefetchStories(
@@ -30,7 +33,7 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
     case .didPrefetchStories(.success(let results)):
       for result in results {
         state.loadedMedia[result.key] = result.value
-        state.urls.removeAll(where: { $0 == result.key })
+        state.urls.removeAll(where: { $0.url == result.key })
       }
       return .none
       
@@ -46,6 +49,7 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
       return .none
       
     case .addStory:
+      state.isLoading = true
       let profileId = state.profile.id
       let image = state.images.first!
       state.images = []
@@ -58,10 +62,12 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
         })
       }
       
-    case .didAddStory(.success(let fileUrl)):
-      return .none
+    case .didAddStory(.success((let profileId, let story))):
+      state.isLoading = false
+      return Effect(value: .getStories)
       
     case .didAddStory(.failure(let error)):
+      state.isLoading = false
       return .none
       
     case .getStories:
@@ -75,7 +81,7 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
       }
       state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeIterator()
       state.currentStory = state.storiesIterator?.next()
-      return .none
+      return Effect(value: .prefetchStories)
       
     case .prevStory:
       return .none
@@ -86,6 +92,7 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
         state.currentProfile = state.profilesIterator?.next()
         if state.currentProfile == nil {
           state.currentStory = nil
+          return Effect(value: .dismiss)
         } else {
           state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeIterator()
           state.currentStory = state.storiesIterator?.next()

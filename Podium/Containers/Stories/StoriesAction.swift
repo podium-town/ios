@@ -15,10 +15,11 @@ enum StoriesAction {
   case nextStory
   case setProfile(String)
   case addStory
-  case didAddStory(TaskResult<String>)
+  case didAddStory(TaskResult<(String, StoryModel)>)
   case prefetchStories
   case didPrefetchStories(TaskResult<[String: Data]>)
   case presentPicker(isPresented: Bool)
   case addImage(UIImage)
   case dismissCreate
+  case dismiss
 }
