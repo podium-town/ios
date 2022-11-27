@@ -11,11 +11,11 @@ import Foundation
 enum TabsAction {
   case initialize
   case getPosts
-  case didGetPosts(TaskResult<([PostModel], [String: ProfileModel])>)
+  case didGetPosts(TaskResult<[PostProfileModel]>)
   case getStories
-  case didGetStories(TaskResult<([String: [StoryModel]], [StoryUrlModel], [String: ProfileModel])>)
-  case addPosts(posts: [PostModel], profiles: [String: ProfileModel])
-  case addStories(stories: [String: [StoryModel]], urls: [StoryUrlModel])
+  case didGetStories(TaskResult<([String: [StoryProfileModel]], [StoryUrlModel])>)
+  case addPosts(posts: [PostProfileModel])
+  case addStories(stories: [String: [StoryProfileModel]], urls: [StoryUrlModel])
   case onMenuClose
   case getProfile
   case didGetProfile(TaskResult<ProfileModel>)

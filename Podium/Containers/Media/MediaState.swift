@@ -8,6 +8,6 @@
 import Foundation
 
 struct MediaState: Equatable {
-  var post: PostModel
+  var post: PostProfileModel
   var loadedImages: [String: Data] = [:]
 }

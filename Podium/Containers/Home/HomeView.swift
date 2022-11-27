@@ -34,9 +34,8 @@ struct HomeView: View {
                     ))
                   } label: {
                     Post(
-                      isSelf: viewStore.profile.id == post.ownerId,
+                      isSelf: viewStore.profile.id == post.post.ownerId,
                       post: post,
-                      profile: viewStore.profiles[post.ownerId],
                       onDelete: { post in
                         viewStore.send(.deletePost(post: post))
                       },
@@ -94,7 +93,7 @@ struct HomeView: View {
                       Button {
                         viewStore.send(.presentStories(
                           isPresented: true,
-                          profile: viewStore.profile
+                          profileId: viewStore.profile.id
                         ))
                       } label: {
                         StoryAvatar(
@@ -107,11 +106,11 @@ struct HomeView: View {
                           Button {
                             viewStore.send(.presentStories(
                               isPresented: true,
-                              profile: viewStore.profiles[id]
+                              profileId: id
                             ))
                           } label: {
                             StoryAvatar(
-                              profile: viewStore.profiles[id]!,
+                              profile: posts.first!.profile,
                               isAddVisible: id == viewStore.profile.id
                             )
                           }
@@ -159,7 +158,7 @@ struct HomeView: View {
               get: \.isStoriesPresented,
               send: HomeAction.presentStories(
                 isPresented: false,
-                profile: nil
+                profileId: nil
               )
             )) {
               IfLetStore(
@@ -246,7 +245,7 @@ struct HomeView_Previews: PreviewProvider {
       initialState: HomeState(
         profile: Mocks.profile,
         isEmpty: false,
-        posts: [Mocks.post, Mocks.post]
+        posts: [Mocks.postProfile, Mocks.postProfile]
       ),
       reducer: homeReducer,
       environment: AppEnvironment()

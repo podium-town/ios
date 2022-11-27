@@ -199,8 +199,8 @@
             filePath = "Podium/Containers/App/AppReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "72"
-            endingLineNumber = "72"
+            startingLineNumber = "71"
+            endingLineNumber = "71"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -327,8 +327,8 @@
             filePath = "Podium/Containers/App/AppReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "56"
-            endingLineNumber = "56"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -756,8 +756,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "232"
-            endingLineNumber = "232"
+            startingLineNumber = "224"
+            endingLineNumber = "224"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -772,8 +772,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "235"
-            endingLineNumber = "235"
+            startingLineNumber = "227"
+            endingLineNumber = "227"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -852,8 +852,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "230"
-            endingLineNumber = "230"
+            startingLineNumber = "222"
+            endingLineNumber = "222"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -886,100 +886,6 @@
                   startingLineNumber = "81"
                   endingLineNumber = "81"
                   offsetFromSymbolStart = "4480">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "26745F93-FED9-4797-ABE7-51A1DD6503B6"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/API/API.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "181"
-            endingLineNumber = "181"
-            landmarkName = "getPostsProfiles(ids:currentProfiles:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "210B7ED4-45A2-42DD-B102-C60C7BF60CE7"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/API/API.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "183"
-            endingLineNumber = "183"
-            landmarkName = "getPostsProfiles(ids:currentProfiles:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "210B7ED4-45A2-42DD-B102-C60C7BF60CE7 - e57a0fe1029e734d"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "static Podium.API.getPostsProfiles(ids: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostModel&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "180"
-                  endingLineNumber = "180"
-                  offsetFromSymbolStart = "128">
-               </Location>
-               <Location
-                  uuid = "210B7ED4-45A2-42DD-B102-C60C7BF60CE7 - ba711d63087e0af3"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(1) await resume partial function for static Podium.API.getPostsProfiles(ids: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostModel&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "180"
-                  endingLineNumber = "180"
-                  offsetFromSymbolStart = "44">
-               </Location>
-               <Location
-                  uuid = "210B7ED4-45A2-42DD-B102-C60C7BF60CE7 - faa33842c1d9d13b"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(2) suspend resume partial function for static Podium.API.getPostsProfiles(ids: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostModel&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "180"
-                  endingLineNumber = "180"
-                  offsetFromSymbolStart = "112">
-               </Location>
-               <Location
-                  uuid = "210B7ED4-45A2-42DD-B102-C60C7BF60CE7 - 6818779d3a133734"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(5) suspend resume partial function for static Podium.API.getPostsProfiles(ids: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostModel&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "180"
-                  endingLineNumber = "180"
-                  offsetFromSymbolStart = "56">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -1217,8 +1123,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "322"
-            endingLineNumber = "322"
+            startingLineNumber = "376"
+            endingLineNumber = "376"
             landmarkName = "setUsername(profile:username:)"
             landmarkType = "7">
             <Locations>
@@ -1280,8 +1186,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "338"
-            endingLineNumber = "338"
+            startingLineNumber = "392"
+            endingLineNumber = "392"
             landmarkName = "setUsername(profile:username:)"
             landmarkType = "7">
             <Locations>
@@ -1388,8 +1294,8 @@
             filePath = "Podium/Containers/Thread/ThreadReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
+            startingLineNumber = "93"
+            endingLineNumber = "93"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1404,8 +1310,8 @@
             filePath = "Podium/Containers/Thread/ThreadReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "85"
-            endingLineNumber = "85"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -1452,8 +1358,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "294"
-            endingLineNumber = "294"
+            startingLineNumber = "348"
+            endingLineNumber = "348"
             landmarkName = "addPost(post:)"
             landmarkType = "7">
             <Locations>
@@ -1530,8 +1436,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "283"
-            endingLineNumber = "283"
+            startingLineNumber = "337"
+            endingLineNumber = "337"
             landmarkName = "addPost(post:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1546,8 +1452,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "284"
-            endingLineNumber = "284"
+            startingLineNumber = "338"
+            endingLineNumber = "338"
             landmarkName = "addPost(post:)"
             landmarkType = "7">
             <Locations>
@@ -1594,8 +1500,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "468"
-            endingLineNumber = "468"
+            startingLineNumber = "537"
+            endingLineNumber = "537"
             landmarkName = "deletePost(post:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1610,8 +1516,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "266"
-            endingLineNumber = "266"
+            startingLineNumber = "275"
+            endingLineNumber = "275"
             landmarkName = "listenComments(post:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1626,8 +1532,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "264"
-            endingLineNumber = "264"
+            startingLineNumber = "273"
+            endingLineNumber = "273"
             landmarkName = "listenComments(post:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1642,8 +1548,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "263"
-            endingLineNumber = "263"
+            startingLineNumber = "272"
+            endingLineNumber = "272"
             landmarkName = "listenComments(post:completion:)"
             landmarkType = "7">
             <Locations>
@@ -1690,8 +1596,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "257"
-            endingLineNumber = "257"
+            startingLineNumber = "265"
+            endingLineNumber = "265"
             landmarkName = "listenComments(post:completion:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -1706,8 +1612,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "252"
-            endingLineNumber = "252"
+            startingLineNumber = "244"
+            endingLineNumber = "244"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1722,8 +1628,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "198"
-            endingLineNumber = "198"
+            startingLineNumber = "190"
+            endingLineNumber = "190"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1738,8 +1644,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
+            startingLineNumber = "201"
+            endingLineNumber = "201"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -1866,8 +1772,8 @@
             filePath = "Podium/Containers/Tabs/TabsView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
+            startingLineNumber = "72"
+            endingLineNumber = "72"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -1962,8 +1868,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "446"
-            endingLineNumber = "446"
+            startingLineNumber = "515"
+            endingLineNumber = "515"
             landmarkName = "deleteStory(story:)"
             landmarkType = "7">
             <Locations>
@@ -2010,8 +1916,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "437"
-            endingLineNumber = "437"
+            startingLineNumber = "506"
+            endingLineNumber = "506"
             landmarkName = "deleteStory(story:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -2026,8 +1932,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "436"
-            endingLineNumber = "436"
+            startingLineNumber = "505"
+            endingLineNumber = "505"
             landmarkName = "deleteStory(story:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -2042,8 +1948,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "176"
-            endingLineNumber = "176"
+            startingLineNumber = "191"
+            endingLineNumber = "191"
             landmarkName = "getPosts(followingIds:)"
             landmarkType = "7">
             <Locations>
@@ -2090,8 +1996,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "170"
-            endingLineNumber = "170"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -2106,8 +2012,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -2122,9 +2028,9 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "656"
-            endingLineNumber = "656"
-            landmarkName = "getStories(ids:currentProfiles:)"
+            startingLineNumber = "752"
+            endingLineNumber = "752"
+            landmarkName = "getStories(ids:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2138,8 +2044,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "161"
-            endingLineNumber = "161"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
             landmarkName = "getPosts(followingIds:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -2154,8 +2060,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "168"
-            endingLineNumber = "168"
+            startingLineNumber = "169"
+            endingLineNumber = "169"
             landmarkName = "getPosts(followingIds:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -2170,8 +2076,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
+            startingLineNumber = "189"
+            endingLineNumber = "189"
             landmarkName = "getPosts(followingIds:)"
             landmarkType = "7">
             <Locations>
@@ -2204,100 +2110,6 @@
                   startingLineNumber = "172"
                   endingLineNumber = "172"
                   offsetFromSymbolStart = "1712">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "626444DD-0F50-44B5-ADCB-0A7BB96DC167"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/API/API.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
-            landmarkName = "getPostsProfiles(ids:currentProfiles:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "FF416E1B-84E0-4059-8E80-FFEB02489850"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/API/API.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "192"
-            endingLineNumber = "192"
-            landmarkName = "getPostsProfiles(ids:currentProfiles:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "FF416E1B-84E0-4059-8E80-FFEB02489850 - 6818779d3a13356b"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(5) suspend resume partial function for static Podium.API.getPostsProfiles(ids: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostModel&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "193"
-                  endingLineNumber = "193"
-                  offsetFromSymbolStart = "104">
-               </Location>
-               <Location
-                  uuid = "FF416E1B-84E0-4059-8E80-FFEB02489850 - 6818779d3a13356b"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(5) suspend resume partial function for static Podium.API.getPostsProfiles(ids: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostModel&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "193"
-                  endingLineNumber = "193"
-                  offsetFromSymbolStart = "120">
-               </Location>
-               <Location
-                  uuid = "FF416E1B-84E0-4059-8E80-FFEB02489850 - 526ae60d88065b68"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(6) suspend resume partial function for static Podium.API.getPostsProfiles(ids: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostModel&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "193"
-                  endingLineNumber = "193"
-                  offsetFromSymbolStart = "132">
-               </Location>
-               <Location
-                  uuid = "FF416E1B-84E0-4059-8E80-FFEB02489850 - 526ae60d88065b68"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(6) suspend resume partial function for static Podium.API.getPostsProfiles(ids: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostModel&gt;"
-                  moduleName = "Podium"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "193"
-                  endingLineNumber = "193"
-                  offsetFromSymbolStart = "148">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -2392,8 +2204,8 @@
             filePath = "Podium/API/API.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "479"
-            endingLineNumber = "479"
+            startingLineNumber = "548"
+            endingLineNumber = "548"
             landmarkName = "deletePost(post:)"
             landmarkType = "7">
             <Locations>
@@ -2515,10 +2327,134 @@
             filePath = "Podium/Containers/Thread/ThreadView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
             landmarkName = "body"
             landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E41B5A4A-19DA-4B07-BB5B-19C6DB3B0C8D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/Containers/Stories/StoriesView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
+            landmarkName = "body"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "60FCAF70-27EB-49F3-9AB2-63B88C9E0250"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Podium/API/API.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
+            landmarkName = "getPosts(followingIds:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "60FCAF70-27EB-49F3-9AB2-63B88C9E0250 - aca9a6ebf632b60f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for static Podium.API.getPosts(followingIds: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostProfileModel&gt;"
+                  moduleName = "Podium"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "178"
+                  endingLineNumber = "178"
+                  offsetFromSymbolStart = "1584">
+               </Location>
+               <Location
+                  uuid = "60FCAF70-27EB-49F3-9AB2-63B88C9E0250 - 6c57bec66668e180"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) await resume partial function for static Podium.API.getPosts(followingIds: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostProfileModel&gt;"
+                  moduleName = "Podium"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "178"
+                  endingLineNumber = "178"
+                  offsetFromSymbolStart = "44">
+               </Location>
+               <Location
+                  uuid = "60FCAF70-27EB-49F3-9AB2-63B88C9E0250 - fd3bbe22ba7f390b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for static Podium.API.getPosts(followingIds: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostProfileModel&gt;"
+                  moduleName = "Podium"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "170"
+                  endingLineNumber = "170"
+                  offsetFromSymbolStart = "244">
+               </Location>
+               <Location
+                  uuid = "60FCAF70-27EB-49F3-9AB2-63B88C9E0250 - fd3bbe22ba7f3e13"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(5) suspend resume partial function for static Podium.API.getPosts(followingIds: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostProfileModel&gt;"
+                  moduleName = "Podium"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "178"
+                  endingLineNumber = "178"
+                  offsetFromSymbolStart = "364">
+               </Location>
+               <Location
+                  uuid = "60FCAF70-27EB-49F3-9AB2-63B88C9E0250 - a55b6640eac410f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for static Podium.API.getPosts(followingIds: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostProfileModel&gt;"
+                  moduleName = "Podium"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "170"
+                  endingLineNumber = "170"
+                  offsetFromSymbolStart = "92">
+               </Location>
+               <Location
+                  uuid = "60FCAF70-27EB-49F3-9AB2-63B88C9E0250 - a55b6640eac4617"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(7) suspend resume partial function for static Podium.API.getPosts(followingIds: Swift.Array&lt;Swift.String&gt;) async throws -&gt; Swift.Array&lt;Podium.PostProfileModel&gt;"
+                  moduleName = "Podium"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jach/dev/Podium/Podium/API/API.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "178"
+                  endingLineNumber = "178"
+                  offsetFromSymbolStart = "140">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -24,16 +24,17 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
       return .none
       
     case .addPost:
-      let post = PostModel(
+      let post = PostProfileModel(
         id: UUID().uuidString,
-        text: state.text,
-        ownerId: state.profile.id,
-        createdAt: Date().millisecondsSince1970 / 1000,
-        images: []
+        post: PostModel(
+          id: UUID().uuidString,
+          text: state.text,
+          ownerId: state.profile.id,
+          createdAt: Date().millisecondsSince1970 / 1000,
+          images: []
+        ),
+        profile: state.profile
       )
-      return Effect(value: .addedPost(post))
-      
-    case .addedPost(let post):
       if state.images.isEmpty {
         return .task {
           await .didAddPost(TaskResult {

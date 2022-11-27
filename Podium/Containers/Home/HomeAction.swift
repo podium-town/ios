@@ -9,16 +9,16 @@ import ComposableArchitecture
 import Foundation
 
 enum HomeAction {
-  case presentStories(isPresented: Bool, profile: ProfileModel?)
-  case presentThread(isPresented: Bool, post: PostModel?)
+  case presentStories(isPresented: Bool, profileId: String?)
+  case presentThread(isPresented: Bool, post: PostProfileModel?)
   case presentAdd(isPresented: Bool)
   case presentProfile(isPresented: Bool, profile: ProfileModel?)
-  case presentMedia(isPresented: Bool, post: PostModel?)
+  case presentMedia(isPresented: Bool, post: PostProfileModel?)
   case getPosts
-  case didGetPosts(TaskResult<[PostModel]>)
-  case deletePost(post: PostModel)
+  case didGetPosts(TaskResult<[PostProfileModel]>)
+  case deletePost(post: PostProfileModel)
   case didDeletePost(TaskResult<String>)
-  case reportPost(post: PostModel)
+  case reportPost(post: PostProfileModel)
   case didReportPost(TaskResult<String>)
   case dismissBanner
   case onMenuOpen

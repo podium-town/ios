@@ -35,8 +35,7 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
       if isPresented, let profile = profile {
         state.profileState = ProfileState(
           fromProfile: fromProfile,
-          profile: profile,
-          profiles: [:]
+          profile: profile
         )
       }
       return .none

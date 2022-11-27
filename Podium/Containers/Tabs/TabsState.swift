@@ -9,7 +9,6 @@ struct TabsState: Equatable {
   var profile: ProfileModel
   var isMenuOpen = false
   var urls: [StoryUrlModel] = []
-  var profiles: [String: ProfileModel] = [:]
   
   // View States
   var homeState: HomeState

@@ -11,7 +11,7 @@ let mediaReducer = Reducer<MediaState, MediaAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
     switch action {
     case .loadImage(let url):
-      let profileId = state.post.ownerId
+      let profileId = state.post.post.ownerId
       return .task {
         await .didLoadImage(TaskResult {
           try await API.getImage(

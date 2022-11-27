@@ -33,8 +33,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
           ),
           profileState: ProfileState(
             fromProfile: loadedProfile,
-            profile: loadedProfile,
-            profiles: [:]
+            profile: loadedProfile
           ),
           addState: AddState(
             profile: loadedProfile
@@ -78,8 +77,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
           ),
           profileState: ProfileState(
             fromProfile: profile,
-            profile: profile,
-            profiles: [:]
+            profile: profile
           ),
           addState: AddState(
             profile: profile
@@ -102,8 +100,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         ),
         profileState: ProfileState(
           fromProfile: profile,
-          profile: profile,
-          profiles: [:]
+          profile: profile
         ),
         addState: AddState(
           profile: profile

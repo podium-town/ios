@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct ThreadPost: View {
-  var post: PostModel
-  var profile: ProfileModel
-  var onDelete: (_ post: PostModel) -> Void
+  var post: PostProfileModel
+  var onDelete: (_ post: PostProfileModel) -> Void
   var onProfile: (_ profile: ProfileModel) -> Void
-  var onImage: (_ post: PostModel) -> Void
+  var onImage: (_ post: PostProfileModel) -> Void
   
   @State private var loadedImages: [String: Data] = [:]
   
@@ -20,9 +19,9 @@ struct ThreadPost: View {
     VStack(alignment: .leading, spacing: 12) {
       HStack(alignment: .center) {
         Button {
-          onProfile(profile)
+          onProfile(post.profile)
         } label: {
-          Image(uiImage: (profile.avatarData != nil) ? UIImage(data: profile.avatarData!)! : UIImage(named: "avatar")!)
+          Image(uiImage: (post.profile.avatarData != nil) ? UIImage(data: post.profile.avatarData!)! : UIImage(named: "avatar")!)
             .resizable()
             .scaledToFill()
             .frame(width: 64, height: 64)
@@ -31,7 +30,7 @@ struct ThreadPost: View {
         }
         
         HStack(alignment: .center, spacing: 0) {
-          Text(profile.username ?? "")
+          Text(post.profile.username ?? "")
             .fontWeight(.semibold)
             .font(.title2)
           
@@ -39,7 +38,7 @@ struct ThreadPost: View {
           
           Text(
             Date(timeIntervalSince1970: TimeInterval(
-              integerLiteral: post.createdAt
+              integerLiteral: post.post.createdAt
             )).timeAgoDisplay()
           )
           .foregroundColor(.gray)
@@ -49,10 +48,10 @@ struct ThreadPost: View {
       .padding(.bottom, 8)
       
       VStack(alignment: .leading, spacing: 4) {
-        Text(post.text)
+        Text(post.post.text)
           .font(.title3)
         
-        if let images = post.images, !images.isEmpty {
+        if let images = post.post.images, !images.isEmpty {
           VStack(spacing: 0) {
             HStack {
               ForEach(images) { imageObj in
@@ -103,15 +102,13 @@ struct ThreadPost_Previews: PreviewProvider {
   static var previews: some View {
     VStack(spacing: 0) {
       ThreadPost(
-        post: Mocks.postSimple,
-        profile: Mocks.profile,
+        post: Mocks.postProfile,
         onDelete: { _ in },
         onProfile: { _ in },
         onImage: { _ in }
       )
       ThreadPost(
-        post: Mocks.post,
-        profile: Mocks.profile,
+        post: Mocks.postProfile,
         onDelete: { _ in },
         onProfile: { _ in },
         onImage: { _ in }

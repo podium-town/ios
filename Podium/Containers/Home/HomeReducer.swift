@@ -138,17 +138,15 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       if isPresented, let profile = profile {
         state.profileState = ProfileState(
           fromProfile: fromProfile,
-          profile: profile,
-          profiles: state.profiles
+          profile: profile
         )
       }
       return .none
       
-    case .presentStories(let isPresented, let profile):
+    case .presentStories(let isPresented, let profileId):
       state.isStoriesPresented = isPresented
-      if let profile = profile {
-        state.storiesState?.profiles = state.profiles
-        state.storiesState?.currentProfile = profile.id
+      if let profileId = profileId {
+        state.storiesState?.currentProfile = profileId
       }
       return .none
       
@@ -157,8 +155,6 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       if isPresented, let post = post {
         state.threadState = ThreadState(
           fromProfile: state.profile,
-          profile: state.profiles[post.ownerId],
-          profiles: state.profiles,
           post: post
         )
       }

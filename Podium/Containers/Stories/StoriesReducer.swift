@@ -80,13 +80,13 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
       
     case .addStory:
       state.isLoading = true
-      let profileId = state.profile.id
+      let profile = state.profile
       let image = state.images.first!
       state.images = []
       return .task {
         await .didAddStory(TaskResult {
           try await API.addStory(
-            profileId: profileId,
+            profile: profile,
             image: image
           )
         })

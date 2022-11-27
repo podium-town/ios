@@ -10,16 +10,16 @@ import UIKit
 
 enum ProfileAction {
   case getPosts
-  case didGetPosts(TaskResult<[PostModel]>)
+  case didGetPosts(TaskResult<[PostProfileModel]>)
   case presentPicker(isPresented: Bool)
   case presentSettings(isPresented: Bool)
-  case presentThread(isPresented: Bool, post: PostModel?)
-  case presentMedia(isPresented: Bool, post: PostModel?)
+  case presentThread(isPresented: Bool, post: PostProfileModel?)
+  case presentMedia(isPresented: Bool, post: PostProfileModel?)
   case changeAvatar(UIImage)
   case onMenuOpen
-  case deletePost(post: PostModel)
+  case deletePost(post: PostProfileModel)
   case didDeletePost(TaskResult<String>)
-  case reportPost(post: PostModel)
+  case reportPost(post: PostProfileModel)
   case didReportPost(TaskResult<String>)
   case follow
   case didFollow(TaskResult<(ProfileModel, String)>)

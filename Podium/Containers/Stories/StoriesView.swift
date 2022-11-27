@@ -31,9 +31,8 @@ struct StoriesView: View {
               viewStore.send(.dismissCreate)
             }
           )
-        } else if let currentStory = viewStore.currentStory,
-                  let currentProfile = viewStore.profiles[currentStory.ownerId] {
-          if let data = viewStore.loadedMedia[currentStory.url] {
+        } else if let currentStory = viewStore.currentStory {
+          if let data = viewStore.loadedMedia[currentStory.story.url] {
             Color.black
               .overlay(
                 Image(uiImage: UIImage(data: data)!)
@@ -74,34 +73,34 @@ struct StoriesView: View {
           
           VStack {
             HStack {
-              ForEach(viewStore.stories[currentProfile.id] ?? []) { story in
+              ForEach(viewStore.stories[currentStory.profile.id] ?? []) { story in
                 RoundedRectangle(cornerRadius: 15)
                   .foregroundColor(.white)
                   .frame(height: 4)
-                  .opacity(currentStory.id == story.id ? 0.8 : 0.5)
+                  .opacity(currentStory.story.id == story.story.id ? 0.8 : 0.5)
               }
             }
             
             HStack {
-              Image(uiImage: (currentProfile.avatarData != nil) ? UIImage(data: currentProfile.avatarData!)! : UIImage(named: "avatar")!)
+              Image(uiImage: (currentStory.profile.avatarData != nil) ? UIImage(data: currentStory.profile.avatarData!)! : UIImage(named: "avatar")!)
                 .resizable()
                 .scaledToFill()
                 .frame(width: 32, height: 32)
                 .clipShape(Circle())
               
-              Text(currentProfile.username ?? "")
+              Text(currentStory.profile.username ?? "")
                 .fontWeight(.semibold)
                 .foregroundColor(.white)
               
               Spacer()
               
-              Text(Date(timeIntervalSince1970: TimeInterval(currentStory.createdAt)).timeAgoDisplay())
+              Text(Date(timeIntervalSince1970: TimeInterval(currentStory.story.createdAt)).timeAgoDisplay())
                 .foregroundColor(.white)
             }
             
             Spacer()
             
-            if currentProfile.id == viewStore.profile.id {
+            if currentStory.profile.id == viewStore.profile.id {
               VStack {
                 Spacer()
                 CreateBar(
@@ -165,7 +164,7 @@ struct StoriesView_Previews: PreviewProvider {
     StoriesView(store: Store(
       initialState: StoriesState(
         profile: Mocks.profile,
-        stories: ["456" : [Mocks.story, Mocks.story]],
+        stories: ["456" : [Mocks.storyProfile, Mocks.storyProfile]],
         currentProfile: "456",
         images: []
       ),

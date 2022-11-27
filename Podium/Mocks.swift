@@ -16,6 +16,11 @@ struct Mocks {
     createdAt: 123,
     images: []
   )
+  static var postProfile = PostProfileModel(
+    id: "123",
+    post: Mocks.post,
+    profile: Mocks.profile
+  )
   static var postSimple = PostModel(
     id: "123",
     text: "You are viewing the README and repositories as a public user. You are viewing the README and repositories as a public user.",
@@ -44,5 +49,9 @@ struct Mocks {
     fileId: "xxx1",
     ownerId: "456",
     createdAt: 123
+  )
+  static var storyProfile = StoryProfileModel(
+    story: story,
+    profile: Mocks.profile
   )
 }

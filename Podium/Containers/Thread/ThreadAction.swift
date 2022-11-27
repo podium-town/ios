@@ -9,21 +9,22 @@ import ComposableArchitecture
 import FirebaseFirestore
 
 indirect enum ThreadAction {
+  case setLoading(loading: Bool)
   case textChanged(String)
   case send
-  case sended(PostModel)
-  case didSend(TaskResult<PostModel>)
+  case sended(PostProfileModel)
+  case didSend(TaskResult<PostProfileModel>)
   case getComments
-  case didGetComments(TaskResult<[PostModel]>)
-  case deletePost(post: PostModel)
-  case reportPost(post: PostModel)
-  case reportComment(comment: PostModel)
-  case didReportComment(TaskResult<PostModel>)
-  case didReportPost(TaskResult<PostModel>)
-  case deleteComment(comment: PostModel)
-  case addComments(comments: [PostModel])
+  case didGetComments(TaskResult<[PostProfileModel]>)
+  case deletePost(post: PostProfileModel)
+  case reportPost(post: PostProfileModel)
+  case reportComment(comment: PostProfileModel)
+  case didReportComment(TaskResult<PostProfileModel>)
+  case didReportPost(TaskResult<PostProfileModel>)
+  case deleteComment(comment: PostProfileModel)
+  case addComments(comments: [PostProfileModel])
   case openMenu
-  case presentMedia(isPresented: Bool, post: PostModel?)
+  case presentMedia(isPresented: Bool, post: PostProfileModel?)
   
   // View Actions
   case media(MediaAction)

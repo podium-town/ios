@@ -9,12 +9,10 @@ import FirebaseFirestore
 
 struct ThreadState: Equatable {
   var fromProfile: ProfileModel
-  var profile: ProfileModel?
-  var profiles: [String: ProfileModel]
-  var post: PostModel
+  var post: PostProfileModel
   var text = ""
   var isSendDisabled = true
-  var comments: [PostModel] = []
+  var comments: [PostProfileModel] = []
   var isLoading = false
   var isMediaPresented = false
   

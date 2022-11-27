@@ -14,7 +14,7 @@ struct MediaView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       TabView {
-        ForEach(viewStore.post.images) { imageObj in
+        ForEach(viewStore.post.post.images) { imageObj in
           if let loadedImage = viewStore.loadedImages[imageObj.url],
              let uiImage = UIImage(data: loadedImage) {
             Image(uiImage: uiImage)
@@ -43,7 +43,7 @@ struct MediaView_Previews: PreviewProvider {
   static var previews: some View {
     MediaView(store: Store(
       initialState: MediaState(
-        post: Mocks.post
+        post: Mocks.postProfile
       ),
       reducer: mediaReducer,
       environment: AppEnvironment()

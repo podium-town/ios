@@ -31,6 +31,10 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       }
       return .none
       
+    case .setLoading(let loading):
+      state.isLoading = loading
+      return .none
+      
     case .addComments(let comments):
       state.isLoading = false
       state.comments.insert(contentsOf: comments, at: 0)
@@ -42,19 +46,24 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       }
       
     case .deleteComment(let comment):
-      state.comments.removeAll(where: { $0.id == comment.id })
+      state.comments.removeAll(where: { $0.post.id == comment.post.id })
       return .fireAndForget {
         try await API.deleteComment(comment: comment)
       }
       
     case .send:
+      let commentId = UUID().uuidString
       state.isSendDisabled = true
-      let comment = PostModel(
-        id: UUID().uuidString,
-        text: state.text,
-        ownerId: state.fromProfile.id,
-        createdAt: Date().millisecondsSince1970 / 1000,
-        images: []
+      let comment = PostProfileModel(
+        id: commentId,
+        post: PostModel(
+          id: commentId,
+          text: state.text,
+          ownerId: state.fromProfile.id,
+          createdAt: Date().millisecondsSince1970 / 1000,
+          images: []
+        ),
+        profile: state.fromProfile
       )
       state.text = ""
       return Effect(value: .sended(comment))

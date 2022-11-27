@@ -174,8 +174,6 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       if isPresented, let post = post {
         state.threadState = ThreadState(
           fromProfile: state.fromProfile,
-          profile: state.profile,
-          profiles: state.profiles,
           post: post
         )
       }

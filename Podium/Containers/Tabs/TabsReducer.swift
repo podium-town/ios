@@ -66,8 +66,8 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
     case .removeStories(let stories):
       for (profileId, story) in stories {
         story.forEach { st in
-          state.homeState.stories[profileId]?.removeAll(where: { $0.id == st.id })
-          state.homeState.storiesState?.stories[profileId]?.removeAll(where: { $0.id == st.id })
+          state.homeState.stories[profileId]?.removeAll(where: { $0.story.id == st.id })
+          state.homeState.storiesState?.stories[profileId]?.removeAll(where: { $0.story.id == st.id })
           state.urls.removeAll(where: { $0.url == st.url})
           state.homeState.storiesState?.urls.removeAll(where: { $0.url == st.url})
         }
@@ -107,26 +107,21 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       )
       return .none
       
-    case .addPosts(let posts, let profiles):
-      state.homeState.profiles = profiles
-      state.homeState.posts.insert(contentsOf: posts.sorted(by: { $0.createdAt > $1.createdAt }), at: 0)
+    case .addPosts(let posts):
+//      state.homeState.posts.insert(contentsOf: posts.sorted(by: { $0.createdAt > $1.createdAt }), at: 0)
       return .none
       
     case .getStories:
       let followingIds = state.profile.following
-      let currentProfiles = state.profiles
       return .task {
         await .didGetStories(TaskResult {
           try await API.getStories(
-            ids: followingIds,
-            currentProfiles: currentProfiles
+            ids: followingIds
           )
         })
       }
       
-    case .didGetStories(.success((let stories, let urls, let profiles))):
-      state.profiles = profiles
-      state.homeState.profiles = profiles
+    case .didGetStories(.success((let stories, let urls))):
       var defaultStories = stories
             
       if !defaultStories.contains(where: { $0.key == state.profile.id }) {
@@ -149,21 +144,18 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       
     case .getPosts:
       let followingIds = state.profile.following
-      let currentProfiles = state.profiles
       return .task {
         await .didGetPosts(TaskResult {
-          try await API.getPostsProfiles(
-            ids: followingIds,
-            currentProfiles: currentProfiles
+          try await API.getPosts(
+            followingIds: followingIds
           )
         })
       }
       
-    case .didGetPosts(.success((let posts, let profiles))):
+    case .didGetPosts(.success(let posts)):
       state.homeState.isLoadingRefreshable = false
       state.homeState.posts = posts
       state.homeState.isEmpty = posts.count == 0
-      state.homeState.profiles = profiles
       return .none
       
     case .didGetPosts(.failure(let error)):

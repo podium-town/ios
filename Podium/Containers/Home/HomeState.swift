@@ -17,10 +17,9 @@ struct HomeState: Equatable {
   var isAddPresented = false
   var isLoadingRefreshable = false
   var isEmpty = false
-  var posts: [PostModel]
+  var posts: [PostProfileModel]
   var bannerData: BannerData?
-  var stories: [String: [StoryModel]] = [:]
-  var profiles: [String: ProfileModel] = [:]
+  var stories: [String: [StoryProfileModel]] = [:]
   
   // View States
   var add: AddState?

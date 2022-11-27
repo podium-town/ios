@@ -64,11 +64,8 @@ struct TabsView: View {
       .onAppear {
         viewStore.send(.initialize)
         viewStore.send(.getProfile)
-        API.listenPosts(
-          ids: viewStore.profile.following,
-          currentProfiles: viewStore.profiles
-        ) { posts, profiles in
-          viewStore.send(.addPosts(posts: posts, profiles: profiles))
+        API.listenPosts(ids: viewStore.profile.following) { posts in
+          viewStore.send(.addPosts(posts: posts))
         }
         API.listenStories(ids: viewStore.profile.following) { (st, storiesToRemove) in
           let (stories, urls) = st
@@ -108,12 +105,11 @@ struct TabsView_Previews: PreviewProvider {
         profile: Mocks.profile,
         homeState: HomeState(
           profile: Mocks.profile,
-          posts: [Mocks.post]
+          posts: [Mocks.postProfile]
         ),
         profileState: ProfileState(
           fromProfile: Mocks.profile,
-          profile: Mocks.profile,
-          profiles: [Mocks.profile.id: Mocks.profile]
+          profile: Mocks.profile
         ),
         addState: AddState(
           profile: Mocks.profile

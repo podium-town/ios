@@ -122,9 +122,8 @@ struct ProfileView: View {
                     ))
                   } label: {
                     Post(
-                      isSelf: viewStore.fromProfile.id == post.ownerId,
+                      isSelf: viewStore.fromProfile.id == post.post.ownerId,
                       post: post,
-                      profile: viewStore.profile,
                       onDelete: { post in
                         viewStore.send(.deletePost(post: post))
                       },
@@ -227,13 +226,13 @@ struct ProfileView: View {
     }
   }
   
-  func filterData(posts: [PostModel]) -> [PostModel] {
+  func filterData(posts: [PostProfileModel]) -> [PostProfileModel] {
     switch tab {
     case 0:
       return posts
       
     case 1:
-      return posts.filter({ !$0.images.isEmpty })
+      return posts.filter({ !$0.post.images.isEmpty })
       
     default:
       return []
@@ -247,8 +246,7 @@ struct ProfileView_Previews: PreviewProvider {
       initialState: ProfileState(
         fromProfile: Mocks.profile,
         profile: Mocks.profile2,
-        profiles: [Mocks.profile.id: Mocks.profile],
-        posts: [Mocks.post]
+        posts: [Mocks.postProfile]
       ),
       reducer: profileReducer,
       environment: AppEnvironment()

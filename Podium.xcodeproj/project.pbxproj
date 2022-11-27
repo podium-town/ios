@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		820E97792932D297005E5110 /* FirebaseFirestoreSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 820E97782932D297005E5110 /* FirebaseFirestoreSwift */; };
+		820E977B293369A0005E5110 /* PostProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820E977A293369A0005E5110 /* PostProfileModel.swift */; };
+		820E977D29336B54005E5110 /* StoryProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 820E977C29336B54005E5110 /* StoryProfileModel.swift */; };
 		822591E7291A9AC700D17E30 /* PodiumApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 822591E6291A9AC700D17E30 /* PodiumApp.swift */; };
 		822591EB291A9AC900D17E30 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 822591EA291A9AC900D17E30 /* Assets.xcassets */; };
 		822591EE291A9AC900D17E30 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 822591ED291A9AC900D17E30 /* Preview Assets.xcassets */; };
@@ -98,6 +100,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		820E977A293369A0005E5110 /* PostProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostProfileModel.swift; sourceTree = "<group>"; };
+		820E977C29336B54005E5110 /* StoryProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryProfileModel.swift; sourceTree = "<group>"; };
 		822591E3291A9AC700D17E30 /* Podium.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Podium.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		822591E6291A9AC700D17E30 /* PodiumApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodiumApp.swift; sourceTree = "<group>"; };
 		822591EA291A9AC900D17E30 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -452,6 +456,8 @@
 				82BBC981291AC22E008DB479 /* PostModel.swift */,
 				8267571B2932CDCF00B67E58 /* PostImage.swift */,
 				82BBC99E291AE481008DB479 /* ProfileModel.swift */,
+				820E977A293369A0005E5110 /* PostProfileModel.swift */,
+				820E977C29336B54005E5110 /* StoryProfileModel.swift */,
 				826F330F292FEB24005B1E6B /* StoryModel.swift */,
 				826757152932241200B67E58 /* StoryUrlModel.swift */,
 				826F330A292EBA1F005B1E6B /* HashtagModel.swift */,
@@ -647,6 +653,7 @@
 				82793776291C5DEC00FD5148 /* ViewStore+Extensions.swift in Sources */,
 				82259202291A9BFA00D17E30 /* AppView.swift in Sources */,
 				826F330B292EBA1F005B1E6B /* HashtagModel.swift in Sources */,
+				820E977B293369A0005E5110 /* PostProfileModel.swift in Sources */,
 				82259209291A9CB800D17E30 /* TabsReducer.swift in Sources */,
 				82BBC99F291AE481008DB479 /* ProfileModel.swift in Sources */,
 				828E351E291C55780089AD1A /* AddView.swift in Sources */,
@@ -662,6 +669,7 @@
 				828E351A291C55540089AD1A /* AddAction.swift in Sources */,
 				827C9CA3292A420D008599A2 /* SettingsState.swift in Sources */,
 				82259219291AA05200D17E30 /* HomeView.swift in Sources */,
+				820E977D29336B54005E5110 /* StoryProfileModel.swift in Sources */,
 				822591FA291A9B9F00D17E30 /* AppState.swift in Sources */,
 				82BBC98D291AC9A2008DB479 /* AppError.swift in Sources */,
 				82954746292C28AA006600F3 /* String+Extensions.swift in Sources */,
