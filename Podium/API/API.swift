@@ -156,7 +156,7 @@ class API {
   
   static func getPosts(followingIds: [String]) async throws -> [PostProfileModel] {
     do {
-      var profiles: [String: ProfileModel] = [:]
+      var tempPosts: [PostModel] = []
       var posts: [PostProfileModel] = []
       
       let dictionary = try await db
@@ -168,25 +168,35 @@ class API {
       
       for document in dictionary {
         if let post = try? document.data(as: PostModel.self) {
-          if let profile = profiles[post.ownerId] {
-            posts.append(PostProfileModel(
-              id: post.id,
-              post: post,
-              profile: profile
-            ))
-          } else {
-            let profile = try await getProfile(id: post.ownerId)
-            profiles[post.ownerId] = profile
-            posts.append(PostProfileModel(
-              id: post.id,
-              post: post,
-              profile: profiles[post.ownerId]!
-            ))
-          }
+          tempPosts.append(post)
         }
       }
       
-      return posts
+      let uniqueProfileIds = Array(Set(tempPosts.map { $0.ownerId }))
+      
+      let profiles = try await withThrowingTaskGroup(of: ProfileModel.self) { group in
+        for id in uniqueProfileIds {
+          group.addTask {
+            return try await getProfile(id: id)
+          }
+        }
+        
+        var collected: [String: ProfileModel] = [:]
+        
+        for try await value in group {
+          collected[value.id] = value
+        }
+        
+        return collected
+      }
+      
+      return tempPosts.map({ post in
+        return PostProfileModel(
+          id: post.id,
+          post: post,
+          profile: profiles[post.ownerId]!
+        )
+      })
     } catch let error {
       throw error
     }
@@ -413,7 +423,7 @@ class API {
   
   static func getComments(postId: String) async throws -> [PostProfileModel] {
     do {
-      var profiles: [String: ProfileModel] = [:]
+      let profiles: [String: ProfileModel] = [:]
       var posts: [PostProfileModel] = []
       let dictionary = try await db
         .collection("comments")
@@ -667,7 +677,7 @@ class API {
   }
   
   static func listenStories(ids: [String], completion: @escaping (_ storiesToAdd: ([String: [StoryProfileModel]], [StoryUrlModel]), _ storiesToRemove: [String: [StoryModel]]) -> Void) {
-    var profiles: [String: ProfileModel] = [:]
+    let profiles: [String: ProfileModel] = [:]
     db
       .collection("stories")
       .whereField("ownerId", in: ids)
@@ -737,11 +747,11 @@ class API {
   
   static func getStories(ids: [String]) async throws -> ([String: [StoryProfileModel]], [StoryUrlModel]) {
     do {
-      var profiles: [String: ProfileModel] = [:]
-      var stories: [String: [StoryProfileModel]] = [:]
+      var tempStories: [StoryModel] = []
       var urls: [StoryUrlModel] = []
+      var stories: [String: [StoryProfileModel]] = [:]
       
-      let results = try await db
+      let dictionary = try await db
         .collection("stories")
         .whereField("ownerId", in: ids)
         .order(by: "createdAt")
@@ -749,35 +759,43 @@ class API {
         .getDocuments()
         .documents
       
-      for document in results {
+      for document in dictionary {
         if let story = try? document.data(as: StoryModel.self) {
-          if profiles[story.ownerId] == nil,
-             let profile = try? await getProfile(id: story.ownerId) {
-            profiles[profile.id] = profile
-            urls.append(StoryUrlModel(
-              url: story.url,
-              createdAt: story.createdAt
-            ))
-            let st = StoryProfileModel(
-              story: story,
-              profile: profile
-            )
-            if stories[story.ownerId] == nil {
-              stories[story.ownerId] = [st]
-            } else {
-              stories[story.ownerId]?.append(st)
-            }
-          } else {
-            let st = StoryProfileModel(
-              story: story,
-              profile: profiles[story.ownerId]!
-            )
-            if stories[story.ownerId] == nil {
-              stories[story.ownerId] = [st]
-            } else {
-              stories[story.ownerId]?.append(st)
-            }
+          urls.append(StoryUrlModel(
+            url: story.url,
+            createdAt: story.createdAt
+          ))
+          tempStories.append(story)
+        }
+      }
+      
+      let uniqueProfileIds = Array(Set(tempStories.map { $0.ownerId }))
+      
+      let profiles = try await withThrowingTaskGroup(of: ProfileModel.self) { group in
+        for id in uniqueProfileIds {
+          group.addTask {
+            return try await getProfile(id: id)
           }
+        }
+        
+        var collected: [String: ProfileModel] = [:]
+        
+        for try await value in group {
+          collected[value.id] = value
+        }
+        
+        return collected
+      }
+      
+      tempStories.forEach { story in
+        let model = StoryProfileModel(
+          story: story,
+          profile: profiles[story.ownerId]!
+        )
+        if stories[story.ownerId] == nil {
+          stories[story.ownerId] = [model]
+        } else {
+          stories[story.ownerId]?.append(model)
         }
       }
       return (stories, urls)
