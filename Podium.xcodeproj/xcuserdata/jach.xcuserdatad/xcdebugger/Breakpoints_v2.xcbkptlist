@@ -756,8 +756,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "246"
-            endingLineNumber = "246"
+            startingLineNumber = "223"
+            endingLineNumber = "223"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -772,8 +772,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "249"
-            endingLineNumber = "249"
+            startingLineNumber = "226"
+            endingLineNumber = "226"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -820,8 +820,8 @@
             filePath = "Podium/Containers/Home/HomeReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -852,8 +852,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "244"
-            endingLineNumber = "244"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -888,38 +888,6 @@
                   offsetFromSymbolStart = "4480">
                </Location>
             </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "33AB8970-B7C7-4A30-A148-DA971021D330"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Home/HomeReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "104"
-            endingLineNumber = "104"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "826334E0-BEAF-4DFC-93DE-AC34C5744EC1"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Home/HomeReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "114"
-            endingLineNumber = "114"
-            landmarkName = "unknown"
-            landmarkType = "0">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1532,8 +1500,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "266"
-            endingLineNumber = "266"
+            startingLineNumber = "246"
+            endingLineNumber = "246"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1548,8 +1516,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "212"
-            endingLineNumber = "212"
+            startingLineNumber = "189"
+            endingLineNumber = "189"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1564,8 +1532,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "223"
-            endingLineNumber = "223"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
             landmarkName = "unknown"
             landmarkType = "0">
             <Locations>
@@ -1612,8 +1580,8 @@
             filePath = "Podium/Containers/Stories/StoriesReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1628,8 +1596,8 @@
             filePath = "Podium/Containers/Stories/StoriesReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "109"
-            endingLineNumber = "109"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1646,22 +1614,6 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "47"
             endingLineNumber = "47"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "29E7FA4E-F553-46B0-AB9F-509FA6D7ED81"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Stories/StoriesReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>
@@ -1893,22 +1845,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "F10E801E-9161-4EF5-B9AC-49CD0CE4665A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Podium/Containers/Tabs/TabsReducer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "184"
-            endingLineNumber = "184"
-            landmarkName = "unknown"
-            landmarkType = "0">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "6C8672FD-33CE-440C-89C6-1FDE150C27DB"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -1916,8 +1852,8 @@
             filePath = "Podium/Containers/Tabs/TabsReducer.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
+            startingLineNumber = "162"
+            endingLineNumber = "162"
             landmarkName = "unknown"
             landmarkType = "0">
          </BreakpointContent>

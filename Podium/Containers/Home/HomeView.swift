@@ -90,19 +90,19 @@ struct HomeView: View {
                         ProgressView()
                       )
                     } else {
-                      Button {
-                        viewStore.send(.presentStories(
-                          isPresented: true,
-                          profileId: viewStore.profile.id
-                        ))
-                      } label: {
-                        StoryAvatar(
-                          profile: viewStore.profile,
-                          isAddVisible: true
-                        )
-                      }
+//                      Button {
+//                        viewStore.send(.presentStories(
+//                          isPresented: true,
+//                          profileId: viewStore.profile.id
+//                        ))
+//                      } label: {
+//                        StoryAvatar(
+//                          profile: viewStore.profile,
+//                          isAddVisible: true
+//                        )
+//                      }
                       ForEach(Array(viewStore.stories), id: \.key) { id, posts in
-                        if id != viewStore.profile.id {
+//                        if id != viewStore.profile.id {
                           Button {
                             viewStore.send(.presentStories(
                               isPresented: true,
@@ -114,7 +114,7 @@ struct HomeView: View {
                               isAddVisible: id == viewStore.profile.id
                             )
                           }
-                        }
+//                        }
                       }
                     }
                   }

@@ -100,20 +100,6 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       state.isLoadingRefreshable = true
       return .none
       
-    case .didGetPosts(.success(let posts)):
-      state.isLoadingRefreshable = false
-      state.isEmpty = posts.count == 0
-      return .none
-      
-    case .didGetPosts(.failure(let error)):
-      state.bannerData = BannerData(
-        title: "Error",
-        detail: error.localizedDescription,
-        type: .error
-      )
-      state.isLoadingRefreshable = false
-      return .none
-      
     case .presentAdd(let isPresented):
       state.isAddPresented = isPresented
       if isPresented {

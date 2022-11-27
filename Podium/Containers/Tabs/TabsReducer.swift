@@ -123,9 +123,11 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       
     case .didGetProfilePosts(.success(let posts)):
       state.profileState.posts = posts
+      state.homeState.isLoadingRefreshable = false
       return .none
       
     case .didGetProfilePosts(.failure(let error)):
+      state.homeState.isLoadingRefreshable = false
       state.homeState.bannerData = BannerData(
         title: "Error",
         detail: "Error while loading posts.",
@@ -164,35 +166,10 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       )
       return .none
       
-    case .getPosts:
-      let followingIds = state.profile.following
-      return .task {
-        await .didGetPosts(TaskResult {
-          try await API.getPosts(
-            followingIds: followingIds
-          )
-        })
-      }
-      
-    case .didGetPosts(.success(let posts)):
-      state.homeState.isLoadingRefreshable = false
-      state.homeState.posts = posts
-      state.homeState.isEmpty = posts.count == 0
-      return .none
-      
-    case .didGetPosts(.failure(let error)):
-      state.homeState.isLoadingRefreshable = false
-      state.homeState.isEmpty = state.homeState.posts.count == 0
-      state.homeState.bannerData = BannerData(
-        title: "Error",
-        detail: "Error while loading posts.",
-        type: .error
-      )
-      return .none
-      
     case .home(.getPosts):
+      state.homeState.isLoadingRefreshable = true
       return Effect.merge([
-        Effect(value: .getPosts),
+        Effect(value: .getProfilePosts),
         Effect(value: .getStories)
       ])
       
@@ -215,7 +192,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.profileState.fromProfile.following.append(id)
       state.homeState.profileState?.fromProfile.following.append(id)
       return Effect.merge([
-        Effect(value: .getPosts),
+        Effect(value: .getProfilePosts),
         Effect(value: .getStories)
       ])
       
@@ -226,7 +203,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.homeState.profileState?.fromProfile.following.removeAll(where: { $0 == id })
       state.profileState.fromProfile.following.removeAll(where: { $0 == id })
       return Effect.merge([
-        Effect(value: .getPosts),
+        Effect(value: .getProfilePosts),
         Effect(value: .getStories)
       ])
         
@@ -260,7 +237,10 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.exploreState.profile.following.append(id)
       state.homeState.profile.following.append(id)
       state.profileState.fromProfile.following.append(id)
-      return Effect(value: .getStories)
+      return Effect.merge([
+        Effect(value: .getProfilePosts),
+        Effect(value: .getStories)
+      ])
       
     case .profile(.didUnfollow(.success((let from, let id)))):
       state.profile.following.removeAll(where: { $0 == id })
@@ -268,7 +248,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.homeState.profile.following.removeAll(where: { $0 == id })
       state.profileState.fromProfile.following.removeAll(where: { $0 == id })
       return Effect.merge([
-        Effect(value: .getPosts),
+        Effect(value: .getProfilePosts),
         Effect(value: .getStories)
       ])
       
@@ -281,7 +261,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.homeState.profile.following.append(id)
       state.profileState.fromProfile.following.append(id)
       return Effect.merge([
-        Effect(value: .getPosts),
+        Effect(value: .getProfilePosts),
         Effect(value: .getStories)
       ])
       
@@ -291,7 +271,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.homeState.profile.following.removeAll(where: { $0 == id })
       state.profileState.fromProfile.following.removeAll(where: { $0 == id })
       return Effect.merge([
-        Effect(value: .getPosts),
+        Effect(value: .getProfilePosts),
         Effect(value: .getStories)
       ])
       
@@ -302,7 +282,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.homeState.profile.following.append(id)
       state.profileState.fromProfile.following.append(id)
       return Effect.merge([
-        Effect(value: .getPosts),
+        Effect(value: .getProfilePosts),
         Effect(value: .getStories)
       ])
       
@@ -313,7 +293,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.homeState.profile.following.removeAll(where: { $0 == id })
       state.profileState.fromProfile.following.removeAll(where: { $0 == id })
       return Effect.merge([
-        Effect(value: .getPosts),
+        Effect(value: .getProfilePosts),
         Effect(value: .getStories)
       ])
       

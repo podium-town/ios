@@ -75,8 +75,8 @@ struct TabsView: View {
       }
       .onChange(of: scenePhase) { newPhase in
         if newPhase == .active {
-          viewStore.send(.getStories)
-          viewStore.send(.getPosts)
+//          viewStore.send(.getStories)
+          viewStore.send(.getProfilePosts)
         }
       }
       .overlay {

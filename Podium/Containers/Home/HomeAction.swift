@@ -15,7 +15,6 @@ enum HomeAction {
   case presentProfile(isPresented: Bool, profile: ProfileModel?)
   case presentMedia(isPresented: Bool, post: PostProfileModel?)
   case getPosts
-  case didGetPosts(TaskResult<[PostProfileModel]>)
   case deletePost(post: PostProfileModel)
   case didDeletePost(TaskResult<String>)
   case reportPost(post: PostProfileModel)

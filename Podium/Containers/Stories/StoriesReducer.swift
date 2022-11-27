@@ -101,7 +101,6 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
         state.profilesIterator = profilesMap.makeBidirectionalIterator()
       } else {
         let shiftBy = profilesMap.firstIndex(of: state.currentProfile!)
-//        state.profilesIterator = profilesMap.shift(withDistance: shiftBy ?? 0).makeBidirectionalIterator()
         state.profilesIterator = profilesMap.makeBidirectionalIterator()
         state.currentProfile = state.profilesIterator?.at(index: shiftBy ?? 0)
       }
@@ -117,20 +116,17 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
         state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeBidirectionalIterator()
         state.currentStory = state.storiesIterator?.last()
       }
-      
       return .none
       
     case .nextStory:
-      state.currentStory = state.storiesIterator?.next()
-      if state.currentStory == nil {
-        state.currentProfile = state.profilesIterator?.next()
-        if state.currentProfile == nil {
-          state.currentStory = nil
-          return Effect(value: .dismiss)
-        } else {
-          state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeBidirectionalIterator()
-          state.currentStory = state.storiesIterator?.next()
-        }
+      if let nextStory = state.storiesIterator?.next() {
+        state.currentStory = nextStory
+      } else if let nextProfile = state.profilesIterator?.next() {
+        state.currentProfile = nextProfile
+        state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeBidirectionalIterator()
+        state.currentStory = state.storiesIterator?.next()
+      } else {
+        return Effect(value: .dismiss)
       }
       return Effect(value: .prefetchStories)
       
