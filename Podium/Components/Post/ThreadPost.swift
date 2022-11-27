@@ -60,12 +60,18 @@ struct ThreadPost: View {
                     Button {
                       onImage(post)
                     } label: {
-                      Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFill()
+                      RoundedRectangle(cornerRadius: 15)
+                        .foregroundColor(Color("ColorLightBackground"))
+                        .overlay(
+                          Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 160)
+                            .clipShape(RoundedRectangle(cornerRadius: 15))
+                            .allowsHitTesting(false)
+                        )
                         .frame(height: 160)
                         .clipShape(RoundedRectangle(cornerRadius: 15))
-                        .allowsHitTesting(false)
                     }
                   } else {
                     RoundedRectangle(cornerRadius: 15)

@@ -6,16 +6,17 @@
 //
 
 struct ProfileState: Equatable {
+  var isSelf = false
+  var isLoading = false
   var fromProfile: ProfileModel
   var profile: ProfileModel
-  var posts: [PostProfileModel] = []
+  var posts: [PostProfileModel]?
   var isPickerPresented = false
   var isLoadingRefreshable = false
   var isSettingsPresented = false
   var isThreadPresented = false
   var isMediaPresented = false
   var isEmpty = false
-  var isLoading = false
   var isPendingFollowing = false
   var bannerData: BannerData?
   

@@ -124,8 +124,10 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       return .none
       
     case .getPosts:
+      if state.posts == nil && !state.isSelf {
+        state.isLoading = true
+      }
       state.isLoadingRefreshable = true
-      state.isLoading = true
       let id = state.profile.id
       return .task {
         await .didGetPosts(TaskResult {
@@ -143,8 +145,8 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       return .none
       
     case .didGetPosts(.failure(let error)):
-      state.isLoadingRefreshable = false
       state.isLoading = false
+      state.isLoadingRefreshable = false
       return .none
       
     case .presentPicker(let isPresented):

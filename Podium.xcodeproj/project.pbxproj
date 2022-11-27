@@ -40,6 +40,7 @@
 		82259233291AB2FF00D17E30 /* StoriesReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82259232291AB2FF00D17E30 /* StoriesReducer.swift */; };
 		8243152E293136F50008F01A /* CreateBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8243152D293136F50008F01A /* CreateBar.swift */; };
 		824315302931387B0008F01A /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8243152F2931387B0008F01A /* CreateView.swift */; };
+		82462A2E2933EDB70026730B /* BidirectionalIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82462A2D2933EDB70026730B /* BidirectionalIterator.swift */; };
 		826030E6291B015B006007C3 /* LocalStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826030E5291B015B006007C3 /* LocalStorageKey.swift */; };
 		8263AE77291BA7CA0074B033 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8263AE76291BA7CA0074B033 /* GoogleService-Info.plist */; };
 		826757162932241200B67E58 /* StoryUrlModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826757152932241200B67E58 /* StoryUrlModel.swift */; };
@@ -132,6 +133,7 @@
 		82259232291AB2FF00D17E30 /* StoriesReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesReducer.swift; sourceTree = "<group>"; };
 		8243152D293136F50008F01A /* CreateBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBar.swift; sourceTree = "<group>"; };
 		8243152F2931387B0008F01A /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
+		82462A2D2933EDB70026730B /* BidirectionalIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BidirectionalIterator.swift; sourceTree = "<group>"; };
 		826030E5291B015B006007C3 /* LocalStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorageKey.swift; sourceTree = "<group>"; };
 		8263AE76291BA7CA0074B033 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		826757152932241200B67E58 /* StoryUrlModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryUrlModel.swift; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 				82954745292C28AA006600F3 /* String+Extensions.swift */,
 				826F3311292FEC36005B1E6B /* IndexingIterator+Extensions.swift */,
 				826F331329300F9E005B1E6B /* Array+Extensions.swift */,
+				82462A2D2933EDB70026730B /* BidirectionalIterator.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -635,6 +638,7 @@
 				8225920E291A9EAD00D17E30 /* View+Extensions.swift in Sources */,
 				82BBC97F291ABB3E008DB479 /* ThreadView.swift in Sources */,
 				82F2AE37291E861A00A4524E /* ExploreView.swift in Sources */,
+				82462A2E2933EDB70026730B /* BidirectionalIterator.swift in Sources */,
 				82259227291AAC3200D17E30 /* LoginState.swift in Sources */,
 				828E351C291C55640089AD1A /* AddReducer.swift in Sources */,
 				8225922F291AB2D200D17E30 /* StoriesState.swift in Sources */,
@@ -823,7 +827,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;
@@ -860,7 +864,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Podium/Podium.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"Podium/Preview Content\"";
 				DEVELOPMENT_TEAM = 7MBMJ7N44S;
 				ENABLE_PREVIEWS = YES;

@@ -105,10 +105,32 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
         profile: state.profile,
         stories: [:]
       )
-      return .none
+      return Effect(value: .getProfilePosts)
       
     case .addPosts(let posts):
-//      state.homeState.posts.insert(contentsOf: posts.sorted(by: { $0.createdAt > $1.createdAt }), at: 0)
+      state.homeState.posts.insert(contentsOf: posts.sorted(by: { $0.post.createdAt > $1.post.createdAt }), at: 0)
+      return .none
+      
+    case .getProfilePosts:
+      let id = state.profile.id
+      return .task {
+        await .didGetProfilePosts(TaskResult {
+          try await API.getPosts(
+            followingIds: [id]
+          )
+        })
+      }
+      
+    case .didGetProfilePosts(.success(let posts)):
+      state.profileState.posts = posts
+      return .none
+      
+    case .didGetProfilePosts(.failure(let error)):
+      state.homeState.bannerData = BannerData(
+        title: "Error",
+        detail: "Error while loading posts.",
+        type: .error
+      )
       return .none
       
     case .getStories:
@@ -212,7 +234,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       return .none
       
     case .add(.didAddPost(.success(let post))):
-      state.profileState.posts.append(post)
+      state.profileState.posts?.append(post)
       return .none
       
     case .add(_):

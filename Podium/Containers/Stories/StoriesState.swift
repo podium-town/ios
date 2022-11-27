@@ -15,8 +15,8 @@ struct StoriesState: Equatable {
   var stories: [String: [StoryProfileModel]]
   var currentProfile: String?
   var currentStory: StoryProfileModel?
-  var profilesIterator: IndexingIterator<[Array<String>.Element]>?
-  var storiesIterator: IndexingIterator<[Array<StoryProfileModel>.Element]>?
+  var profilesIterator: BidirectionalIterator<[String], Array<String>.Index>?
+  var storiesIterator: BidirectionalIterator<[StoryProfileModel], Array<StoryProfileModel>.Index>?
   var urls: [StoryUrlModel] = []
   var isPickerPresented = false
   var images: [UIImage] = []

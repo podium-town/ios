@@ -32,6 +32,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             posts: []
           ),
           profileState: ProfileState(
+            isSelf: true,
             fromProfile: loadedProfile,
             profile: loadedProfile
           ),
@@ -76,6 +77,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
             posts: []
           ),
           profileState: ProfileState(
+            isSelf: true,
             fromProfile: profile,
             profile: profile
           ),
@@ -99,6 +101,7 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
           posts: []
         ),
         profileState: ProfileState(
+          isSelf: true,
           fromProfile: profile,
           profile: profile
         ),

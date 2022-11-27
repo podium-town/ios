@@ -12,6 +12,8 @@ enum TabsAction {
   case initialize
   case getPosts
   case didGetPosts(TaskResult<[PostProfileModel]>)
+  case getProfilePosts
+  case didGetProfilePosts(TaskResult<[PostProfileModel]>)
   case getStories
   case didGetStories(TaskResult<([String: [StoryProfileModel]], [StoryUrlModel])>)
   case addPosts(posts: [PostProfileModel])

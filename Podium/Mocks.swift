@@ -14,7 +14,17 @@ struct Mocks {
     text: "You are viewing the #README and repositories as a public user. You are viewing the README and repositories as a public #user.",
     ownerId: "456",
     createdAt: 123,
-    images: []
+    images: [
+      PostImage(
+        id: "", url: "preview"
+      ),
+      PostImage(
+        id: "", url: "preview"
+      ),
+      PostImage(
+        id: "", url: "preview"
+      )
+    ]
   )
   static var postProfile = PostProfileModel(
     id: "123",

@@ -34,11 +34,6 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
       }
       
     case .didDeleteStory(.success(let story)):
-      state.bannerData = BannerData(
-        title: "Delete",
-        detail: "Story has been deleted.",
-        type: .info
-      )
       return Effect(value: .getStories)
       
     case .didDeleteStory(.failure(let error)):
@@ -103,17 +98,26 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
     case .getStories:
       let profilesMap = state.stories.compactMap({ $0.key })
       if state.currentProfile == nil {
-        state.profilesIterator = profilesMap.makeIterator()
+        state.profilesIterator = profilesMap.makeBidirectionalIterator()
       } else {
         let shiftBy = profilesMap.firstIndex(of: state.currentProfile!)
-        state.profilesIterator = profilesMap.shift(withDistance: shiftBy ?? 0).makeIterator()
-        state.currentProfile = state.profilesIterator?.next()
+//        state.profilesIterator = profilesMap.shift(withDistance: shiftBy ?? 0).makeBidirectionalIterator()
+        state.profilesIterator = profilesMap.makeBidirectionalIterator()
+        state.currentProfile = state.profilesIterator?.at(index: shiftBy ?? 0)
       }
-      state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeIterator()
+      state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeBidirectionalIterator()
       state.currentStory = state.storiesIterator?.next()
       return Effect(value: .prefetchStories)
       
     case .prevStory:
+      if let prevStory = state.storiesIterator?.previous() {
+        state.currentStory = prevStory
+      } else if let prevProfile = state.profilesIterator?.previous() {
+        state.currentProfile = prevProfile
+        state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeBidirectionalIterator()
+        state.currentStory = state.storiesIterator?.last()
+      }
+      
       return .none
       
     case .nextStory:
@@ -124,7 +128,7 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
           state.currentStory = nil
           return Effect(value: .dismiss)
         } else {
-          state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeIterator()
+          state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeBidirectionalIterator()
           state.currentStory = state.storiesIterator?.next()
         }
       }

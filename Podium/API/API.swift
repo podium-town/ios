@@ -157,7 +157,6 @@ class API {
   static func getPosts(followingIds: [String]) async throws -> [PostProfileModel] {
     do {
       var tempPosts: [PostModel] = []
-      var posts: [PostProfileModel] = []
       
       let dictionary = try await db
         .collection("posts")
@@ -229,41 +228,43 @@ class API {
       .whereField("ownerId", in: ids)
       .order(by: "createdAt", descending: true)
       .addSnapshotListener({ querySnapshot, error in
-        var posts: [PostProfileModel] = []
-        let group = DispatchGroup()
-        if let documents = querySnapshot?.documentChanges {
-          for document in documents {
-            if document.type == .added,
-               let post = try? document.document.data(as: PostModel.self) {
-              if let profile = profiles[post.ownerId] {
-                posts.append(PostProfileModel(
-                  id: post.id,
-                  post: post,
-                  profile: profile
-                ))
-              } else {
-                group.enter()
-                db
-                  .collection("users")
-                  .document(post.ownerId)
-                  .getDocument(as: ProfileModel.self) { result in
-                    switch result {
-                    case .success(let profile):
-                      profiles[profile.id] = profile
-                      posts.append(PostProfileModel(
-                        id: post.id,
-                        post: post,
-                        profile: profile
-                      ))
-                    case .failure(let error):
-                      print(error.localizedDescription)
-                    }
-                    group.leave()
-                  }
+        Task {
+          var tempPosts: [PostModel] = []
+          
+          if let documents = querySnapshot?.documentChanges {
+            for document in documents {
+              if document.type == .added,
+                 let post = try? document.document.data(as: PostModel.self) {
+                tempPosts.append(post)
               }
             }
-          }
-          group.notify(queue: .main) {
+            
+            let uniqueProfileIds = Array(Set(tempPosts.map({ $0.ownerId })))
+            
+            let profiles = try await withThrowingTaskGroup(of: ProfileModel.self) { group in
+              for id in uniqueProfileIds {
+                group.addTask {
+                  return try await getProfile(id: id)
+                }
+              }
+              
+              var collected: [String: ProfileModel] = [:]
+              
+              for try await value in group {
+                collected[value.id] = value
+              }
+              
+              return collected
+            }
+            
+            let posts = tempPosts.map({ post in
+              return PostProfileModel(
+                id: post.id,
+                post: post,
+                profile: profiles[post.ownerId]!
+              )
+            })
+            
             completion(posts)
           }
         }
@@ -271,65 +272,48 @@ class API {
   }
   
   static func listenComments(post: PostProfileModel, completion: @escaping (_ comments: [PostProfileModel]) -> Void) -> ListenerRegistration {
-    var profiles: [String: ProfileModel] = [:]
     return db
       .collection("comments")
       .whereField("postId", isEqualTo: post.post.id)
       .order(by: "createdAt", descending: true)
       .addSnapshotListener({ querySnapshot, error in
-        var comments: [PostProfileModel] = []
-        let group = DispatchGroup()
-        if let documents = querySnapshot?.documentChanges {
-          for document in documents {
-            if document.type == .added,
-               let comment = try? document.document.data(as: PostModel.self) {
-              if let profile = profiles[comment.ownerId] {
-                comments.append(PostProfileModel(
-                  id: comment.id,
-                  post: comment,
-                  profile: profile
-                ))
-              } else {
-                group.enter()
-                db
-                  .collection("users")
-                  .document(comment.ownerId)
-                  .getDocument(as: ProfileModel.self) { result in
-                    switch result {
-                    case .success(var profile):
-                      if let avatarId = profile.avatarId {
-                        let storageRef = storage.reference()
-                        let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
-                        group.enter()
-                        fileRef.getData(maxSize: 10 * 1024 * 1024) { data, error in
-                          if let data = data {
-                            profile.avatarData = data
-                          }
-                          profiles[profile.id] = profile
-                          comments.append(PostProfileModel(
-                            id: comment.id,
-                            post: comment,
-                            profile: profile
-                          ))
-                          group.leave()
-                        }
-                      } else {
-                        profiles[profile.id] = profile
-                        comments.append(PostProfileModel(
-                          id: comment.id,
-                          post: comment,
-                          profile: profile
-                        ))
-                      }
-                    case .failure(let error):
-                      print(error.localizedDescription)
-                    }
-                    group.leave()
-                  }
+        Task {
+          var tempComments: [PostModel] = []
+          
+          if let documents = querySnapshot?.documentChanges {
+            for document in documents {
+              if document.type == .added,
+                 let comment = try? document.document.data(as: PostModel.self) {
+                tempComments.append(comment)
               }
             }
-          }
-          group.notify(queue: .main) {
+            
+            let uniqueProfileIds = Array(Set(tempComments.map({ $0.ownerId })))
+            
+            let profiles = try await withThrowingTaskGroup(of: ProfileModel.self) { group in
+              for id in uniqueProfileIds {
+                group.addTask {
+                  return try await getProfile(id: id)
+                }
+              }
+              
+              var collected: [String: ProfileModel] = [:]
+              
+              for try await value in group {
+                collected[value.id] = value
+              }
+              
+              return collected
+            }
+            
+            let comments = tempComments.map({ post in
+              return PostProfileModel(
+                id: post.id,
+                post: post,
+                profile: profiles[post.ownerId]!
+              )
+            })
+            
             completion(comments)
           }
         }
@@ -677,59 +661,29 @@ class API {
   }
   
   static func listenStories(ids: [String], completion: @escaping (_ storiesToAdd: ([String: [StoryProfileModel]], [StoryUrlModel]), _ storiesToRemove: [String: [StoryModel]]) -> Void) {
-    let profiles: [String: ProfileModel] = [:]
     db
       .collection("stories")
       .whereField("ownerId", in: ids)
       .order(by: "createdAt")
       .addSnapshotListener({ querySnapshot, error in
-        var urls: [StoryUrlModel] = []
-        var stories: [String: [StoryProfileModel]] = [:]
-        var toRemove: [String: [StoryModel]] = [:]
-        let group = DispatchGroup()
-        if let documents = querySnapshot?.documentChanges {
-          for document in documents {
-            if document.type == .added,
-               let story = try? document.document.data(as: StoryModel.self) {
-              urls.append(StoryUrlModel(
-                url: story.url,
-                createdAt: story.createdAt
-              ))
-              if let profile = profiles[story.ownerId] {
-                let storyModel = StoryProfileModel(
-                  story: story,
-                  profile: profile
-                )
-                if stories[story.ownerId] == nil {
-                  stories[story.ownerId] = [storyModel]
-                } else {
-                  stories[story.ownerId]?.append(storyModel)
-                }
-              } else {
-                group.enter()
-                db
-                  .collection("users")
-                  .document(story.ownerId)
-                  .getDocument(as: ProfileModel.self) { result in
-                    switch result {
-                    case .success(let profile):
-                      let storyModel = StoryProfileModel(
-                        story: story,
-                        profile: profile
-                      )
-                      if stories[story.ownerId] == nil {
-                        stories[story.ownerId] = [storyModel]
-                      } else {
-                        stories[story.ownerId]?.append(storyModel)
-                      }
-                    case .failure(let err):
-                      print(err.localizedDescription)
-                    }
-                    group.leave()
-                  }
+        Task {
+          var tempStories: [StoryModel] = []
+          var toRemove: [String: [StoryModel]] = [:]
+          var stories: [String: [StoryProfileModel]] = [:]
+          var urls: [StoryUrlModel] = []
+          
+          if let documents = querySnapshot?.documentChanges {
+            for document in documents {
+              if document.type == .added,
+                 let story = try? document.document.data(as: StoryModel.self) {
+                urls.append(StoryUrlModel(
+                  url: story.url,
+                  createdAt: story.createdAt
+                ))
+                tempStories.append(story)
               }
-            } else if document.type == .removed {
-              if let story = try? document.document.data(as: StoryModel.self) {
+              if document.type == .removed,
+                 let story = try? document.document.data(as: StoryModel.self) {
                 if toRemove[story.ownerId] == nil {
                   toRemove[story.ownerId] = [story]
                 } else {
@@ -737,10 +691,39 @@ class API {
                 }
               }
             }
+            
+            let uniqueProfileIds = Array(Set(tempStories.map({ $0.ownerId })))
+            
+            let profiles = try await withThrowingTaskGroup(of: ProfileModel.self) { group in
+              for id in uniqueProfileIds {
+                group.addTask {
+                  return try await getProfile(id: id)
+                }
+              }
+              
+              var collected: [String: ProfileModel] = [:]
+              
+              for try await value in group {
+                collected[value.id] = value
+              }
+              
+              return collected
+            }
+            
+            tempStories.forEach { story in
+              let storyModel = StoryProfileModel(
+                story: story,
+                profile: profiles[story.ownerId]!
+              )
+              if stories[story.ownerId] == nil {
+                stories[story.ownerId] = [storyModel]
+              } else {
+                stories[story.ownerId]?.append(storyModel)
+              }
+            }
+            
+            completion((stories, urls), toRemove)
           }
-        }
-        group.notify(queue: .main) {
-          completion((stories, urls), toRemove)
         }
       })
   }

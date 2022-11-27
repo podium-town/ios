@@ -24,6 +24,7 @@ struct SearchBar: View {
           .disableAutocorrection(true)
           .submitLabel(.search)
           .focused($focus)
+          .padding(.vertical)
         
         Spacer()
         

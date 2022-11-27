@@ -92,13 +92,19 @@ struct Post: View {
                       Button {
                         onImage(post)
                       } label: {
-                        Image(uiImage: (UIImage(data: loadedImage) ?? UIImage(named: "avatar")!))
-                          .resizable()
-                          .scaledToFill()
+                        RoundedRectangle(cornerRadius: 15)
+                          .foregroundColor(Color("ColorLightBackground"))
+                          .overlay(
+                            Image(uiImage: UIImage(data: loadedImage)!)
+                              .resizable()
+                              .scaledToFill()
+                              .frame(height: 160)
+                              .clipShape(RoundedRectangle(cornerRadius: 15))
+                              .allowsHitTesting(false)
+                          )
                           .frame(height: 160)
-                          .clipShape(RoundedRectangle(cornerRadius: 15))
-                          .allowsHitTesting(false)
                       }
+                      .clipShape(RoundedRectangle(cornerRadius: 15))
                     } else if imageObj.url == "preview" {
                       RoundedRectangle(cornerRadius: 15)
                         .foregroundColor(Color("ColorLightBackground"))

@@ -174,7 +174,9 @@ struct ProfileView: View {
             )
           }
         .onAppear {
-          viewStore.send(.getPosts)
+          if !viewStore.isSelf {
+            viewStore.send(.getPosts)
+          }
         }
         .padding(.bottom, 18)
         .banner(data: viewStore.binding(
@@ -226,13 +228,13 @@ struct ProfileView: View {
     }
   }
   
-  func filterData(posts: [PostProfileModel]) -> [PostProfileModel] {
+  func filterData(posts: [PostProfileModel]?) -> [PostProfileModel] {
     switch tab {
     case 0:
-      return posts
+      return posts ?? []
       
     case 1:
-      return posts.filter({ !$0.post.images.isEmpty })
+      return posts?.filter({ !$0.post.images.isEmpty }) ?? []
       
     default:
       return []
