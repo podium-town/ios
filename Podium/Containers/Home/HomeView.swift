@@ -36,6 +36,7 @@ struct HomeView: View {
                     Post(
                       isSelf: viewStore.profile.id == post.ownerId,
                       post: post,
+                      profile: viewStore.profiles[post.ownerId],
                       onDelete: { post in
                         viewStore.send(.deletePost(post: post))
                       },
@@ -102,15 +103,15 @@ struct HomeView: View {
                         )
                       }
                       ForEach(Array(viewStore.stories), id: \.key) { id, posts in
-                        if let profile = posts.first?.profile, id != viewStore.profile.id {
+                        if id != viewStore.profile.id {
                           Button {
                             viewStore.send(.presentStories(
                               isPresented: true,
-                              profile: profile
+                              profile: viewStore.profiles[id]
                             ))
                           } label: {
                             StoryAvatar(
-                              profile: profile,
+                              profile: viewStore.profiles[id]!,
                               isAddVisible: id == viewStore.profile.id
                             )
                           }

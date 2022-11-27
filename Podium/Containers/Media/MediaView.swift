@@ -14,9 +14,10 @@ struct MediaView: View {
   var body: some View {
     WithViewStore(store) { viewStore in
       TabView {
-        ForEach(viewStore.post.images, id: \.self) { fileId in
-          if let loadedImage = viewStore.loadedImages[fileId] {
-            Image(uiImage: UIImage(data: loadedImage)!)
+        ForEach(viewStore.post.images) { imageObj in
+          if let loadedImage = viewStore.loadedImages[imageObj.url],
+             let uiImage = UIImage(data: loadedImage) {
+            Image(uiImage: uiImage)
               .resizable()
               .scaledToFit()
               .ignoresSafeArea()
@@ -24,7 +25,7 @@ struct MediaView: View {
             ProgressView()
               .onAppear {
                 viewStore.send(.loadImage(
-                  fileId: fileId
+                  url: imageObj.url
                 ))
               }
           }

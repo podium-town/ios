@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ThreadPost: View {
   var post: PostModel
+  var profile: ProfileModel
   var onDelete: (_ post: PostModel) -> Void
   var onProfile: (_ profile: ProfileModel) -> Void
   var onImage: (_ post: PostModel) -> Void
@@ -18,33 +19,31 @@ struct ThreadPost: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 12) {
       HStack(alignment: .center) {
-        if let profile = post.profile {
-          Button {
-            onProfile(profile)
-          } label: {
-            Image(uiImage: (profile.avatarData != nil) ? UIImage(data: profile.avatarData!)! : UIImage(named: "avatar")!)
-              .resizable()
-              .scaledToFill()
-              .frame(width: 64, height: 64)
-              .clipShape(Circle())
-              .clipped()
-          }
+        Button {
+          onProfile(profile)
+        } label: {
+          Image(uiImage: (profile.avatarData != nil) ? UIImage(data: profile.avatarData!)! : UIImage(named: "avatar")!)
+            .resizable()
+            .scaledToFill()
+            .frame(width: 64, height: 64)
+            .clipShape(Circle())
+            .clipped()
+        }
+        
+        HStack(alignment: .center, spacing: 0) {
+          Text(profile.username ?? "")
+            .fontWeight(.semibold)
+            .font(.title2)
           
-          HStack(alignment: .center, spacing: 0) {
-            Text(profile.username ?? "")
-              .fontWeight(.semibold)
-              .font(.title2)
-            
-            Spacer()
-            
-            Text(
-              Date(timeIntervalSince1970: TimeInterval(
-                integerLiteral: post.createdAt
-              )).timeAgoDisplay()
-            )
-            .foregroundColor(.gray)
-            .font(.caption)
-          }
+          Spacer()
+          
+          Text(
+            Date(timeIntervalSince1970: TimeInterval(
+              integerLiteral: post.createdAt
+            )).timeAgoDisplay()
+          )
+          .foregroundColor(.gray)
+          .font(.caption)
         }
       }
       .padding(.bottom, 8)
@@ -56,17 +55,23 @@ struct ThreadPost: View {
         if let images = post.images, !images.isEmpty {
           VStack(spacing: 0) {
             HStack {
-              ForEach(images, id: \.self) { url in
-                if let loadedImage = loadedImages[url] {
-                  Button {
-                    onImage(post)
-                  } label: {
-                    Image(uiImage: UIImage(data: loadedImage)!)
-                      .resizable()
-                      .scaledToFill()
+              ForEach(images) { imageObj in
+                if let loadedImage = loadedImages[imageObj.url] {
+                  if let uiImage = UIImage(data: loadedImage) {
+                    Button {
+                      onImage(post)
+                    } label: {
+                      Image(uiImage: uiImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(height: 160)
+                        .clipShape(RoundedRectangle(cornerRadius: 15))
+                        .allowsHitTesting(false)
+                    }
+                  } else {
+                    RoundedRectangle(cornerRadius: 15)
+                      .foregroundColor(Color("ColorLightBackground"))
                       .frame(height: 160)
-                      .clipShape(RoundedRectangle(cornerRadius: 15))
-                      .allowsHitTesting(false)
                   }
                 } else {
                   RoundedRectangle(cornerRadius: 15)
@@ -75,9 +80,9 @@ struct ThreadPost: View {
                     .task {
                       do {
                         let (_, loadedData) = try await API.getImage(
-                          url: url
+                          url: imageObj.url
                         )
-                        self.loadedImages[url] = loadedData
+                        self.loadedImages[imageObj.url] = loadedData
                       } catch let error {
                         print(error)
                       }
@@ -99,12 +104,14 @@ struct ThreadPost_Previews: PreviewProvider {
     VStack(spacing: 0) {
       ThreadPost(
         post: Mocks.postSimple,
+        profile: Mocks.profile,
         onDelete: { _ in },
         onProfile: { _ in },
         onImage: { _ in }
       )
       ThreadPost(
         post: Mocks.post,
+        profile: Mocks.profile,
         onDelete: { _ in },
         onProfile: { _ in },
         onImage: { _ in }

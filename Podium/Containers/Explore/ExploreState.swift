@@ -7,8 +7,8 @@
 
 struct ExploreState: Equatable {
   var profile: ProfileModel
+  var foundProfiles: [ProfileModel] = []
   var searchQuery = ""
-  var profiles: [ProfileModel] = []
   var pendingFollowRequests: [String] = []
   var isProfilePresented = false
   var hashtags: [HashtagModel] = []

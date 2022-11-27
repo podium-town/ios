@@ -22,7 +22,7 @@ enum BannerType {
   var tintColor: Color {
     switch self {
     case .info:
-      return Color.accentColor
+      return Color("ColorText")
     case .success:
       return Color.green
     case .warning:
@@ -53,7 +53,7 @@ struct BannerModifier: ViewModifier {
             }
             Spacer()
           }
-          .foregroundColor(Color.white)
+          .foregroundColor(Color("ColorTextInverted"))
           .padding(12)
           .background(data.type.tintColor)
           .cornerRadius(8)

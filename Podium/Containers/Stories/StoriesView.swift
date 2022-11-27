@@ -32,7 +32,7 @@ struct StoriesView: View {
             }
           )
         } else if let currentStory = viewStore.currentStory,
-                  let currentProfile = currentStory.profile {
+                  let currentProfile = viewStore.profiles[currentStory.ownerId] {
           if let data = viewStore.loadedMedia[currentStory.url] {
             Color.black
               .overlay(
@@ -76,6 +76,7 @@ struct StoriesView: View {
             HStack {
               ForEach(viewStore.stories[currentProfile.id] ?? []) { story in
                 RoundedRectangle(cornerRadius: 15)
+                  .foregroundColor(.white)
                   .frame(height: 4)
                   .opacity(currentStory.id == story.id ? 0.8 : 0.5)
               }
@@ -90,28 +91,36 @@ struct StoriesView: View {
               
               Text(currentProfile.username ?? "")
                 .fontWeight(.semibold)
+                .foregroundColor(.white)
               
               Spacer()
               
               Text(Date(timeIntervalSince1970: TimeInterval(currentStory.createdAt)).timeAgoDisplay())
+                .foregroundColor(.white)
             }
             
             Spacer()
             
             if currentProfile.id == viewStore.profile.id {
-              CreateBar(
-                isLoading: viewStore.isLoading,
-                isPresented: viewStore.binding(
-                  get: \.isPickerPresented,
-                  send: StoriesAction.presentPicker(isPresented:)
-                ),
-                onPicker: {
-                  viewStore.send(.presentPicker(isPresented: true))
-                },
-                onAddImage: { image in
-                  viewStore.send(.addImage(image))
-                }
-              )
+              VStack {
+                Spacer()
+                CreateBar(
+                  isLoading: viewStore.isLoading,
+                  isPresented: viewStore.binding(
+                    get: \.isPickerPresented,
+                    send: StoriesAction.presentPicker(isPresented:)
+                  ),
+                  onPicker: {
+                    viewStore.send(.presentPicker(isPresented: true))
+                  },
+                  onAddImage: { image in
+                    viewStore.send(.addImage(image))
+                  },
+                  onDelete: {
+                    viewStore.send(.deleteStory)
+                  }
+                )
+              }
             }
           }
           .padding()
@@ -129,6 +138,9 @@ struct StoriesView: View {
               },
               onAddImage: { image in
                 viewStore.send(.addImage(image))
+              },
+              onDelete: {
+                viewStore.send(.deleteStory)
               }
             )
             .padding()
@@ -136,6 +148,10 @@ struct StoriesView: View {
           .background(Color.black)
         }
       }
+      .banner(data: viewStore.binding(
+        get: \.bannerData,
+        send: StoriesAction.dismissBanner
+      ))
       .background(Color.black)
       .onAppear {
         viewStore.send(.getStories)

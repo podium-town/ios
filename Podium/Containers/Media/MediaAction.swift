@@ -9,6 +9,6 @@ import ComposableArchitecture
 import Foundation
 
 enum MediaAction {
-  case loadImage(fileId: String)
+  case loadImage(url: String)
   case didLoadImage(TaskResult<(String, Data)>)
 }

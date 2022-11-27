@@ -124,6 +124,7 @@ struct ProfileView: View {
                     Post(
                       isSelf: viewStore.fromProfile.id == post.ownerId,
                       post: post,
+                      profile: viewStore.profile,
                       onDelete: { post in
                         viewStore.send(.deletePost(post: post))
                       },
@@ -246,6 +247,7 @@ struct ProfileView_Previews: PreviewProvider {
       initialState: ProfileState(
         fromProfile: Mocks.profile,
         profile: Mocks.profile2,
+        profiles: [Mocks.profile.id: Mocks.profile],
         posts: [Mocks.post]
       ),
       reducer: profileReducer,

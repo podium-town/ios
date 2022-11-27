@@ -99,21 +99,9 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     case .getPosts:
       state.isLoadingRefreshable = true
       return .none
-//      let followingIds = state.profile.following
-//      return .task {
-//        await .didGetPosts(TaskResult {
-//          try await API.getPostsProfiles(
-//            ids: followingIds
-//          )
-//        })
-//      }
       
     case .didGetPosts(.success(let posts)):
       state.isLoadingRefreshable = false
-//      state.posts = posts
-//      if let encodedPosts = try? JSONEncoder().encode(state.posts) {
-//        environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
-//      }
       state.isEmpty = posts.count == 0
       return .none
       
@@ -150,7 +138,8 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       if isPresented, let profile = profile {
         state.profileState = ProfileState(
           fromProfile: fromProfile,
-          profile: profile
+          profile: profile,
+          profiles: state.profiles
         )
       }
       return .none
@@ -158,6 +147,7 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     case .presentStories(let isPresented, let profile):
       state.isStoriesPresented = isPresented
       if let profile = profile {
+        state.storiesState?.profiles = state.profiles
         state.storiesState?.currentProfile = profile.id
       }
       return .none
@@ -166,7 +156,9 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       state.isThreadPresented = isPresented
       if isPresented, let post = post {
         state.threadState = ThreadState(
-          profile: state.profile,
+          fromProfile: state.profile,
+          profile: state.profiles[post.ownerId],
+          profiles: state.profiles,
           post: post
         )
       }
@@ -181,26 +173,6 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       
     case .add(.addPost):
       state.isAddPresented = false
-      return .none
-      
-    case .add(.addedPost(let post)):
-      var mut = post
-      mut.isLoading = true
-      return .none
-      
-    case .add(.didAddPost(.success(let added))):
-      state.posts = state.posts.map { post in
-        if post.id == added.id {
-          var mut = post
-          mut.isLoading = false
-          mut.images = added.images
-          return mut
-        }
-        return post
-      }
-      if let encodedPosts = try? JSONEncoder().encode(state.posts) {
-        environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
-      }
       return .none
       
     case .add(.didAddPost(.failure(let error))):

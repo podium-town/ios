@@ -31,10 +31,6 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       }
       return .none
       
-    case .attachListener:
-      state.isLoading = true
-      return .none
-      
     case .addComments(let comments):
       state.isLoading = false
       state.comments.insert(contentsOf: comments, at: 0)
@@ -56,11 +52,9 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       let comment = PostModel(
         id: UUID().uuidString,
         text: state.text,
-        ownerId: state.profile.id,
+        ownerId: state.fromProfile.id,
         createdAt: Date().millisecondsSince1970 / 1000,
-        images: [],
-        profile: state.profile,
-        isLoading: true
+        images: []
       )
       state.text = ""
       return Effect(value: .sended(comment))
@@ -109,7 +103,7 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       return .none
       
     case .reportPost(post: let post):
-      let reporterId = state.profile.id
+      let reporterId = state.fromProfile.id
       return .fireAndForget {
         try await API.reportPost(
           reporterId: reporterId,
@@ -124,7 +118,7 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       return .none
       
     case .reportComment(let comment):
-      let reporterId = state.profile.id
+      let reporterId = state.fromProfile.id
       return .fireAndForget {
         try await API.reportComment(
           reporterId: reporterId,

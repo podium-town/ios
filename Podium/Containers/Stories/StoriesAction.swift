@@ -20,6 +20,9 @@ enum StoriesAction {
   case didPrefetchStories(TaskResult<[String: Data]>)
   case presentPicker(isPresented: Bool)
   case addImage(UIImage)
+  case deleteStory
+  case didDeleteStory(TaskResult<StoryModel>)
   case dismissCreate
   case dismiss
+  case dismissBanner
 }

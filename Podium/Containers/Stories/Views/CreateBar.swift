@@ -12,6 +12,7 @@ struct CreateBar: View {
   @Binding var isPresented: Bool
   var onPicker: () -> Void
   var onAddImage: (_ image: UIImage) -> Void
+  var onDelete: () -> Void
   
   var body: some View {
     VStack {
@@ -38,8 +39,21 @@ struct CreateBar: View {
         
         Spacer()
         
-        Text("Views: 43")
-          .fontWeight(.medium)
+        HStack {
+          Menu {
+            Button("Delete story") {
+              onDelete()
+            }
+          } label: {
+            Image("more")
+              .resizable()
+              .frame(width: 18, height: 18)
+              .scaledToFill()
+          }
+          
+          Text("Views: 43")
+            .fontWeight(.medium)
+        }
       }
       .animation(.default)
       .frame(height: 40)
@@ -65,7 +79,8 @@ struct CreateBar_Previews: PreviewProvider {
       isLoading: true,
       isPresented: .constant(false),
       onPicker: {},
-      onAddImage: { _ in }
+      onAddImage: { _ in },
+      onDelete: {}
     )
   }
 }

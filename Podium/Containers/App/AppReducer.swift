@@ -33,13 +33,15 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
           ),
           profileState: ProfileState(
             fromProfile: loadedProfile,
-            profile: loadedProfile
+            profile: loadedProfile,
+            profiles: [:]
           ),
           addState: AddState(
             profile: loadedProfile
           ),
           exploreState: ExploreState(
-            profile: loadedProfile
+            profile: loadedProfile,
+            foundProfiles: []
           )
         )
       } else if let verificationId = environment.localStorage.string(forKey: StorageKey.authVerificationID.rawValue) {
@@ -76,13 +78,15 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
           ),
           profileState: ProfileState(
             fromProfile: profile,
-            profile: profile
+            profile: profile,
+            profiles: [:]
           ),
           addState: AddState(
             profile: profile
           ),
           exploreState: ExploreState(
-            profile: profile
+            profile: profile,
+            foundProfiles: []
           )
         )
       }
@@ -98,13 +102,15 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         ),
         profileState: ProfileState(
           fromProfile: profile,
-          profile: profile
+          profile: profile,
+          profiles: [:]
         ),
         addState: AddState(
           profile: profile
         ),
         exploreState: ExploreState(
-          profile: profile
+          profile: profile,
+          foundProfiles: []
         )
       )
       return .none

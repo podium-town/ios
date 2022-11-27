@@ -9,6 +9,8 @@ import SwiftUI
 import ComposableArchitecture
 
 struct TabsView: View {
+  @Environment(\.scenePhase) private var scenePhase
+  
   let store: Store<TabsState, TabsAction>
   
   var body: some View {
@@ -62,13 +64,22 @@ struct TabsView: View {
       .onAppear {
         viewStore.send(.initialize)
         viewStore.send(.getProfile)
-        API.listenPosts(ids: viewStore.profile.following) { posts in
-          viewStore.send(.addPosts(posts: posts))
+        API.listenPosts(
+          ids: viewStore.profile.following,
+          currentProfiles: viewStore.profiles
+        ) { posts, profiles in
+          viewStore.send(.addPosts(posts: posts, profiles: profiles))
         }
         API.listenStories(ids: viewStore.profile.following) { (st, storiesToRemove) in
           let (stories, urls) = st
           viewStore.send(.addStories(stories: stories, urls: urls))
           viewStore.send(.removeStories(stories: storiesToRemove))
+        }
+      }
+      .onChange(of: scenePhase) { newPhase in
+        if newPhase == .active {
+          viewStore.send(.getStories)
+          viewStore.send(.getPosts)
         }
       }
       .overlay {
@@ -101,7 +112,8 @@ struct TabsView_Previews: PreviewProvider {
         ),
         profileState: ProfileState(
           fromProfile: Mocks.profile,
-          profile: Mocks.profile
+          profile: Mocks.profile,
+          profiles: [Mocks.profile.id: Mocks.profile]
         ),
         addState: AddState(
           profile: Mocks.profile

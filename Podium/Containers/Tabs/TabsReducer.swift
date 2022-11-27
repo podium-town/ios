@@ -66,7 +66,6 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
     case .removeStories(let stories):
       for (profileId, story) in stories {
         story.forEach { st in
-          state.stories[profileId]?.removeAll(where: { $0.id == st.id })
           state.homeState.stories[profileId]?.removeAll(where: { $0.id == st.id })
           state.homeState.storiesState?.stories[profileId]?.removeAll(where: { $0.id == st.id })
           state.urls.removeAll(where: { $0.url == st.url})
@@ -81,7 +80,6 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
         defaultStories[state.profile.id] = []
       }
       
-      state.stories.merge(defaultStories, uniquingKeysWith: +)
       state.homeState.stories.merge(defaultStories, uniquingKeysWith: +)
       state.homeState.storiesState?.stories.merge(defaultStories, uniquingKeysWith: +)
       state.urls.append(contentsOf: urls)
@@ -109,30 +107,32 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       )
       return .none
       
-    case .addPosts(let posts):
+    case .addPosts(let posts, let profiles):
+      state.homeState.profiles = profiles
       state.homeState.posts.insert(contentsOf: posts.sorted(by: { $0.createdAt > $1.createdAt }), at: 0)
-      if let encodedPosts = try? JSONEncoder().encode(state.homeState.posts) {
-        environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
-      }
       return .none
       
     case .getStories:
       let followingIds = state.profile.following
+      let currentProfiles = state.profiles
       return .task {
         await .didGetStories(TaskResult {
           try await API.getStories(
-            ids: followingIds
+            ids: followingIds,
+            currentProfiles: currentProfiles
           )
         })
       }
       
-    case .didGetStories(.success((let stories, let urls))):
+    case .didGetStories(.success((let stories, let urls, let profiles))):
+      state.profiles = profiles
+      state.homeState.profiles = profiles
       var defaultStories = stories
+            
       if !defaultStories.contains(where: { $0.key == state.profile.id }) {
         defaultStories[state.profile.id] = []
       }
       
-      state.stories = defaultStories
       state.homeState.stories = defaultStories
       state.homeState.storiesState?.stories = defaultStories
       state.urls = urls
@@ -140,35 +140,40 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       return Effect(value: .prefetchStories)
       
     case .didGetStories(.failure(let error)):
+      state.homeState.bannerData = BannerData(
+        title: "Error",
+        detail: "Error while loading stories.",
+        type: .error
+      )
       return .none
       
     case .getPosts:
-      if let posts = environment.localStorage.data(forKey: StorageKey.posts.rawValue),
-         let loadedPosts = try? JSONDecoder().decode([PostModel].self, from: posts) {
-        state.homeState.posts = loadedPosts
-        state.homeState.isLoadingRefreshable = true
-      }
       let followingIds = state.profile.following
+      let currentProfiles = state.profiles
       return .task {
         await .didGetPosts(TaskResult {
           try await API.getPostsProfiles(
-            ids: followingIds
+            ids: followingIds,
+            currentProfiles: currentProfiles
           )
         })
       }
       
-    case .didGetPosts(.success(let posts)):
+    case .didGetPosts(.success((let posts, let profiles))):
       state.homeState.isLoadingRefreshable = false
       state.homeState.posts = posts
-      if let encodedPosts = try? JSONEncoder().encode(state.homeState.posts) {
-        environment.localStorage.set(encodedPosts, forKey: StorageKey.posts.rawValue)
-      }
       state.homeState.isEmpty = posts.count == 0
+      state.homeState.profiles = profiles
       return .none
       
     case .didGetPosts(.failure(let error)):
       state.homeState.isLoadingRefreshable = false
       state.homeState.isEmpty = state.homeState.posts.count == 0
+      state.homeState.bannerData = BannerData(
+        title: "Error",
+        detail: "Error while loading posts.",
+        type: .error
+      )
       return .none
       
     case .home(.getPosts):
@@ -187,22 +192,6 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       
     case .onMenuClose:
       state.isMenuOpen = false
-      return .none
-      
-    case .home(.stories(.nextStory)):
-      if let storiesState = state.homeState.storiesState,
-         let currentStory = storiesState.currentStory,
-         let xs = storiesState.stories[currentStory.ownerId] {
-        
-        state.homeState.storiesState?.stories[currentStory.ownerId] = xs.map {
-          if $0.id == currentStory.id {
-            var mut = $0
-            mut.seenBy?.append(state.profile.id)
-            return mut
-          }
-          return $0
-        }
-      }
       return .none
       
     case .home(.profile(.didFollow(.success((let from, let id))))):

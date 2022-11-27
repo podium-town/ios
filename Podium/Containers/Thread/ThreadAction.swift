@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import FirebaseFirestore
 
 indirect enum ThreadAction {
   case textChanged(String)
@@ -22,7 +23,6 @@ indirect enum ThreadAction {
   case deleteComment(comment: PostModel)
   case addComments(comments: [PostModel])
   case openMenu
-  case attachListener
   case presentMedia(isPresented: Bool, post: PostModel?)
   
   // View Actions

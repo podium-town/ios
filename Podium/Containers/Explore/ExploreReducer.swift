@@ -35,7 +35,8 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
       if isPresented, let profile = profile {
         state.profileState = ProfileState(
           fromProfile: fromProfile,
-          profile: profile
+          profile: profile,
+          profiles: [:]
         )
       }
       return .none
@@ -56,11 +57,11 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
       
     case .clearSearch:
       state.searchQuery = ""
-      state.profiles = []
+      state.foundProfiles = []
       return .none
       
     case .didSearch(.success(let profiles)):
-      state.profiles = profiles.filter({ $0.id != state.profile.id})
+      state.foundProfiles = profiles.filter({ $0.id != state.profile.id})
       return .none
       
     case .didSearch(.failure(let error)):

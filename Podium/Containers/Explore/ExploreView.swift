@@ -37,7 +37,7 @@ struct ExploreView: View {
                       Spacer()
                     }
                     
-                    ForEach(viewStore.profiles) { profile in
+                    ForEach(viewStore.foundProfiles) { profile in
                       Button {
                         viewStore.send(.presentProfile(
                           isPresented: true,
@@ -226,7 +226,7 @@ struct ExploreView_Previews: PreviewProvider {
     ExploreView(store: Store(
       initialState: ExploreState(
         profile: Mocks.profile,
-        profiles: [Mocks.profile]
+        foundProfiles: [Mocks.profile]
       ),
       reducer: exploreReducer,
       environment: AppEnvironment()

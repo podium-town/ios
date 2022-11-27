@@ -19,6 +19,36 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
       state.images = []
       return .none
       
+    case .dismissBanner:
+      state.bannerData = nil
+      return .none
+      
+    case .deleteStory:
+      let story = state.currentStory!
+      return .task {
+        await .didDeleteStory(TaskResult {
+          try await API.deleteStory(
+            story: story
+          )
+        })
+      }
+      
+    case .didDeleteStory(.success(let story)):
+      state.bannerData = BannerData(
+        title: "Delete",
+        detail: "Story has been deleted.",
+        type: .info
+      )
+      return Effect(value: .getStories)
+      
+    case .didDeleteStory(.failure(let error)):
+      state.bannerData = BannerData(
+        title: "Delete",
+        detail: "Error while deleting story.",
+        type: .error
+      )
+      return .none
+      
     case .prefetchStories:
       let index = min(state.urls.count, 5)
       let fileUrls = Array(state.urls.prefix(upTo: index)).map({ $0.url })

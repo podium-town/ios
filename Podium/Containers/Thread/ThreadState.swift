@@ -5,8 +5,12 @@
 //  Created by Michael Jach on 08/11/2022.
 //
 
+import FirebaseFirestore
+
 struct ThreadState: Equatable {
-  var profile: ProfileModel
+  var fromProfile: ProfileModel
+  var profile: ProfileModel?
+  var profiles: [String: ProfileModel]
   var post: PostModel
   var text = ""
   var isSendDisabled = true

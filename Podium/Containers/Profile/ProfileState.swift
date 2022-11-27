@@ -8,6 +8,7 @@
 struct ProfileState: Equatable {
   var fromProfile: ProfileModel
   var profile: ProfileModel
+  var profiles: [String: ProfileModel]
   var posts: [PostModel] = []
   var isPickerPresented = false
   var isLoadingRefreshable = false

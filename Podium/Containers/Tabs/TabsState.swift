@@ -8,8 +8,8 @@
 struct TabsState: Equatable {
   var profile: ProfileModel
   var isMenuOpen = false
-  var stories: [String: [StoryModel]] = [:]
   var urls: [StoryUrlModel] = []
+  var profiles: [String: ProfileModel] = [:]
   
   // View States
   var homeState: HomeState

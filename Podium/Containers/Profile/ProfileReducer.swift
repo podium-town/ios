@@ -136,11 +136,7 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
     case .didGetPosts(.success(let posts)):
       state.isLoading = false
       state.isLoadingRefreshable = false
-      state.posts = posts.map { post in
-        var mut = post
-        mut.profile = state.profile
-        return mut
-      }
+      state.posts = posts
       if posts.isEmpty {
         state.isEmpty = true
       }
@@ -177,7 +173,9 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       state.isThreadPresented = isPresented
       if isPresented, let post = post {
         state.threadState = ThreadState(
+          fromProfile: state.fromProfile,
           profile: state.profile,
+          profiles: state.profiles,
           post: post
         )
       }

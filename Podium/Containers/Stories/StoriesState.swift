@@ -11,6 +11,7 @@ import UIKit
 struct StoriesState: Equatable {
   var isSelf: Bool { profile.id == currentProfile }
   var profile: ProfileModel
+  var profiles: [String: ProfileModel] = [:]
   var loadedMedia: [String: Data] = [:]
   var stories: [String: [StoryModel]]
   var currentProfile: String?
@@ -21,4 +22,5 @@ struct StoriesState: Equatable {
   var isPickerPresented = false
   var images: [UIImage] = []
   var isLoading = false
+  var bannerData: BannerData?
 }

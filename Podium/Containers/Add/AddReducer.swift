@@ -29,8 +29,7 @@ let addReducer = Reducer<AddState, AddAction, AppEnvironment>.combine(
         text: state.text,
         ownerId: state.profile.id,
         createdAt: Date().millisecondsSince1970 / 1000,
-        images: state.images.map({ _ in return "preview" }),
-        profile: state.profile
+        images: []
       )
       return Effect(value: .addedPost(post))
       
