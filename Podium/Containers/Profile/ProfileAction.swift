@@ -14,7 +14,7 @@ enum ProfileAction {
   case presentPicker(isPresented: Bool)
   case presentSettings(isPresented: Bool)
   case presentThread(isPresented: Bool, post: PostProfileModel?)
-  case presentMedia(isPresented: Bool, post: PostProfileModel?)
+  case presentMedia(isPresented: Bool, post: PostProfileModel?, loadedImages: [String: Data]?)
   case changeAvatar(UIImage)
   case onMenuOpen
   case deletePost(post: PostProfileModel)

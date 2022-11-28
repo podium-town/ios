@@ -18,7 +18,7 @@ struct Post: View {
   var onDelete: (_ post: PostProfileModel) -> Void
   var onReport: (_ post: PostProfileModel) -> Void
   var onProfile: (_ profile: ProfileModel) -> Void
-  var onImage: (_ post: PostProfileModel) -> Void
+  var onImage: (_ post: PostProfileModel, _ loadedImages: [String: Data]) -> Void
   var onMenuTap: () -> Void
   
   @State private var loadedImages: [String: Data] = [:]
@@ -90,7 +90,7 @@ struct Post: View {
                   ForEach(images) { imageObj in
                     if let loadedImage = loadedImages[imageObj.url] {
                       Button {
-                        onImage(post)
+                        onImage(post, loadedImages)
                       } label: {
                         RoundedRectangle(cornerRadius: 15)
                           .foregroundColor(Color("ColorLightBackground"))
@@ -153,7 +153,7 @@ struct Post_Previews: PreviewProvider {
         onDelete: { _ in },
         onReport: { _ in },
         onProfile: { _ in },
-        onImage: { _ in },
+        onImage: { _, _ in },
         onMenuTap: {}
       )
       Post(
@@ -162,7 +162,7 @@ struct Post_Previews: PreviewProvider {
         onDelete: { _ in },
         onReport: { _ in },
         onProfile: { _ in },
-        onImage: { _ in },
+        onImage: { _, _ in },
         onMenuTap: {}
       )
     }

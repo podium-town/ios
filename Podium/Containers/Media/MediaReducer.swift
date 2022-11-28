@@ -21,7 +21,7 @@ let mediaReducer = Reducer<MediaState, MediaAction, AppEnvironment>.combine(
       }
       
     case .didLoadImage(.success((let url, let data))):
-      state.loadedImages[url] = data
+      state.loadedImages?[url] = data
       return .none
       
     case .didLoadImage(.failure(let error)):

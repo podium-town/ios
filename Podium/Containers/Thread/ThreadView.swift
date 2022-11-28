@@ -28,10 +28,11 @@ struct ThreadView: View {
               onProfile: { profile in
                 
               },
-              onImage: { post in
+              onImage: { post, loadedImages in
                 viewStore.send(.presentMedia(
                   isPresented: true,
-                  post: post
+                  post: post,
+                  loadedImages: loadedImages
                 ))
               }
             )
@@ -54,10 +55,11 @@ struct ThreadView: View {
                   onProfile: { profile in
                     
                   },
-                  onImage: { post in
+                  onImage: { post, loadedImages in
                     viewStore.send(.presentMedia(
                       isPresented: true,
-                      post: post
+                      post: post,
+                      loadedImages: loadedImages
                     ))
                   },
                   onMenuTap: {
@@ -127,7 +129,8 @@ struct ThreadView: View {
         get: \.isMediaPresented,
         send: ThreadAction.presentMedia(
           isPresented: false,
-          post: nil
+          post: nil,
+          loadedImages: nil
         ))) {
           IfLetStore(
             store.scope(

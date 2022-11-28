@@ -133,10 +133,11 @@ struct ProfileView: View {
                       onProfile: { profile in
                         
                       },
-                      onImage: { post in
+                      onImage: { post, loadedImages in
                         viewStore.send(.presentMedia(
                           isPresented: true,
-                          post: post
+                          post: post,
+                          loadedImages: loadedImages
                         ))
                       },
                       onMenuTap: {
@@ -163,7 +164,8 @@ struct ProfileView: View {
           get: \.isMediaPresented,
           send: ProfileAction.presentMedia(
             isPresented: false,
-            post: nil
+            post: nil,
+            loadedImages: nil
           ))) {
             IfLetStore(
               store.scope(

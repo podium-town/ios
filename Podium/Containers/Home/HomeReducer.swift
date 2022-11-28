@@ -109,11 +109,12 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       }
       return .none
       
-    case .presentMedia(let isPresented, let post):
+    case .presentMedia(let isPresented, let post, let loadedImages):
       state.isMediaPresented = isPresented
       if isPresented, let post = post {
         state.mediaState = MediaState(
-          post: post
+          post: post,
+          loadedImages: loadedImages
         )
       }
       return .none

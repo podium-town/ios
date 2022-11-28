@@ -22,11 +22,12 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       state.isSendDisabled = state.text.count < 3
       return .none
       
-    case .presentMedia(let isPresented, let post):
+    case .presentMedia(let isPresented, let post, let loadedImages):
       state.isMediaPresented = isPresented
       if isPresented, let post = post {
         state.mediaState = MediaState(
-          post: post
+          post: post,
+          loadedImages: loadedImages
         )
       }
       return .none

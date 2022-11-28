@@ -24,7 +24,7 @@ indirect enum ThreadAction {
   case deleteComment(comment: PostProfileModel)
   case addComments(comments: [PostProfileModel])
   case openMenu
-  case presentMedia(isPresented: Bool, post: PostProfileModel?)
+  case presentMedia(isPresented: Bool, post: PostProfileModel?, loadedImages: [String: Data]?)
   
   // View Actions
   case media(MediaAction)

@@ -11,7 +11,7 @@ struct ThreadPost: View {
   var post: PostProfileModel
   var onDelete: (_ post: PostProfileModel) -> Void
   var onProfile: (_ profile: ProfileModel) -> Void
-  var onImage: (_ post: PostProfileModel) -> Void
+  var onImage: (_ post: PostProfileModel, _ loadedImages: [String: Data]) -> Void
   
   @State private var loadedImages: [String: Data] = [:]
   
@@ -58,7 +58,7 @@ struct ThreadPost: View {
                 if let loadedImage = loadedImages[imageObj.url] {
                   if let uiImage = UIImage(data: loadedImage) {
                     Button {
-                      onImage(post)
+                      onImage(post, loadedImages)
                     } label: {
                       RoundedRectangle(cornerRadius: 15)
                         .foregroundColor(Color("ColorLightBackground"))
@@ -111,13 +111,13 @@ struct ThreadPost_Previews: PreviewProvider {
         post: Mocks.postProfile,
         onDelete: { _ in },
         onProfile: { _ in },
-        onImage: { _ in }
+        onImage: { _, _ in }
       )
       ThreadPost(
         post: Mocks.postProfile,
         onDelete: { _ in },
         onProfile: { _ in },
-        onImage: { _ in }
+        onImage: { _, _ in }
       )
     }
   }

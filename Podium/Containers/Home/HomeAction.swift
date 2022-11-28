@@ -13,7 +13,7 @@ enum HomeAction {
   case presentThread(isPresented: Bool, post: PostProfileModel?)
   case presentAdd(isPresented: Bool)
   case presentProfile(isPresented: Bool, profile: ProfileModel?)
-  case presentMedia(isPresented: Bool, post: PostProfileModel?)
+  case presentMedia(isPresented: Bool, post: PostProfileModel?, loadedImages: [String: Data]?)
   case getPosts
   case deletePost(post: PostProfileModel)
   case didDeletePost(TaskResult<String>)

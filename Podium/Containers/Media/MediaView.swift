@@ -15,7 +15,7 @@ struct MediaView: View {
     WithViewStore(store) { viewStore in
       TabView {
         ForEach(viewStore.post.post.images) { imageObj in
-          if let loadedImage = viewStore.loadedImages[imageObj.url],
+          if let loadedImage = viewStore.loadedImages?[imageObj.url],
              let uiImage = UIImage(data: loadedImage) {
             Image(uiImage: uiImage)
               .resizable()

@@ -9,5 +9,5 @@ import Foundation
 
 struct MediaState: Equatable {
   var post: PostProfileModel
-  var loadedImages: [String: Data] = [:]
+  var loadedImages: [String: Data]?
 }

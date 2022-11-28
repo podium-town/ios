@@ -48,10 +48,11 @@ struct HomeView: View {
                           profile: profile
                         ))
                       },
-                      onImage: { post in
+                      onImage: { post, loadedImages in
                         viewStore.send(.presentMedia(
                           isPresented: true,
-                          post: post
+                          post: post,
+                          loadedImages: loadedImages
                         ))
                       },
                       onMenuTap: {
@@ -176,7 +177,8 @@ struct HomeView: View {
             get: \.isMediaPresented,
             send: HomeAction.presentMedia(
               isPresented: false,
-              post: nil
+              post: nil,
+              loadedImages: nil
             ))) {
               IfLetStore(
                 store.scope(
