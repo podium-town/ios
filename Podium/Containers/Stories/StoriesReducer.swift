@@ -12,6 +12,37 @@ import UIKit
 let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
     switch action {
+    case .markSeen(let storyId, let ownerId, let profileId):
+      return .none
+      
+    case .getStats(let storyId):
+      state.pendingRequestId = UUID().uuidString
+      if let storyId = storyId {
+        return .task {
+          await .didGetStats(TaskResult {
+            try await API.getStats(
+              storyId: storyId
+            )
+          })
+        }
+        .cancellable(id: state.pendingRequestId)
+      }
+      return .none
+      
+    case .didGetStats(.success(let seenBy)):
+      state.pendingRequestId = nil
+      state.currentStory?.story.seenBy = seenBy
+      return .none
+      
+    case .didGetStats(.failure(let error)):
+      state.pendingRequestId = nil
+      state.bannerData = BannerData(
+        title: "Error",
+        detail: "Error while getting stats.",
+        type: .error
+      )
+      return .none
+      
     case .dismiss:
       return .none
       
@@ -96,7 +127,7 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
       return .none
       
     case .getStories:
-      let profilesMap = state.stories.compactMap({ $0.key })
+      let profilesMap = state.profiles.map({ $0.id })
       if state.currentProfile == nil {
         state.profilesIterator = profilesMap.makeBidirectionalIterator()
       } else {
@@ -105,8 +136,16 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
         state.currentProfile = state.profilesIterator?.at(index: shiftBy ?? 0)
       }
       state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeBidirectionalIterator()
-      state.currentStory = state.storiesIterator?.next()
-      return Effect(value: .prefetchStories)
+      let index = state.storiesIterator?.collection.firstIndex(where: { !$0.story.seenBy.contains(state.profile.id) }) ?? 0
+      state.currentStory = state.storiesIterator?.at(index: index)
+      return Effect.merge([
+        Effect(value: .prefetchStories),
+        Effect(value: .markSeen(
+          storyId: state.currentStory?.story.id,
+          ownerId: state.profile.id,
+          profileId: state.currentStory?.profile.id
+        ))
+      ])
       
     case .prevStory:
       if let prevStory = state.storiesIterator?.previous() {
@@ -116,7 +155,15 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
         state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeBidirectionalIterator()
         state.currentStory = state.storiesIterator?.last()
       }
-      return .none
+      return Effect.merge([
+        Effect(value: .getStats(storyId: state.currentStory?.story.id)),
+        .cancel(id: state.pendingRequestId),
+        Effect(value: .markSeen(
+          storyId: state.currentStory?.story.id,
+          ownerId: state.profile.id,
+          profileId: state.currentStory?.profile.id
+        ))
+      ])
       
     case .nextStory:
       if let nextStory = state.storiesIterator?.next() {
@@ -128,7 +175,16 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
       } else {
         return Effect(value: .dismiss)
       }
-      return Effect(value: .prefetchStories)
+      return Effect.merge([
+        Effect(value: .getStats(storyId: state.currentStory?.story.id)),
+        Effect(value: .prefetchStories),
+        .cancel(id: state.pendingRequestId),
+        Effect(value: .markSeen(
+          storyId: state.currentStory?.story.id,
+          ownerId: state.profile.id,
+          profileId: state.currentStory?.profile.id
+        ))
+      ])
       
     case .setProfile(_):
       return .none

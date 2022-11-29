@@ -46,7 +46,8 @@ struct Mocks {
   static var profile = ProfileModel(
     id: "456",
     username: "username_long",
-    createdAt: 12312321
+    createdAt: 12312321,
+    hasNewStories: true
   )
   static var profile2 = ProfileModel(
     id: "4563",
@@ -58,7 +59,8 @@ struct Mocks {
     url: "sadsada",
     fileId: "xxx1",
     ownerId: "456",
-    createdAt: 123
+    createdAt: 123,
+    seenBy: []
   )
   static var storyProfile = StoryProfileModel(
     story: story,

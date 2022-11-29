@@ -13,6 +13,7 @@ struct CreateBar: View {
   var onPicker: () -> Void
   var onAddImage: (_ image: UIImage) -> Void
   var onDelete: () -> Void
+  var seenBy: Int?
   
   var body: some View {
     VStack {
@@ -51,8 +52,10 @@ struct CreateBar: View {
               .scaledToFill()
           }
           
-          Text("Views: 43")
-            .fontWeight(.medium)
+          if let seenBy = seenBy {
+            Text("Seen by: \(seenBy)")
+              .fontWeight(.medium)
+          }
         }
       }
       .animation(.default)
@@ -80,7 +83,8 @@ struct CreateBar_Previews: PreviewProvider {
       isPresented: .constant(false),
       onPicker: {},
       onAddImage: { _ in },
-      onDelete: {}
+      onDelete: {},
+      seenBy: 43
     )
   }
 }

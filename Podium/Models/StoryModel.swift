@@ -13,4 +13,5 @@ struct StoryModel: Equatable, Identifiable, Codable {
   var fileId: String
   var ownerId: String
   var createdAt: Int64
+  var seenBy: [String]
 }

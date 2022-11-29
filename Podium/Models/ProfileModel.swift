@@ -7,13 +7,14 @@
 
 import Foundation
 
-struct ProfileModel: Equatable, Identifiable {
+struct ProfileModel: Equatable, Identifiable, Hashable {
   var id: String
   var username: String?
   var following: [String] = []
   var createdAt: Int
   var avatarId: String?
   var avatarData: Data?
+  var hasNewStories: Bool? = false
 }
 
 extension ProfileModel: Codable {

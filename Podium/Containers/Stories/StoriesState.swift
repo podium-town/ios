@@ -13,6 +13,7 @@ struct StoriesState: Equatable {
   var profile: ProfileModel
   var loadedMedia: [String: Data] = [:]
   var stories: [String: [StoryProfileModel]]
+  var profiles: [ProfileModel] = []
   var currentProfile: String?
   var currentStory: StoryProfileModel?
   var profilesIterator: BidirectionalIterator<[String], Array<String>.Index>?
@@ -22,4 +23,5 @@ struct StoriesState: Equatable {
   var images: [UIImage] = []
   var isLoading = false
   var bannerData: BannerData?
+  var pendingRequestId: String?
 }

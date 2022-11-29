@@ -80,42 +80,32 @@ struct HomeView: View {
               
               ZStack {
                 ScrollView(.horizontal, showsIndicators: false) {
-                  HStack {
+                  HStack(spacing: 4) {
                     if viewStore.stories.isEmpty {
                       StoryAvatar(
                         profile: viewStore.profile,
-                        isAddVisible: true
+                        isAddVisible: true,
+                        hasNew: false
                       )
                       .opacity(0.5)
                       .overlay(
                         ProgressView()
                       )
                     } else {
-//                      Button {
-//                        viewStore.send(.presentStories(
-//                          isPresented: true,
-//                          profileId: viewStore.profile.id
-//                        ))
-//                      } label: {
-//                        StoryAvatar(
-//                          profile: viewStore.profile,
-//                          isAddVisible: true
-//                        )
-//                      }
-                      ForEach(Array(viewStore.stories), id: \.key) { id, posts in
-//                        if id != viewStore.profile.id {
-                          Button {
-                            viewStore.send(.presentStories(
-                              isPresented: true,
-                              profileId: id
-                            ))
-                          } label: {
-                            StoryAvatar(
-                              profile: posts.first!.profile,
-                              isAddVisible: id == viewStore.profile.id
-                            )
-                          }
-//                        }
+                      ForEach(viewStore.profiles) { profile in
+                        Button {
+                          viewStore.send(.presentStories(
+                            isPresented: true,
+                            profileId: profile.id
+                          ))
+                        } label: {
+                          StoryAvatar(
+                            profile: profile,
+                            isAddVisible: profile.id == viewStore.profile.id,
+                            hasNew: profile.hasNewStories ?? false
+                          )
+                          
+                        }
                       }
                     }
                   }
@@ -247,7 +237,14 @@ struct HomeView_Previews: PreviewProvider {
       initialState: HomeState(
         profile: Mocks.profile,
         isEmpty: false,
-        posts: [Mocks.postProfile, Mocks.postProfile]
+        posts: [Mocks.postProfile, Mocks.postProfile],
+        stories: [
+          "456": [Mocks.storyProfile]
+        ],
+        profiles: [
+          Mocks.profile,
+          Mocks.profile
+        ]
       ),
       reducer: homeReducer,
       environment: AppEnvironment()

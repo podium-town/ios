@@ -117,8 +117,12 @@ struct StoriesView: View {
                   },
                   onDelete: {
                     viewStore.send(.deleteStory)
-                  }
+                  },
+                  seenBy: currentStory.story.seenBy.count
                 )
+                .onAppear {
+                  viewStore.send(.getStats(storyId: currentStory.story.id))
+                }
               }
             }
           }

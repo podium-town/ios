@@ -36,7 +36,7 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
     environment: { $0 }
   ),
   Reducer { state, action, environment in
-    switch action {  
+    switch action {
     case .onMenuOpen:
       return .none
       
@@ -134,6 +134,7 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       state.isStoriesPresented = isPresented
       if let profileId = profileId {
         state.storiesState?.currentProfile = profileId
+        state.storiesState?.profiles = state.profiles
       }
       return .none
       
@@ -146,6 +147,43 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
         )
       }
       return .none
+      
+    case .stories(.markSeen(let storyId, let ownerId, let storyOwner)):
+      var alreadySeen = false
+      let profileId = state.profile.id
+      let mutated = state.stories[ownerId]?.compactMap { story in
+        if story.story.id == storyId {
+          var mut = story
+          if !mut.story.seenBy.contains(state.profile.id) {
+            mut.story.seenBy.append(state.profile.id)
+          } else {
+            alreadySeen = true
+          }
+          return mut
+        }
+        return story
+      }
+      state.stories[ownerId] = mutated
+      state.storiesState?.stories[ownerId] = mutated
+      state.profiles = state.profiles.map { profile in
+        if profile.id == storyOwner {
+          var mut = profile
+          mut.hasNewStories = false
+          return mut
+        }
+        return profile
+      }
+      
+      if alreadySeen {
+        return .none
+      } else {
+        return .fireAndForget {
+          try await API.markSeen(
+            storyId: storyId,
+            profileId: profileId
+          )
+        }
+      }
       
     case .stories(.dismiss):
       state.isStoriesPresented = false

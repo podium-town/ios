@@ -70,18 +70,51 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
           state.homeState.storiesState?.stories[profileId]?.removeAll(where: { $0.story.id == st.id })
           state.urls.removeAll(where: { $0.url == st.url})
           state.homeState.storiesState?.urls.removeAll(where: { $0.url == st.url})
+          var hasNew = false
+          if let st = state.homeState.stories[profileId] {
+            if st.isEmpty {
+              state.homeState.profiles.removeAll(where: { $0.id == profileId })
+            } else if st.contains(where: { !$0.story.seenBy.contains(state.profile.id) }) {
+              hasNew = true
+            } else {
+              hasNew = false
+            }
+            state.homeState.profiles = state.homeState.profiles.map { profile in
+              if profile.id == profileId {
+                var mut = profile
+                mut.hasNewStories = hasNew
+                return mut
+              }
+              return profile
+            }
+          }
         }
       }
       return Effect(value: .prefetchStories)
       
-    case .addStories(let stories, let urls):
-      var defaultStories = stories
-      if !defaultStories.contains(where: { $0.key == state.profile.id }) {
-        defaultStories[state.profile.id] = []
-      }
+    case .addStories(let stories, let urls, let profiles):
+      state.homeState.stories.merge(stories, uniquingKeysWith: +)
+      state.homeState.storiesState?.stories.merge(stories, uniquingKeysWith: +)
       
-      state.homeState.stories.merge(defaultStories, uniquingKeysWith: +)
-      state.homeState.storiesState?.stories.merge(defaultStories, uniquingKeysWith: +)
+      for profileToAdd in profiles {
+        if state.homeState.profiles.contains(where: { $0.id == profileToAdd.id }) {
+          state.homeState.profiles.removeAll(where: { $0.id == profileToAdd.id })
+        }
+        state.homeState.profiles.append(profileToAdd)
+      }
+
+      let sortedProfiles = state.homeState.stories
+        .sorted(by: { $0.value.last!.story.createdAt > $1.value.last!.story.createdAt })
+        .compactMap({ story in
+          return state.homeState.profiles.first(where: { profile in
+            return profile.id == story.key
+          })
+        })
+      
+      state.homeState.profiles = sortedProfiles
+      state.homeState.profiles = state.homeState.profiles.filter({ $0.id != state.profile.id })
+      state.homeState.profiles.insert(state.profile, at: 0)
+      
       state.urls.append(contentsOf: urls)
       state.homeState.storiesState?.urls.append(contentsOf: urls)
       return Effect(value: .prefetchStories)
@@ -137,23 +170,31 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       
     case .getStories:
       let followingIds = state.profile.following
+      let profileId = state.profile.id
       return .task {
         await .didGetStories(TaskResult {
           try await API.getStories(
-            ids: followingIds
+            ids: followingIds,
+            profileId: profileId
           )
         })
       }
       
-    case .didGetStories(.success((let stories, let urls))):
-      var defaultStories = stories
-            
-      if !defaultStories.contains(where: { $0.key == state.profile.id }) {
-        defaultStories[state.profile.id] = []
-      }
+    case .didGetStories(.success((let stories, let urls, let profiles))):
+      state.homeState.profiles = profiles
+      let sortedProfiles = state.homeState.stories
+        .sorted(by: { $0.value.last!.story.createdAt > $1.value.last!.story.createdAt })
+        .compactMap({ story in
+          return state.homeState.profiles.first(where: { profile in
+            return profile.id == story.key
+          })
+        })
       
-      state.homeState.stories = defaultStories
-      state.homeState.storiesState?.stories = defaultStories
+      state.homeState.profiles = sortedProfiles
+      state.homeState.profiles = state.homeState.profiles.filter({ $0.id != state.profile.id })
+      state.homeState.profiles.insert(state.profile, at: 0)
+      state.homeState.stories = stories
+      state.homeState.storiesState?.stories = stories
       state.urls = urls
       state.homeState.storiesState?.urls = urls
       return Effect(value: .prefetchStories)
@@ -206,7 +247,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
         Effect(value: .getProfilePosts),
         Effect(value: .getStories)
       ])
-        
+      
     case .home(_):
       return .none
       

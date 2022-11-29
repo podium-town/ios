@@ -13,9 +13,9 @@ enum TabsAction {
   case getProfilePosts
   case didGetProfilePosts(TaskResult<[PostProfileModel]>)
   case getStories
-  case didGetStories(TaskResult<([String: [StoryProfileModel]], [StoryUrlModel])>)
+  case didGetStories(TaskResult<([String: [StoryProfileModel]], [StoryUrlModel], [ProfileModel])>)
   case addPosts(posts: [PostProfileModel])
-  case addStories(stories: [String: [StoryProfileModel]], urls: [StoryUrlModel])
+  case addStories(stories: [String: [StoryProfileModel]], urls: [StoryUrlModel], profiles: [ProfileModel])
   case onMenuClose
   case getProfile
   case didGetProfile(TaskResult<ProfileModel>)

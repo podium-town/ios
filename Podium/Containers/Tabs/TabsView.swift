@@ -67,9 +67,9 @@ struct TabsView: View {
         API.listenPosts(ids: viewStore.profile.following) { posts in
           viewStore.send(.addPosts(posts: posts))
         }
-        API.listenStories(ids: viewStore.profile.following) { (st, storiesToRemove) in
-          let (stories, urls) = st
-          viewStore.send(.addStories(stories: stories, urls: urls))
+        API.listenStories(ids: viewStore.profile.following, profileId: viewStore.profile.id) { (st, storiesToRemove) in
+          let (stories, urls, profiles) = st
+          viewStore.send(.addStories(stories: stories, urls: urls, profiles: profiles))
           viewStore.send(.removeStories(stories: storiesToRemove))
         }
       }

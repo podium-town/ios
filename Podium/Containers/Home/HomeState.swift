@@ -20,6 +20,7 @@ struct HomeState: Equatable {
   var posts: [PostProfileModel]
   var bannerData: BannerData?
   var stories: [String: [StoryProfileModel]] = [:]
+  var profiles: [ProfileModel] = []
   
   // View States
   var add: AddState?

@@ -222,7 +222,6 @@ class API {
   }
   
   static func listenPosts(ids: [String], completion: @escaping (_ posts: [PostProfileModel]) -> Void) {
-    var profiles: [String: ProfileModel] = [:]
     db
       .collection("posts")
       .whereField("ownerId", in: ids)
@@ -638,7 +637,8 @@ class API {
           url: "",
           fileId: fileId,
           ownerId: profile.id,
-          createdAt: Int64(Int(Date().millisecondsSince1970) / 1000)
+          createdAt: Int64(Int(Date().millisecondsSince1970) / 1000),
+          seenBy: []
         ),
         profile: profile
       )
@@ -660,11 +660,10 @@ class API {
     }
   }
   
-  static func listenStories(ids: [String], completion: @escaping (_ storiesToAdd: ([String: [StoryProfileModel]], [StoryUrlModel]), _ storiesToRemove: [String: [StoryModel]]) -> Void) {
+  static func listenStories(ids: [String], profileId: String, completion: @escaping (_ storiesToAdd: ([String: [StoryProfileModel]], [StoryUrlModel], [ProfileModel]), _ storiesToRemove: [String: [StoryModel]]) -> Void) {
     db
       .collection("stories")
       .whereField("ownerId", in: ids)
-      .order(by: "createdAt")
       .addSnapshotListener({ querySnapshot, error in
         Task {
           var tempStories: [StoryModel] = []
@@ -722,13 +721,21 @@ class API {
               }
             }
             
-            completion((stories, urls), toRemove)
+            let sortedProfiles = stories
+              .map({ profiles[$0.key]! })
+              .map { profile in
+                var mut = profile
+                mut.hasNewStories = stories[mut.id]?.contains(where: { !$0.story.seenBy.contains(where: { $0 == profileId}) })
+                return mut
+              }
+              
+            completion((stories, urls, sortedProfiles), toRemove)
           }
         }
       })
   }
   
-  static func getStories(ids: [String]) async throws -> ([String: [StoryProfileModel]], [StoryUrlModel]) {
+  static func getStories(ids: [String], profileId: String) async throws -> ([String: [StoryProfileModel]], [StoryUrlModel], [ProfileModel]) {
     do {
       var tempStories: [StoryModel] = []
       var urls: [StoryUrlModel] = []
@@ -737,8 +744,6 @@ class API {
       let dictionary = try await db
         .collection("stories")
         .whereField("ownerId", in: ids)
-        .order(by: "createdAt")
-        .limit(to: 25)
         .getDocuments()
         .documents
       
@@ -781,7 +786,17 @@ class API {
           stories[story.ownerId]?.append(model)
         }
       }
-      return (stories, urls)
+      
+      let sortedProfiles = stories
+        .sorted(by: { $0.value.last!.story.createdAt > $1.value.last!.story.createdAt })
+        .map({ profiles[$0.key]! })
+        .map { profile in
+          var mut = profile
+          mut.hasNewStories = stories[mut.id]?.contains(where: { !$0.story.seenBy.contains(where: { $0 == profileId}) })
+          return mut
+        }
+      
+      return (stories, urls, sortedProfiles)
     } catch let error {
       throw error
     }
@@ -804,6 +819,36 @@ class API {
       }
       
       return prefetched
+    }
+  }
+  
+  static func markSeen(storyId: String?, profileId: String) async throws -> String {
+    do {
+      if let storyId = storyId {
+        try await db
+          .collection("stories")
+          .document(storyId)
+          .updateData([
+            "seenBy": FieldValue.arrayUnion([profileId])
+          ])
+        return storyId
+      }
+      throw AppError.general
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func getStats(storyId: String) async throws -> [String] {
+    do {
+      let story = try await db
+        .collection("stories")
+        .document(storyId)
+        .getDocument(as: StoryModel.self)
+        
+      return story.seenBy
+    } catch let error {
+      throw error
     }
   }
 }
