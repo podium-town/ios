@@ -120,7 +120,10 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
       
     case .didAddStory(.success((let profileId, let story))):
       state.isLoading = false
-      return Effect(value: .getStories)
+      state.stories[profileId]?.append(story)
+      return Effect.merge([
+        Effect(value: .getStories)
+      ])
       
     case .didAddStory(.failure(let error)):
       state.isLoading = false
@@ -136,10 +139,11 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
         state.currentProfile = state.profilesIterator?.at(index: shiftBy ?? 0)
       }
       state.storiesIterator = state.stories.first(where: { $0.key == state.currentProfile })?.value.makeBidirectionalIterator()
-      let index = state.storiesIterator?.collection.firstIndex(where: { !$0.story.seenBy.contains(state.profile.id) }) ?? 0
+      let index = state.storiesIterator?.collection.firstIndex(where: { !$0.story.seenBy.contains(where: { $0.id == state.profile.id }) }) ?? 0
       state.currentStory = state.storiesIterator?.at(index: index)
       return Effect.merge([
         Effect(value: .prefetchStories),
+        Effect(value: .getStats(storyId: state.currentStory?.story.id)),
         Effect(value: .markSeen(
           storyId: state.currentStory?.story.id,
           ownerId: state.profile.id,

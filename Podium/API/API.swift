@@ -81,7 +81,7 @@ class API {
         let storageRef = storage.reference()
         let profileId = post.post.ownerId
         let fileRef = storageRef.child("\(profileId)/\(fileId).png")
-        _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.1)!)
+        _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.7)!)
         let url = try await fileRef.downloadURL()
         mut.post.images.append(PostImage(
           id: fileId,
@@ -629,8 +629,11 @@ class API {
   }
   
   static func addStory(profile: ProfileModel, image: UIImage) async throws -> (String, StoryProfileModel) {
+    var dayComponent = DateComponents()
+    dayComponent.day = 1
+
     do {
-      let fileId = UUID().uuidString
+      let fileId = "\(UUID().uuidString)_story"
       var story = StoryProfileModel(
         story: StoryModel(
           id: UUID().uuidString,
@@ -638,14 +641,15 @@ class API {
           fileId: fileId,
           ownerId: profile.id,
           createdAt: Int64(Int(Date().millisecondsSince1970) / 1000),
+          expireAt: Timestamp(date: Calendar.current.date(byAdding: dayComponent, to: Date())!),
           seenBy: []
         ),
         profile: profile
       )
       
       let storageRef = storage.reference()
-      let fileRef = storageRef.child("\(profile.id)/stories/\(fileId).png")
-      _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.1)!)
+      let fileRef = storageRef.child("\(profile.id)/stories/\(fileId).jpg")
+      _ = try await fileRef.putDataAsync(image.scalePreservingAspectRatio(targetSize: CGSize(width: 900, height: 1800)).jpegData(compressionQuality: 0.7)!)
       let url = try await fileRef.downloadURL()
       story.story.url = url.absoluteString
       
@@ -709,7 +713,7 @@ class API {
               return collected
             }
             
-            tempStories.forEach { story in
+            tempStories.sorted(by: { $0.createdAt < $1.createdAt }).forEach { story in
               let storyModel = StoryProfileModel(
                 story: story,
                 profile: profiles[story.ownerId]!
@@ -725,7 +729,7 @@ class API {
               .map({ profiles[$0.key]! })
               .map { profile in
                 var mut = profile
-                mut.hasNewStories = stories[mut.id]?.contains(where: { !$0.story.seenBy.contains(where: { $0 == profileId}) })
+                mut.hasNewStories = stories[mut.id]?.contains(where: { !$0.story.seenBy.contains(where: { $0.id == profileId}) })
                 return mut
               }
               
@@ -775,7 +779,7 @@ class API {
         return collected
       }
       
-      tempStories.forEach { story in
+      tempStories.sorted(by: { $0.createdAt < $1.createdAt }).forEach { story in
         let model = StoryProfileModel(
           story: story,
           profile: profiles[story.ownerId]!
@@ -792,7 +796,7 @@ class API {
         .map({ profiles[$0.key]! })
         .map { profile in
           var mut = profile
-          mut.hasNewStories = stories[mut.id]?.contains(where: { !$0.story.seenBy.contains(where: { $0 == profileId}) })
+          mut.hasNewStories = stories[mut.id]?.contains(where: { !$0.story.seenBy.contains(where: { $0.id == profileId}) })
           return mut
         }
       
@@ -822,14 +826,21 @@ class API {
     }
   }
   
-  static func markSeen(storyId: String?, profileId: String) async throws -> String {
+  static func markSeen(storyId: String?, profile: ProfileModel) async throws -> String {
+    let avatar = profile.avatarData == nil ? UIImage(named: "avatar")!.base64 : UIImage(data: profile.avatarData!)!.scalePreservingAspectRatio(targetSize: CGSize(width: 32, height: 32)).base64
     do {
+      let encoded = try Firestore.Encoder().encode(SeenByModel(
+        id: profile.id,
+        username: profile.username ?? "",
+        avatarBase64: avatar,
+        hasLiked: false
+      ))
       if let storyId = storyId {
         try await db
           .collection("stories")
           .document(storyId)
           .updateData([
-            "seenBy": FieldValue.arrayUnion([profileId])
+            "seenBy": FieldValue.arrayUnion([encoded])
           ])
         return storyId
       }
@@ -839,7 +850,7 @@ class API {
     }
   }
   
-  static func getStats(storyId: String) async throws -> [String] {
+  static func getStats(storyId: String) async throws -> [SeenByModel] {
     do {
       let story = try await db
         .collection("stories")

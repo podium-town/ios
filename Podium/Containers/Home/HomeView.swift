@@ -81,7 +81,7 @@ struct HomeView: View {
               ZStack {
                 ScrollView(.horizontal, showsIndicators: false) {
                   HStack(spacing: 4) {
-                    if viewStore.stories.isEmpty {
+                    if viewStore.isStoriesLoading {
                       StoryAvatar(
                         profile: viewStore.profile,
                         isAddVisible: true,

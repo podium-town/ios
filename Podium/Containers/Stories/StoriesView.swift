@@ -118,11 +118,23 @@ struct StoriesView: View {
                   onDelete: {
                     viewStore.send(.deleteStory)
                   },
-                  seenBy: currentStory.story.seenBy.count
+                  seenBy: currentStory.story.seenBy
                 )
-                .onAppear {
-                  viewStore.send(.getStats(storyId: currentStory.story.id))
+              }
+            } else {
+              VStack {
+                Spacer()
+                HStack {
+                  Spacer()
+                  Button {
+                    
+                  } label: {
+                    Image("heart")
+                      .resizable()
+                      .frame(width: 28, height: 28)
+                  }
                 }
+                .padding()
               }
             }
           }

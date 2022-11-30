@@ -194,6 +194,7 @@ struct ExploreView: View {
           }
           .padding(.top, 1)
           
+          
           WithViewStore(store.scope(state: \.isProfilePresented)) { viewStore in
             NavigationLink(
               destination: IfLetStore(

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 struct StoryModel: Equatable, Identifiable, Codable {
   var id: String
@@ -13,5 +14,13 @@ struct StoryModel: Equatable, Identifiable, Codable {
   var fileId: String
   var ownerId: String
   var createdAt: Int64
-  var seenBy: [String]
+  var expireAt: Timestamp
+  var seenBy: [SeenByModel]
+}
+
+struct SeenByModel: Equatable, Identifiable, Codable {
+  var id: String
+  var username: String
+  var avatarBase64: String?
+  var hasLiked: Bool
 }

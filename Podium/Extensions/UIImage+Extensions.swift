@@ -9,30 +9,21 @@ import UIKit
 
 extension UIImage {
   func scalePreservingAspectRatio(targetSize: CGSize) -> UIImage {
-    // Determine the scale factor that preserves aspect ratio
-    let widthRatio = targetSize.width / size.width
+    let size = self.size
+    let widthRatio  = targetSize.width  / size.width
     let heightRatio = targetSize.height / size.height
+    let newSize = widthRatio > heightRatio ?  CGSize(width: size.width * heightRatio, height: size.height * heightRatio) : CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+
+    let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+    UIGraphicsBeginImageContextWithOptions(newSize, true, 1.0)
+    self.draw(in: rect)
+    let newImage = UIGraphicsGetImageFromCurrentImageContext()
+    UIGraphicsEndImageContext()
     
-    let scaleFactor = min(widthRatio, heightRatio)
-    
-    // Compute the new image size that preserves aspect ratio
-    let scaledImageSize = CGSize(
-      width: size.width * scaleFactor,
-      height: size.height * scaleFactor
-    )
-    
-    // Draw and return the resized UIImage
-    let renderer = UIGraphicsImageRenderer(
-      size: scaledImageSize
-    )
-    
-    let scaledImage = renderer.image { _ in
-      self.draw(in: CGRect(
-        origin: .zero,
-        size: scaledImageSize
-      ))
-    }
-    
-    return scaledImage
+    return newImage!
+  }
+  
+  var base64: String? {
+    self.jpegData(compressionQuality: 1)?.base64EncodedString()
   }
 }

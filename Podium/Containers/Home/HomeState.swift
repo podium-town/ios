@@ -21,6 +21,7 @@ struct HomeState: Equatable {
   var bannerData: BannerData?
   var stories: [String: [StoryProfileModel]] = [:]
   var profiles: [ProfileModel] = []
+  var isStoriesLoading = false
   
   // View States
   var add: AddState?

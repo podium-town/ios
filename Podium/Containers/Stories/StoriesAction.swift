@@ -27,5 +27,5 @@ enum StoriesAction {
   case dismissBanner
   case markSeen(storyId: String?, ownerId: String, profileId: String?)
   case getStats(storyId: String?)
-  case didGetStats(TaskResult<[String]>)
+  case didGetStats(TaskResult<[SeenByModel]>)
 }

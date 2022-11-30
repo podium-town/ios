@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import FirebaseFirestore
 
 struct Mocks {
   static var post = PostModel(
@@ -60,6 +61,7 @@ struct Mocks {
     fileId: "xxx1",
     ownerId: "456",
     createdAt: 123,
+    expireAt: Timestamp(),
     seenBy: []
   )
   static var storyProfile = StoryProfileModel(

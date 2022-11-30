@@ -74,7 +74,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
           if let st = state.homeState.stories[profileId] {
             if st.isEmpty {
               state.homeState.profiles.removeAll(where: { $0.id == profileId })
-            } else if st.contains(where: { !$0.story.seenBy.contains(state.profile.id) }) {
+            } else if st.contains(where: { !$0.story.seenBy.contains(where: { $0.id == state.profile.id }) }) {
               hasNew = true
             } else {
               hasNew = false
@@ -93,6 +93,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       return Effect(value: .prefetchStories)
       
     case .addStories(let stories, let urls, let profiles):
+      state.homeState.isStoriesLoading = false
       state.homeState.stories.merge(stories, uniquingKeysWith: +)
       state.homeState.storiesState?.stories.merge(stories, uniquingKeysWith: +)
       
@@ -134,6 +135,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       return .none
       
     case .initialize:
+      state.homeState.isStoriesLoading = true
       state.homeState.storiesState = StoriesState(
         profile: state.profile,
         stories: [:]

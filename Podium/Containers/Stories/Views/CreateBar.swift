@@ -13,7 +13,8 @@ struct CreateBar: View {
   var onPicker: () -> Void
   var onAddImage: (_ image: UIImage) -> Void
   var onDelete: () -> Void
-  var seenBy: Int?
+  var seenBy: [SeenByModel]?
+  @State private var isStatsPresented = false
   
   var body: some View {
     VStack {
@@ -53,12 +54,69 @@ struct CreateBar: View {
           }
           
           if let seenBy = seenBy {
-            Text("Seen by: \(seenBy)")
-              .fontWeight(.medium)
+            Button {
+              isStatsPresented = true
+            } label: {
+              HStack(spacing: 0) {
+                ForEach(seenBy.prefix(upTo: min(seenBy.count, 4))) { by in
+                  VStack {
+                    Image(uiImage: (by.avatarBase64 == nil ? UIImage(named: "avatar")! : by.avatarBase64!.imageFromBase64) ?? UIImage(named: "avatar")!)
+                      .resizable()
+                      .scaledToFill()
+                      .clipShape(Circle())
+                      .frame(width: 32, height: 32)
+                  }
+                  .frame(width: 16, height: 32)
+                }
+              }
+              .padding(.horizontal)
+            }
+            .sheet(isPresented: $isStatsPresented) {
+              VStack(alignment: .leading) {
+                HStack {
+                  Text("Seen by:")
+                    .fontWeight(.medium)
+                    .foregroundColor(Color("ColorText"))
+                  Spacer()
+                  Button {
+                    isStatsPresented = false
+                  } label: {
+                    Image("close")
+                      .resizable()
+                      .frame(width: 28, height: 28)
+                      .foregroundColor(Color("ColorText"))
+                  }
+                }
+                .padding()
+                .padding(.bottom, 0)
+                
+                ScrollView {
+                  VStack(spacing: 0) {
+                    ForEach(seenBy) { by in
+                      HStack {
+                        Image(uiImage: (by.avatarBase64 == nil ? UIImage(named: "avatar")! : by.avatarBase64!.imageFromBase64) ?? UIImage(named: "avatar")!)
+                          .resizable()
+                          .scaledToFill()
+                          .clipShape(Circle())
+                          .frame(width: 32, height: 32)
+                        
+                        Text(by.username)
+                          .fontWeight(.medium)
+                          .foregroundColor(Color("ColorText"))
+                        
+                        Spacer()
+                      }
+                      .padding(.vertical, 4)
+                    }
+                  }
+                  .padding(.horizontal)
+                }
+              }
+              .background(Color("ColorBackground"))
+            }
           }
         }
       }
-      .animation(.default)
       .frame(height: 40)
       .padding()
       .foregroundColor(.black)
@@ -83,8 +141,7 @@ struct CreateBar_Previews: PreviewProvider {
       isPresented: .constant(false),
       onPicker: {},
       onAddImage: { _ in },
-      onDelete: {},
-      seenBy: 43
+      onDelete: {}
     )
   }
 }

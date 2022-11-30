@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import Combine
 import Foundation
+import FirebaseFirestore
 
 let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
   storiesReducer.optional().pullback(
@@ -150,12 +151,17 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       
     case .stories(.markSeen(let storyId, let ownerId, let storyOwner)):
       var alreadySeen = false
-      let profileId = state.profile.id
+      let profile = state.profile
       let mutated = state.stories[ownerId]?.compactMap { story in
         if story.story.id == storyId {
           var mut = story
-          if !mut.story.seenBy.contains(state.profile.id) {
-            mut.story.seenBy.append(state.profile.id)
+          if !mut.story.seenBy.contains(where: { $0.id == state.profile.id}) {
+            mut.story.seenBy.append(SeenByModel(
+              id: state.profile.id,
+              username: state.profile.username ?? "",
+              avatarBase64: "",
+              hasLiked: false
+            ))
           } else {
             alreadySeen = true
           }
@@ -180,7 +186,7 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
         return .fireAndForget {
           try await API.markSeen(
             storyId: storyId,
-            profileId: profileId
+            profile: profile
           )
         }
       }
