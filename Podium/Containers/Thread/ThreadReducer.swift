@@ -32,6 +32,40 @@ let threadReducer = Reducer<ThreadState, ThreadAction, AppEnvironment>.combine(
       }
       return .none
       
+    case .blockProfile(let profile):
+      let fromId = state.fromProfile.id
+      return .task {
+        await .didBlockProfile(TaskResult {
+          try await API.blockProfile(
+            profile: profile,
+            fromId: fromId
+          )
+        })
+      }
+      
+    case .didBlockProfile(.success(let profile)):
+      return .none
+      
+    case .didBlockProfile(.failure(let error)):
+      return .none
+      
+    case .blockPost(let post):
+      let fromId = state.fromProfile.id
+      return .task {
+        await .didBlockPost(TaskResult {
+          try await API.blockPost(
+            post: post,
+            fromId: fromId
+          )
+        })
+      }
+      
+    case .didBlockPost(.success(let profile)):
+      return .none
+      
+    case .didBlockPost(.failure(let error)):
+      return .none
+      
     case .setLoading(let loading):
       state.isLoading = loading
       return .none

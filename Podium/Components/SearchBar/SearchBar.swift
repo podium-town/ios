@@ -28,7 +28,7 @@ struct SearchBar: View {
         
         Spacer()
         
-        if onClear != nil && focus {
+        if onClear != nil && (focus || !searchQuery.isEmpty) {
           Button {
             focus = false
             onClear?()

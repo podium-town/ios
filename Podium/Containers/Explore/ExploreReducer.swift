@@ -60,7 +60,9 @@ let exploreReducer = Reducer<ExploreState, ExploreAction, AppEnvironment>.combin
       return .none
       
     case .didSearch(.success(let profiles)):
-      state.foundProfiles = profiles.filter({ $0.id != state.profile.id})
+      state.foundProfiles = profiles
+        .filter({ $0.id != state.profile.id})
+        .filter({ !state.profile.blockedProfiles.contains($0.id) })
       return .none
       
     case .didSearch(.failure(let error)):

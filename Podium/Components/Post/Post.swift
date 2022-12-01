@@ -17,6 +17,8 @@ struct Post: View {
   var post: PostProfileModel
   var onDelete: (_ post: PostProfileModel) -> Void
   var onReport: (_ post: PostProfileModel) -> Void
+  var onBlockProfile: (_ post: PostProfileModel) -> Void
+  var onBlockPost: (_ post: PostProfileModel) -> Void
   var onProfile: (_ profile: ProfileModel) -> Void
   var onImage: (_ post: PostProfileModel, _ loadedImages: [String: Data]) -> Void
   var onMenuTap: () -> Void
@@ -58,6 +60,16 @@ struct Post: View {
                 
                 Button("Report post") {
                   onReport(post)
+                }
+                
+                Button("Block post") {
+                  onBlockPost(post)
+                }
+                
+                if !isSelf {
+                  Button("Block profile") {
+                    onBlockProfile(post)
+                  }
                 }
               } label: {
                 Image("more")
@@ -152,6 +164,8 @@ struct Post_Previews: PreviewProvider {
         post: Mocks.postProfile,
         onDelete: { _ in },
         onReport: { _ in },
+        onBlockProfile: { _ in },
+        onBlockPost: { _ in },
         onProfile: { _ in },
         onImage: { _, _ in },
         onMenuTap: {}
@@ -161,6 +175,8 @@ struct Post_Previews: PreviewProvider {
         post: Mocks.postProfile,
         onDelete: { _ in },
         onReport: { _ in },
+        onBlockProfile: { _ in },
+        onBlockPost: { _ in },
         onProfile: { _ in },
         onImage: { _, _ in },
         onMenuTap: {}

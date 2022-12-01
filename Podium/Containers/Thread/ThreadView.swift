@@ -52,6 +52,12 @@ struct ThreadView: View {
                   onReport: { comment in
                     viewStore.send(.reportComment(comment: comment))
                   },
+                  onBlockProfile: { comment in
+                    viewStore.send(.blockProfile(profile: comment.profile))
+                  },
+                  onBlockPost: { comment in
+                    viewStore.send(.blockPost(post: comment))
+                  },
                   onProfile: { profile in
                     
                   },
@@ -113,6 +119,11 @@ struct ThreadView: View {
             }
             Button("Report post") {
               viewStore.send(.reportPost(post: viewStore.post))
+            }
+            if viewStore.post.post.ownerId != viewStore.fromProfile.id {
+              Button("Block profile") {
+                viewStore.send(.blockProfile(profile: viewStore.post.profile))
+              }
             }
           } label: {
             Image("more")

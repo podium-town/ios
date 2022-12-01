@@ -6,11 +6,17 @@
 //
 
 import ComposableArchitecture
-import Foundation
+import UIKit
 
 let loginReducer = Reducer<LoginState, LoginAction, AppEnvironment>.combine(
   Reducer { state, action, environment in
     switch action {
+    case .viewTerms:
+      if let url = URL(string: environment.termsUrl) {
+        UIApplication.shared.open(url)
+      }
+      return .none
+      
     case .dismissBanner:
       state.bannerData = nil
       return .none

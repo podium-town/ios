@@ -19,4 +19,5 @@ enum LoginAction {
   case resend
   case setUsername
   case didSetUsername(TaskResult<ProfileModel>)
+  case viewTerms
 }

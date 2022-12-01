@@ -51,12 +51,14 @@ struct LoginView: View {
                 HStack(spacing: 8) {
                   if viewStore.isVerificationPending {
                     ProgressView()
+                      .progressViewStyle(CircularProgressViewStyle(tint: Color.black))
                   }
                   Text("Enter Podium !")
                 }
                 Spacer()
               }
             }
+            .opacity(viewStore.isVerificationPending ? 0.5 : 1)
             .disabled(viewStore.isVerificationPending)
             .buttonStyle(PodiumButtonSignIn())
             .onAppear {
@@ -105,12 +107,14 @@ struct LoginView: View {
                 HStack(spacing: 8) {
                   if viewStore.isVerificationPending {
                     ProgressView()
+                      .progressViewStyle(CircularProgressViewStyle(tint: Color.black))
                   }
                   Text("Sign in")
                 }
                 Spacer()
               }
             }
+            .opacity(viewStore.isVerificationPending ? 0.5 : 1)
             .disabled(viewStore.isVerificationPending)
             .buttonStyle(PodiumButtonSignIn())
           }
@@ -133,6 +137,7 @@ struct LoginView: View {
                   HStack(spacing: 8) {
                     if viewStore.isVerificationPending {
                       ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: Color.black))
                     }
                     Text("Set username")
                   }
@@ -148,9 +153,21 @@ struct LoginView: View {
           Divider()
             .padding(.top, 22)
           
-          Text("By signing in you accept Terms of Service and Privacy Policy.")
-            .foregroundColor(.gray)
-            .font(.caption)
+          Button {
+            viewStore.send(.viewTerms)
+          } label: {
+            Group {
+              Text("By signing in you accept ")
+                .foregroundColor(.gray)
+                .font(.caption) +
+              Text("Terms of Service and Privacy Policy")
+                .foregroundColor(.white)
+                .font(.caption) +
+              Text(".")
+                .foregroundColor(.gray)
+                .font(.caption)
+            }
+          }
         }
         .banner(data: viewStore.binding(
           get: \.bannerData,

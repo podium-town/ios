@@ -64,10 +64,10 @@ struct TabsView: View {
       .onAppear {
         viewStore.send(.initialize)
         viewStore.send(.getProfile)
-        API.listenPosts(ids: viewStore.profile.following) { posts in
+        API.listenPosts(ids: viewStore.profile.following.filter({ !viewStore.profile.blockedProfiles.contains($0) })) { posts in
           viewStore.send(.addPosts(posts: posts))
         }
-        API.listenStories(ids: viewStore.profile.following, profileId: viewStore.profile.id) { (st, storiesToRemove) in
+        API.listenStories(ids: viewStore.profile.following.filter({ !viewStore.profile.blockedProfiles.contains($0) }), profileId: viewStore.profile.id) { (st, storiesToRemove) in
           let (stories, urls, profiles) = st
           viewStore.send(.addStories(stories: stories, urls: urls, profiles: profiles))
           viewStore.send(.removeStories(stories: storiesToRemove))
@@ -75,7 +75,6 @@ struct TabsView: View {
       }
       .onChange(of: scenePhase) { newPhase in
         if newPhase == .active {
-//          viewStore.send(.getStories)
           viewStore.send(.getProfilePosts)
         }
       }

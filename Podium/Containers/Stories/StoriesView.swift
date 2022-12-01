@@ -118,7 +118,8 @@ struct StoriesView: View {
                   onDelete: {
                     viewStore.send(.deleteStory)
                   },
-                  seenBy: currentStory.story.seenBy
+                  seenBy: currentStory.story.seenBy,
+                  likedBy: currentStory.story.likedBy
                 )
               }
             } else {
@@ -126,15 +127,28 @@ struct StoriesView: View {
                 Spacer()
                 HStack {
                   Spacer()
-                  Button {
-                    
-                  } label: {
-                    Image("heart")
+                  if currentStory.story.likedBy.contains(where: { $0.id == viewStore.profile.id }) {
+                    Image("heart-filled")
                       .resizable()
                       .frame(width: 28, height: 28)
+                      .foregroundColor(Color("ColorRed"))
+                      .padding()
+                  } else {
+                    Button {
+                      viewStore.send(.markLiked(
+                        storyId: currentStory.story.id,
+                        ownerId: currentStory.profile.id,
+                        profileId: viewStore.profile.id
+                      ))
+                    } label: {
+                      Image("heart")
+                        .resizable()
+                        .frame(width: 28, height: 28)
+                        .foregroundColor(.white)
+                    }
+                    .padding()
                   }
                 }
-                .padding()
               }
             }
           }

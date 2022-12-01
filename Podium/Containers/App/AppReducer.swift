@@ -57,7 +57,8 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
       }
       return .none
       
-    case .tabs(.profile(.settings(.logout))):
+    case .tabs(.profile(.settings(.deleteAccount))),
+        .tabs(.profile(.settings(.logout))):
       state.login = LoginState()
       state.tabs = nil
       environment.localStorage.removeObject(forKey: StorageKey.profile.rawValue)

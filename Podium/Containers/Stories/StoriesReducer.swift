@@ -15,6 +15,13 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
     case .markSeen(let storyId, let ownerId, let profileId):
       return .none
       
+    case .markLiked(let storyId, let ownerId, let profileId):
+      state.currentStory?.story.likedBy.append(SeenByModel(
+        id: state.profile.id,
+        username: state.profile.username ?? ""
+      ))
+      return .none
+      
     case .getStats(let storyId):
       state.pendingRequestId = UUID().uuidString
       if let storyId = storyId {
@@ -29,18 +36,14 @@ let storiesReducer = Reducer<StoriesState, StoriesAction, AppEnvironment>.combin
       }
       return .none
       
-    case .didGetStats(.success(let seenBy)):
+    case .didGetStats(.success((let seenBy, let likedBy))):
       state.pendingRequestId = nil
       state.currentStory?.story.seenBy = seenBy
+      state.currentStory?.story.likedBy = likedBy
       return .none
       
     case .didGetStats(.failure(let error)):
       state.pendingRequestId = nil
-      state.bannerData = BannerData(
-        title: "Error",
-        detail: "Error while getting stats.",
-        type: .error
-      )
       return .none
       
     case .dismiss:

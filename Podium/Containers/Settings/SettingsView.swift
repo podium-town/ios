@@ -11,18 +11,12 @@ import ComposableArchitecture
 struct SettingsView: View {
   let store: Store<SettingsState, SettingsAction>
   
+  @State private var isPresentingConfirm: Bool = false
+  
   var body: some View {
     WithViewStore(store) { viewStore in
       List {
-        Section(header: Text("Settings"), footer: HStack {
-          Spacer()
-          Image("logo")
-          .resizable()
-          .frame(width: 42, height: 42)
-          .clipShape(RoundedRectangle(cornerRadius: 15))
-          .padding(.top, 8)
-          Spacer()
-        }) {
+        Section(header: Text("Settings")) {
           Button {
 
           } label: {
@@ -41,6 +35,44 @@ struct SettingsView: View {
             Text("Logout")
               .foregroundColor(.red)
           }
+        }
+        
+        Section(header: Text("Information"), footer: HStack {
+          Spacer()
+          Image("logo")
+            .resizable()
+            .frame(width: 42, height: 42)
+            .clipShape(RoundedRectangle(cornerRadius: 15))
+            .padding(.top, 8)
+          Spacer()
+        }) {
+          Button {
+            viewStore.send(.viewPrivacy)
+          } label: {
+            Text("Privacy policy")
+          }
+          
+          Button {
+            viewStore.send(.viewTerms)
+          } label: {
+            Text("Terms of service")
+          }
+          
+          Button {
+            isPresentingConfirm = true
+          } label: {
+            Text("Delete account")
+              .foregroundColor(.red)
+          }
+          .confirmationDialog("Account deletion is permanent",
+                              isPresented: $isPresentingConfirm) {
+            Button("Delete my account", role: .destructive) {
+              viewStore.send(.deleteAccount)
+            }
+          } message: {
+            Text("Account deletion is permanent")
+          }
+
         }
       }
       .listStyle(.insetGrouped)

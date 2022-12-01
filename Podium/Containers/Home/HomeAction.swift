@@ -21,6 +21,10 @@ enum HomeAction {
   case didReportPost(TaskResult<String>)
   case dismissBanner
   case onMenuOpen
+  case blockProfile(profile: ProfileModel)
+  case didBlockProfile(TaskResult<ProfileModel>)
+  case blockPost(post: PostProfileModel)
+  case didBlockPost(TaskResult<PostProfileModel>)
   
   // View Actions
   case add(AddAction)

@@ -50,6 +50,40 @@ let profileReducer = Reducer<ProfileState, ProfileAction, AppEnvironment>.combin
       state.isPendingFollowing = false
       return .none
       
+    case .blockProfile(let profile):
+      let fromId = state.profile.id
+      return .task {
+        await .didBlockProfile(TaskResult {
+          try await API.blockProfile(
+            profile: profile,
+            fromId: fromId
+          )
+        })
+      }
+      
+    case .didBlockProfile(.success(let profile)):
+      return .none
+      
+    case .didBlockProfile(.failure(let error)):
+      return .none
+      
+    case .blockPost(let post):
+      let fromId = state.profile.id
+      return .task {
+        await .didBlockPost(TaskResult {
+          try await API.blockPost(
+            post: post,
+            fromId: fromId
+          )
+        })
+      }
+      
+    case .didBlockPost(.success(let post)):
+      return .none
+      
+    case .didBlockPost(.failure(let error)):
+      return .none
+      
     case .unfollow:
       state.isPendingFollowing = true
       let from = state.fromProfile

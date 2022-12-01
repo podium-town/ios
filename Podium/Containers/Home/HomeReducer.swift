@@ -9,6 +9,7 @@ import ComposableArchitecture
 import Combine
 import Foundation
 import FirebaseFirestore
+import UIKit
 
 let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
   storiesReducer.optional().pullback(
@@ -153,14 +154,13 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
       var alreadySeen = false
       let profile = state.profile
       let mutated = state.stories[ownerId]?.compactMap { story in
-        if story.story.id == storyId {
+        if story.story.id == storyId && story.profile.id != profile.id {
           var mut = story
           if !mut.story.seenBy.contains(where: { $0.id == state.profile.id}) {
             mut.story.seenBy.append(SeenByModel(
               id: state.profile.id,
               username: state.profile.username ?? "",
-              avatarBase64: "",
-              hasLiked: false
+              avatar: state.profile.avatarData
             ))
           } else {
             alreadySeen = true
@@ -180,7 +180,7 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
         return profile
       }
       
-      if alreadySeen {
+      if alreadySeen || storyOwner == state.profile.id {
         return .none
       } else {
         return .fireAndForget {
@@ -190,6 +190,73 @@ let homeReducer = Reducer<HomeState, HomeAction, AppEnvironment>.combine(
           )
         }
       }
+      
+    case .stories(.markLiked(let storyId, let ownerId, let storyOwner)):
+      var alreadyLiked = false
+      let profile = state.profile
+      let mutated = state.stories[ownerId]?.compactMap { story in
+        if story.story.id == storyId {
+          var mut = story
+          if !mut.story.likedBy.contains(where: { $0.id == state.profile.id}) {
+            mut.story.likedBy.append(SeenByModel(
+              id: state.profile.id,
+              username: state.profile.username ?? "",
+              avatar: state.profile.avatarData
+            ))
+          } else {
+            alreadyLiked = true
+          }
+          return mut
+        }
+        return story
+      }
+      state.stories[ownerId] = mutated
+      state.storiesState?.stories[ownerId] = mutated
+      
+      if alreadyLiked {
+        return .none
+      } else {
+        return .fireAndForget {
+          try await API.markLiked(
+            storyId: storyId,
+            profile: profile
+          )
+        }
+      }
+      
+    case .blockProfile(let profile):
+      let fromId = state.profile.id
+      return .task {
+        await .didBlockProfile(TaskResult {
+          try await API.blockProfile(
+            profile: profile,
+            fromId: fromId
+          )
+        })
+      }
+      
+    case .didBlockProfile(.success(let profile)):
+      return .none
+      
+    case .didBlockProfile(.failure(let error)):
+      return .none
+      
+    case .blockPost(let post):
+      let fromId = state.profile.id
+      return .task {
+        await .didBlockPost(TaskResult {
+          try await API.blockPost(
+            post: post,
+            fromId: fromId
+          )
+        })
+      }
+      
+    case .didBlockPost(.success(let post)):
+      return .none
+      
+    case .didBlockPost(.failure(let error)):
+      return .none
       
     case .stories(.dismiss):
       state.isStoriesPresented = false

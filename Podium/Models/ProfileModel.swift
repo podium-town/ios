@@ -15,6 +15,8 @@ struct ProfileModel: Equatable, Identifiable, Hashable {
   var avatarId: String?
   var avatarData: Data?
   var hasNewStories: Bool? = false
+  var blockedProfiles: [String] = []
+  var blockedPosts: [String] = []
 }
 
 extension ProfileModel: Codable {

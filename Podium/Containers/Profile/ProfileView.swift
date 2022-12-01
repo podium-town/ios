@@ -130,6 +130,12 @@ struct ProfileView: View {
                       onReport: { post in
                         viewStore.send(.reportPost(post: post))
                       },
+                      onBlockProfile: { post in
+                        viewStore.send(.blockProfile(profile: post.profile))
+                      },
+                      onBlockPost: { post in
+                        viewStore.send(.blockPost(post: post))
+                      },
                       onProfile: { profile in
                         
                       },
@@ -185,6 +191,26 @@ struct ProfileView: View {
           get: \.bannerData,
           send: ProfileAction.dismissBanner
         ))
+        .toolbar {
+          ToolbarItem(placement: .navigationBarTrailing) {
+            Menu {
+              if viewStore.profile.id != viewStore.fromProfile.id {
+                Button("Block profile") {
+                  viewStore.send(.blockProfile(profile: viewStore.profile))
+                }
+              }
+            } label: {
+              Image("more")
+                .resizable()
+                .scaledToFill()
+                .frame(width: 18, height: 18)
+                .foregroundColor(Color("ColorText"))
+            }
+            .onTapGesture {
+              viewStore.send(.onMenuOpen)
+            }
+          }
+        }
       }
       .navigationBarTitleDisplayMode(.inline)
       .navigationTitle("Profile")

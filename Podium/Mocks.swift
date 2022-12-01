@@ -62,7 +62,8 @@ struct Mocks {
     ownerId: "456",
     createdAt: 123,
     expireAt: Timestamp(),
-    seenBy: []
+    seenBy: [],
+    likedBy: []
   )
   static var storyProfile = StoryProfileModel(
     story: story,

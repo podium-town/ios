@@ -42,6 +42,12 @@ struct HomeView: View {
                       onReport: { post in
                         viewStore.send(.reportPost(post: post))
                       },
+                      onBlockProfile: { post in
+                        viewStore.send(.blockProfile(profile: post.profile))
+                      },
+                      onBlockPost: { post in
+                        viewStore.send(.blockPost(post: post))
+                      },
                       onProfile: { profile in
                         viewStore.send(.presentProfile(
                           isPresented: true,

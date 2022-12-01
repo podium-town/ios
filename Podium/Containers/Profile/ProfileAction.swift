@@ -21,6 +21,10 @@ enum ProfileAction {
   case didDeletePost(TaskResult<String>)
   case reportPost(post: PostProfileModel)
   case didReportPost(TaskResult<String>)
+  case blockProfile(profile: ProfileModel)
+  case didBlockProfile(TaskResult<ProfileModel>)
+  case blockPost(post: PostProfileModel)
+  case didBlockPost(TaskResult<PostProfileModel>)
   case follow
   case didFollow(TaskResult<(ProfileModel, String)>)
   case unfollow

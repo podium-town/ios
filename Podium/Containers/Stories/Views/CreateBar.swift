@@ -14,6 +14,7 @@ struct CreateBar: View {
   var onAddImage: (_ image: UIImage) -> Void
   var onDelete: () -> Void
   var seenBy: [SeenByModel]?
+  var likedBy: [SeenByModel]?
   @State private var isStatsPresented = false
   
   var body: some View {
@@ -59,12 +60,27 @@ struct CreateBar: View {
             } label: {
               HStack(spacing: 0) {
                 ForEach(seenBy.prefix(upTo: min(seenBy.count, 4))) { by in
-                  VStack {
-                    Image(uiImage: (by.avatarBase64 == nil ? UIImage(named: "avatar")! : by.avatarBase64!.imageFromBase64) ?? UIImage(named: "avatar")!)
+                  ZStack {
+                    Image(uiImage: by.avatar == nil ? UIImage(named: "avatar")! : UIImage(data: by.avatar!)!)
                       .resizable()
                       .scaledToFill()
                       .clipShape(Circle())
                       .frame(width: 32, height: 32)
+                    
+                    if let likedBy = likedBy, likedBy.contains(where: { $0.id == by.id }) {
+                      VStack {
+                        Spacer()
+                        HStack {
+                          Image("heart-filled")
+                            .resizable()
+                            .scaledToFill()
+                            .foregroundColor(Color("ColorRed"))
+                            .frame(width: 16, height: 16)
+                            .offset(x: -4)
+                          Spacer()
+                        }
+                      }
+                    }
                   }
                   .frame(width: 16, height: 32)
                 }
@@ -94,7 +110,7 @@ struct CreateBar: View {
                   VStack(spacing: 0) {
                     ForEach(seenBy) { by in
                       HStack {
-                        Image(uiImage: (by.avatarBase64 == nil ? UIImage(named: "avatar")! : by.avatarBase64!.imageFromBase64) ?? UIImage(named: "avatar")!)
+                        Image(uiImage: by.avatar == nil ? UIImage(named: "avatar")! : UIImage(data: by.avatar!)!)
                           .resizable()
                           .scaledToFill()
                           .clipShape(Circle())
@@ -103,6 +119,14 @@ struct CreateBar: View {
                         Text(by.username)
                           .fontWeight(.medium)
                           .foregroundColor(Color("ColorText"))
+                        
+                        if let likedBy = likedBy, likedBy.contains(where: { $0.id == by.id }) {
+                          Image("heart-filled")
+                            .resizable()
+                            .scaledToFill()
+                            .foregroundColor(Color("ColorRed"))
+                            .frame(width: 16, height: 16)
+                        }
                         
                         Spacer()
                       }

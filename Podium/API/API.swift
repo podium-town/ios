@@ -60,7 +60,9 @@ class API {
             .setData([
               "id": profile.id,
               "following": profile.following,
-              "createdAt": profile.createdAt
+              "createdAt": profile.createdAt,
+              "blockedProfiles": profile.blockedProfiles,
+              "blockedPosts": profile.blockedPosts
             ])
           
           return profile
@@ -108,6 +110,10 @@ class API {
     do {
       var profiles: [ProfileModel] = []
       
+      if ids.isEmpty {
+        return []
+      }
+      
       let dictionary = try await db
         .collection("users")
         .whereField("id", in: ids)
@@ -115,16 +121,40 @@ class API {
       
       for document in dictionary {
         if var profile = try? ProfileModel(dictionary: document.data()) {
-          if let avatarId = profile.avatarId {
-            let storageRef = storage.reference()
-            let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
-            let data = try? await fileRef.data(maxSize: 10 * 1024 * 1024)
-            profile.avatarData = data
-          }
           profiles.append(profile)
         }
       }
-      return profiles
+      
+      let avatars = try await withThrowingTaskGroup(of: (String, Data).self) { group in
+        var prefetched: [String: Data] = [:]
+        
+        for profile in profiles {
+          if let avatarId = profile.avatarId {
+            let storageRef = storage.reference()
+            let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
+            group.addTask {
+              let result = try await fileRef.data(maxSize: 10 * 1024 * 1024)
+              return (profile.id, result)
+            }
+          }
+        }
+        
+        for try await value in group {
+          let (profileId, avatarData) = value
+          prefetched[profileId] = avatarData
+        }
+        
+        return prefetched
+      }
+      
+      return profiles.map { profile in
+        if let avatarData = avatars[profile.id] {
+          var mut = profile
+          mut.avatarData = avatarData
+          return mut
+        }
+        return profile
+      }
     } catch let error {
       throw error
     }
@@ -172,28 +202,13 @@ class API {
       }
       
       let uniqueProfileIds = Array(Set(tempPosts.map { $0.ownerId }))
-      
-      let profiles = try await withThrowingTaskGroup(of: ProfileModel.self) { group in
-        for id in uniqueProfileIds {
-          group.addTask {
-            return try await getProfile(id: id)
-          }
-        }
-        
-        var collected: [String: ProfileModel] = [:]
-        
-        for try await value in group {
-          collected[value.id] = value
-        }
-        
-        return collected
-      }
+      let profiles = try await getProfiles(ids: uniqueProfileIds)
       
       return tempPosts.map({ post in
         return PostProfileModel(
           id: post.id,
           post: post,
-          profile: profiles[post.ownerId]!
+          profile: profiles.first(where: { $0.id == post.ownerId })!
         )
       })
     } catch let error {
@@ -239,28 +254,13 @@ class API {
             }
             
             let uniqueProfileIds = Array(Set(tempPosts.map({ $0.ownerId })))
-            
-            let profiles = try await withThrowingTaskGroup(of: ProfileModel.self) { group in
-              for id in uniqueProfileIds {
-                group.addTask {
-                  return try await getProfile(id: id)
-                }
-              }
-              
-              var collected: [String: ProfileModel] = [:]
-              
-              for try await value in group {
-                collected[value.id] = value
-              }
-              
-              return collected
-            }
+            let profiles = try await getProfiles(ids: uniqueProfileIds)
             
             let posts = tempPosts.map({ post in
               return PostProfileModel(
                 id: post.id,
                 post: post,
-                profile: profiles[post.ownerId]!
+                profile: profiles.first(where: { $0.id == post.ownerId })!
               )
             })
             
@@ -288,28 +288,13 @@ class API {
             }
             
             let uniqueProfileIds = Array(Set(tempComments.map({ $0.ownerId })))
-            
-            let profiles = try await withThrowingTaskGroup(of: ProfileModel.self) { group in
-              for id in uniqueProfileIds {
-                group.addTask {
-                  return try await getProfile(id: id)
-                }
-              }
-              
-              var collected: [String: ProfileModel] = [:]
-              
-              for try await value in group {
-                collected[value.id] = value
-              }
-              
-              return collected
-            }
+            let profiles = try await getProfiles(ids: uniqueProfileIds)
             
             let comments = tempComments.map({ post in
               return PostProfileModel(
                 id: post.id,
                 post: post,
-                profile: profiles[post.ownerId]!
+                profile: profiles.first(where: { $0.id == post.ownerId })!
               )
             })
             
@@ -465,12 +450,42 @@ class API {
       try await db
         .collection("users")
         .document(updated.id)
-        .updateData([
+        .setData([
           "following": FieldValue.arrayUnion([id])
-        ])
+        ], merge: true)
       
       updated.following.append(id)
       return (updated, id)
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func blockProfile(profile: ProfileModel, fromId: String) async throws -> ProfileModel {
+    do {
+      try await db
+        .collection("users")
+        .document(fromId)
+        .setData([
+          "blockedProfiles": FieldValue.arrayUnion([profile.id])
+        ], merge: true)
+      
+      return profile
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func blockPost(post: PostProfileModel, fromId: String) async throws -> PostProfileModel {
+    do {
+      try await db
+        .collection("users")
+        .document(fromId)
+        .setData([
+          "blockedPosts": FieldValue.arrayUnion([post.id])
+        ], merge: true)
+      
+      return post
     } catch let error {
       throw error
     }
@@ -482,9 +497,9 @@ class API {
       try await db
         .collection("users")
         .document(updated.id)
-        .updateData([
+        .setData([
           "following": FieldValue.arrayRemove([id])
-        ])
+        ], merge: true)
       
       updated.following.removeAll(where: { $0 == id })
       return (updated, id)
@@ -531,9 +546,9 @@ class API {
         try? await db
           .collection("hashtags")
           .document(hashtag)
-          .updateData([
+          .setData([
             "posts": FieldValue.arrayRemove([post.post.id])
-          ])
+          ], merge: true)
       }
       
       for image in post.post.images {
@@ -588,9 +603,9 @@ class API {
         try await db
           .collection("hashtags")
           .document(hashtag)
-          .updateData([
+          .setData([
             "posts": FieldValue.arrayRemove([comment.post.id])
-          ])
+          ], merge: true)
       }
       
       return comment.post.id
@@ -642,7 +657,8 @@ class API {
           ownerId: profile.id,
           createdAt: Int64(Int(Date().millisecondsSince1970) / 1000),
           expireAt: Timestamp(date: Calendar.current.date(byAdding: dayComponent, to: Date())!),
-          seenBy: []
+          seenBy: [],
+          likedBy: []
         ),
         profile: profile
       )
@@ -678,12 +694,16 @@ class API {
           if let documents = querySnapshot?.documentChanges {
             for document in documents {
               if document.type == .added,
-                 let story = try? document.document.data(as: StoryModel.self) {
-                urls.append(StoryUrlModel(
-                  url: story.url,
-                  createdAt: story.createdAt
-                ))
-                tempStories.append(story)
+                 var story = try? document.document.data(as: StoryModel.self) {
+                if story.expireAt.dateValue() > Date() {
+                  urls.append(StoryUrlModel(
+                    url: story.url,
+                    createdAt: story.createdAt
+                  ))
+                  story.seenBy = story.seenBy.reversed()
+                  story.likedBy = story.likedBy.reversed()
+                  tempStories.append(story)
+                }
               }
               if document.type == .removed,
                  let story = try? document.document.data(as: StoryModel.self) {
@@ -696,27 +716,12 @@ class API {
             }
             
             let uniqueProfileIds = Array(Set(tempStories.map({ $0.ownerId })))
-            
-            let profiles = try await withThrowingTaskGroup(of: ProfileModel.self) { group in
-              for id in uniqueProfileIds {
-                group.addTask {
-                  return try await getProfile(id: id)
-                }
-              }
-              
-              var collected: [String: ProfileModel] = [:]
-              
-              for try await value in group {
-                collected[value.id] = value
-              }
-              
-              return collected
-            }
+            let profiles = try await getProfiles(ids: uniqueProfileIds)
             
             tempStories.sorted(by: { $0.createdAt < $1.createdAt }).forEach { story in
               let storyModel = StoryProfileModel(
                 story: story,
-                profile: profiles[story.ownerId]!
+                profile: profiles.first(where: { $0.id == story.ownerId })!
               )
               if stories[story.ownerId] == nil {
                 stories[story.ownerId] = [storyModel]
@@ -726,7 +731,9 @@ class API {
             }
             
             let sortedProfiles = stories
-              .map({ profiles[$0.key]! })
+              .map { st in
+                return profiles.first(where: { $0.id == st.key })!
+              }
               .map { profile in
                 var mut = profile
                 mut.hasNewStories = stories[mut.id]?.contains(where: { !$0.story.seenBy.contains(where: { $0.id == profileId}) })
@@ -752,37 +759,26 @@ class API {
         .documents
       
       for document in dictionary {
-        if let story = try? document.data(as: StoryModel.self) {
-          urls.append(StoryUrlModel(
-            url: story.url,
-            createdAt: story.createdAt
-          ))
-          tempStories.append(story)
+        if var story = try? document.data(as: StoryModel.self) {
+          if story.expireAt.dateValue() > Date() {
+            urls.append(StoryUrlModel(
+              url: story.url,
+              createdAt: story.createdAt
+            ))
+            story.seenBy = story.seenBy.reversed()
+            story.likedBy = story.likedBy.reversed()
+            tempStories.append(story)
+          }
         }
       }
       
       let uniqueProfileIds = Array(Set(tempStories.map { $0.ownerId }))
-      
-      let profiles = try await withThrowingTaskGroup(of: ProfileModel.self) { group in
-        for id in uniqueProfileIds {
-          group.addTask {
-            return try await getProfile(id: id)
-          }
-        }
-        
-        var collected: [String: ProfileModel] = [:]
-        
-        for try await value in group {
-          collected[value.id] = value
-        }
-        
-        return collected
-      }
+      let profiles = try await getProfiles(ids: uniqueProfileIds)
       
       tempStories.sorted(by: { $0.createdAt < $1.createdAt }).forEach { story in
         let model = StoryProfileModel(
           story: story,
-          profile: profiles[story.ownerId]!
+          profile: profiles.first(where: { $0.id == story.ownerId })!
         )
         if stories[story.ownerId] == nil {
           stories[story.ownerId] = [model]
@@ -793,7 +789,9 @@ class API {
       
       let sortedProfiles = stories
         .sorted(by: { $0.value.last!.story.createdAt > $1.value.last!.story.createdAt })
-        .map({ profiles[$0.key]! })
+        .map { st in
+          return profiles.first(where: { $0.id == st.key })!
+        }
         .map { profile in
           var mut = profile
           mut.hasNewStories = stories[mut.id]?.contains(where: { !$0.story.seenBy.contains(where: { $0.id == profileId}) })
@@ -827,13 +825,10 @@ class API {
   }
   
   static func markSeen(storyId: String?, profile: ProfileModel) async throws -> String {
-    let avatar = profile.avatarData == nil ? UIImage(named: "avatar")!.base64 : UIImage(data: profile.avatarData!)!.scalePreservingAspectRatio(targetSize: CGSize(width: 32, height: 32)).base64
     do {
       let encoded = try Firestore.Encoder().encode(SeenByModel(
         id: profile.id,
-        username: profile.username ?? "",
-        avatarBase64: avatar,
-        hasLiked: false
+        username: profile.username ?? ""
       ))
       if let storyId = storyId {
         try await db
@@ -850,14 +845,63 @@ class API {
     }
   }
   
-  static func getStats(storyId: String) async throws -> [SeenByModel] {
+  static func markLiked(storyId: String?, profile: ProfileModel) async throws -> String {
+    do {
+      if let storyId = storyId {
+        let encoded = try Firestore.Encoder().encode(SeenByModel(
+          id: profile.id,
+          username: profile.username ?? ""
+        ))
+        try await db
+          .collection("stories")
+          .document(storyId)
+          .updateData([
+            "likedBy": FieldValue.arrayUnion([encoded])
+          ])
+        return storyId
+      }
+      throw AppError.general
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func getStats(storyId: String) async throws -> ([SeenByModel], [SeenByModel]) {
     do {
       let story = try await db
         .collection("stories")
         .document(storyId)
         .getDocument(as: StoryModel.self)
+      
+      let profilesIds = story.seenBy.map({ $0.id })
+      let profiles = try await getProfiles(ids: profilesIds)
+      
+      let seenBy = story.seenBy.map { sb in
+        var mut = sb
+        mut.avatar = profiles.first(where: { $0.id == sb.id })?.avatarData
+        return mut
+      }
+
+      let likedBy = story.likedBy.map { sb in
+        var mut = sb
+        mut.avatar = profiles.first(where: { $0.id == sb.id })?.avatarData
+        return mut
+      }
         
-      return story.seenBy
+      return (seenBy.reversed(), likedBy.reversed())
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func deleteAccount(id: String) async throws -> String {
+    do {
+      try await db
+        .collection("users")
+        .document(id)
+        .delete()
+      
+      return id
     } catch let error {
       throw error
     }

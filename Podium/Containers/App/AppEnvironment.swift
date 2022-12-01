@@ -10,4 +10,6 @@ import Foundation
 struct AppEnvironment {
   let api = API()
   let localStorage = UserDefaults.standard
+  var privacyUrl = "https://podium.town/privacy"
+  var termsUrl = "https://podium.town/terms"
 }

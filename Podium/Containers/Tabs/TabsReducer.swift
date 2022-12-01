@@ -32,6 +32,36 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
   ),
   Reducer { state, action, environment in
     switch action {
+    case .profile(.didBlockProfile(.success(let profile))),
+        .home(.thread(.didBlockProfile(.success(let profile)))),
+        .home(.didBlockProfile(.success(let profile))):
+      state.profile.blockedProfiles.append(profile.id)
+      state.exploreState.profile.blockedProfiles.append(profile.id)
+      state.homeState.profile.blockedProfiles.append(profile.id)
+      state.profileState.profile.blockedProfiles.append(profile.id)
+      if let encoded = state.profile.encoded() {
+        environment.localStorage.set(encoded, forKey: StorageKey.profile.rawValue)
+      }
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
+      
+    case .profile(.didBlockPost(.success(let post))),
+        .home(.thread(.didBlockPost(.success(let post)))),
+        .home(.didBlockPost(.success(let post))):
+      state.profile.blockedPosts.append(post.id)
+      state.exploreState.profile.blockedPosts.append(post.id)
+      state.homeState.profile.blockedPosts.append(post.id)
+      state.profileState.profile.blockedPosts.append(post.id)
+      if let encoded = state.profile.encoded() {
+        environment.localStorage.set(encoded, forKey: StorageKey.profile.rawValue)
+      }
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
+      
     case .prefetchStories:
       let index = min(state.urls.count, 5)
       let fileUrls = Array(state.urls.sorted(by: { $0.createdAt > $1.createdAt }).prefix(upTo: index))
@@ -103,7 +133,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
         }
         state.homeState.profiles.append(profileToAdd)
       }
-
+      
       let sortedProfiles = state.homeState.stories
         .sorted(by: { $0.value.last!.story.createdAt > $1.value.last!.story.createdAt })
         .compactMap({ story in
@@ -143,7 +173,37 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       return Effect(value: .getProfilePosts)
       
     case .addPosts(let posts):
-      state.homeState.posts.insert(contentsOf: posts.sorted(by: { $0.post.createdAt > $1.post.createdAt }), at: 0)
+      state.homeState.posts.insert(contentsOf: posts.filter({ post in
+        return !state.profile.blockedPosts.contains(where: { $0 == post.post.id })
+      }).sorted(by: { $0.post.createdAt > $1.post.createdAt }), at: 0)
+      return .none
+      
+    case .getPosts:
+      let followingIds = state.profile.following
+      return .task {
+        await .didGetPosts(TaskResult {
+          try await API.getPosts(
+            followingIds: followingIds
+          )
+        })
+      }
+      
+    case .didGetPosts(.success(let posts)):
+      let added = posts
+        .filter({ post in
+          return !state.profile.blockedPosts.contains(where: { $0 == post.post.id })
+        })
+      state.homeState.posts = added
+      state.homeState.isLoadingRefreshable = false
+      return .none
+      
+    case .didGetPosts(.failure(let error)):
+      state.homeState.isLoadingRefreshable = false
+      state.homeState.bannerData = BannerData(
+        title: "Error",
+        detail: "Error while loading posts.",
+        type: .error
+      )
       return .none
       
     case .getProfilePosts:
@@ -173,10 +233,11 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
     case .getStories:
       let followingIds = state.profile.following
       let profileId = state.profile.id
+      let blocked = state.profile.blockedProfiles
       return .task {
         await .didGetStories(TaskResult {
           try await API.getStories(
-            ids: followingIds,
+            ids: followingIds.filter({ !blocked.contains($0) }),
             profileId: profileId
           )
         })
@@ -212,7 +273,33 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
     case .home(.getPosts):
       state.homeState.isLoadingRefreshable = true
       return Effect.merge([
-        Effect(value: .getProfilePosts),
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
+      
+    case .profile(.didFollow(.success((let from, let id)))),
+        .explore(.profile(.didFollow(.success((let from, let id))))),
+        .home(.profile(.didFollow(.success((let from, let id))))),
+        .explore(.didFollow(.success((let from, let id)))):
+      state.profile.following.append(id)
+      state.exploreState.profile.following.append(id)
+      state.homeState.profile.following.append(id)
+      state.profileState.fromProfile.following.append(id)
+      return Effect.merge([
+        Effect(value: .getPosts),
+        Effect(value: .getStories)
+      ])
+      
+    case .profile(.didUnfollow(.success((let from, let id)))),
+        .explore(.profile(.didUnfollow(.success((let from, let id))))),
+        .home(.profile(.didUnfollow(.success((let from, let id))))),
+        .explore(.didUnfollow(.success((let from, let id)))):
+      state.profile.following.removeAll(where: { $0 == id })
+      state.exploreState.profile.following.removeAll(where: { $0 == id })
+      state.homeState.profile.following.removeAll(where: { $0 == id })
+      state.profileState.fromProfile.following.removeAll(where: { $0 == id })
+      return Effect.merge([
+        Effect(value: .getPosts),
         Effect(value: .getStories)
       ])
       
@@ -227,29 +314,7 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
     case .onMenuClose:
       state.isMenuOpen = false
       return .none
-      
-    case .home(.profile(.didFollow(.success((let from, let id))))):
-      state.profile.following.append(id)
-      state.exploreState.profile.following.append(id)
-      state.homeState.profile.following.append(id)
-      state.profileState.fromProfile.following.append(id)
-      state.homeState.profileState?.fromProfile.following.append(id)
-      return Effect.merge([
-        Effect(value: .getProfilePosts),
-        Effect(value: .getStories)
-      ])
-      
-    case .home(.profile(.didUnfollow(.success((let from, let id))))):
-      state.profile.following.removeAll(where: { $0 == id })
-      state.exploreState.profile.following.removeAll(where: { $0 == id })
-      state.homeState.profile.following.removeAll(where: { $0 == id })
-      state.homeState.profileState?.fromProfile.following.removeAll(where: { $0 == id })
-      state.profileState.fromProfile.following.removeAll(where: { $0 == id })
-      return Effect.merge([
-        Effect(value: .getProfilePosts),
-        Effect(value: .getStories)
-      ])
-      
+        
     case .home(_):
       return .none
       
@@ -275,71 +340,9 @@ let tabsReducer = Reducer<TabsState, TabsAction, AppEnvironment>.combine(
       state.isMenuOpen = true
       return .none
       
-    case .profile(.didFollow(.success((let from, let id)))):
-      state.profile.following.append(id)
-      state.exploreState.profile.following.append(id)
-      state.homeState.profile.following.append(id)
-      state.profileState.fromProfile.following.append(id)
-      return Effect.merge([
-        Effect(value: .getProfilePosts),
-        Effect(value: .getStories)
-      ])
-      
-    case .profile(.didUnfollow(.success((let from, let id)))):
-      state.profile.following.removeAll(where: { $0 == id })
-      state.exploreState.profile.following.removeAll(where: { $0 == id })
-      state.homeState.profile.following.removeAll(where: { $0 == id })
-      state.profileState.fromProfile.following.removeAll(where: { $0 == id })
-      return Effect.merge([
-        Effect(value: .getProfilePosts),
-        Effect(value: .getStories)
-      ])
-      
     case .profile(_):
       return .none
-      
-    case .explore(.didFollow(.success((let from, let id)))):
-      state.profile.following.append(id)
-      state.exploreState.profile.following.append(id)
-      state.homeState.profile.following.append(id)
-      state.profileState.fromProfile.following.append(id)
-      return Effect.merge([
-        Effect(value: .getProfilePosts),
-        Effect(value: .getStories)
-      ])
-      
-    case .explore(.didUnfollow(.success((let from, let id)))):
-      state.profile.following.removeAll(where: { $0 == id })
-      state.exploreState.profile.following.removeAll(where: { $0 == id })
-      state.homeState.profile.following.removeAll(where: { $0 == id })
-      state.profileState.fromProfile.following.removeAll(where: { $0 == id })
-      return Effect.merge([
-        Effect(value: .getProfilePosts),
-        Effect(value: .getStories)
-      ])
-      
-    case .explore(.profile(.didFollow(.success((let from, let id))))):
-      state.profile.following.append(id)
-      state.exploreState.profile.following.append(id)
-      state.exploreState.profileState?.fromProfile.following.append(id)
-      state.homeState.profile.following.append(id)
-      state.profileState.fromProfile.following.append(id)
-      return Effect.merge([
-        Effect(value: .getProfilePosts),
-        Effect(value: .getStories)
-      ])
-      
-    case .explore(.profile(.didUnfollow(.success((let from, let id))))):
-      state.profile.following.removeAll(where: { $0 == id })
-      state.exploreState.profile.following.removeAll(where: { $0 == id })
-      state.exploreState.profileState?.fromProfile.following.removeAll(where: { $0 == id })
-      state.homeState.profile.following.removeAll(where: { $0 == id })
-      state.profileState.fromProfile.following.removeAll(where: { $0 == id })
-      return Effect.merge([
-        Effect(value: .getProfilePosts),
-        Effect(value: .getStories)
-      ])
-      
+   
     case .explore(_):
       return .none
     }

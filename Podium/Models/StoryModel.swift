@@ -16,11 +16,11 @@ struct StoryModel: Equatable, Identifiable, Codable {
   var createdAt: Int64
   var expireAt: Timestamp
   var seenBy: [SeenByModel]
+  var likedBy: [SeenByModel]
 }
 
 struct SeenByModel: Equatable, Identifiable, Codable {
   var id: String
   var username: String
-  var avatarBase64: String?
-  var hasLiked: Bool
+  var avatar: Data?
 }

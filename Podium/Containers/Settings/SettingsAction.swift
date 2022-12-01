@@ -7,4 +7,7 @@
 
 enum SettingsAction {
   case logout
+  case viewTerms
+  case viewPrivacy
+  case deleteAccount
 }
