@@ -13,6 +13,7 @@ struct HashtagState: Equatable {
   var isMediaPresented = false
   var isProfilePresented = false
   var isThreadPresented = false
+  var isLoading = false
   
   // View States
   var mediaState: MediaState?

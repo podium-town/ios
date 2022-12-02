@@ -58,15 +58,15 @@ struct Post: View {
                   }
                 }
                 
-                Button("Report post") {
-                  onReport(post)
-                }
-                
-                Button("Block post") {
-                  onBlockPost(post)
-                }
-                
                 if !isSelf {
+                  Button("Report post") {
+                    onReport(post)
+                  }
+                  
+                  Button("Block post") {
+                    onBlockPost(post)
+                  }
+                  
                   Button("Block profile") {
                     onBlockProfile(post)
                   }

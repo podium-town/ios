@@ -29,11 +29,8 @@ struct PodiumApp: App {
 }
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-  var environment: AppEnvironment?
-  
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    environment = AppEnvironment()
     FirebaseApp.configure()
     return true
   }

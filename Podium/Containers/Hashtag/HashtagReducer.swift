@@ -68,6 +68,7 @@ struct Hashtag: ReducerProtocol {
         return .none
         
       case .getPosts:
+        state.isLoading = true
         let hashtag = state.hashtag
         return .task {
           await .didGetPosts(TaskResult {
@@ -76,10 +77,12 @@ struct Hashtag: ReducerProtocol {
         }
         
       case .didGetPosts(.success(let posts)):
+        state.isLoading = false
         state.posts = posts
         return .none
         
       case .didGetPosts(.failure(_)):
+        state.isLoading = true
         return .none
         
       case .presentMedia(let isPresented, let post, let loadedImages):

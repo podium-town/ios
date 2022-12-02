@@ -16,6 +16,9 @@ struct Profile: ReducerProtocol {
     Reduce { state, action in
       switch action {
       case .getPosts:
+        if state.posts.isEmpty {
+          state.isLoading = true
+        }
         let id = state.profile.id
         return .task {
           await .didGetPosts(TaskResult {
@@ -24,10 +27,13 @@ struct Profile: ReducerProtocol {
         }
         
       case .didGetPosts(.success(let posts)):
+        state.isEmpty = posts.isEmpty
+        state.isLoading = false
         state.posts = posts
         return .none
         
       case .didGetPosts(.failure(_)):
+        state.isLoading = false
         return .none
         
       case .follow:

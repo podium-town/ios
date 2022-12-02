@@ -56,20 +56,27 @@ struct ExploreView: View {
                       }
                     }
                   } else {
-                    RoundedRectangle(cornerRadius: 15)
-                      .frame(height: 160)
-                      .overlay(
-                        ZStack {
-                          Image("welcome")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(height: 160)
-                            .clipShape(RoundedRectangle(cornerRadius: 15))
-                          
-                          Text("#welcome")
-                            .fontWeight(.semibold)
-                        }
-                      )
+                    Button {
+                      viewStore.send(.presentHashtag(
+                        isPresented: true,
+                        hashtag: "#welcome"
+                      ))
+                    } label: {
+                      RoundedRectangle(cornerRadius: 15)
+                        .frame(height: 160)
+                        .overlay(
+                          ZStack {
+                            Image("welcome")
+                              .resizable()
+                              .scaledToFill()
+                              .frame(height: 160)
+                              .clipShape(RoundedRectangle(cornerRadius: 15))
+                            
+                            Text("#welcome")
+                              .fontWeight(.semibold)
+                          }
+                        )
+                    }
                     
                     Text("🌎 Trends")
                       .fontWeight(.medium)

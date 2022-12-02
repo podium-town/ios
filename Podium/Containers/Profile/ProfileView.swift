@@ -122,7 +122,7 @@ struct ProfileView: View {
                     ))
                   } label: {
                     Post(
-                      isSelf: post.id == viewStore.fromProfile.id,
+                      isSelf: post.post.ownerId == viewStore.fromProfile.id,
                       post: post) { post in
                         viewStore.send(.deletePost(post: post))
                       } onReport: { post in

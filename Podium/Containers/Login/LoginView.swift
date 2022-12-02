@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct LoginView: View {
-  let store: Store<LoginState, LoginAction>
+  let store: StoreOf<Login>
   
   var body: some View {
     WithViewStore(store) { viewStore in
@@ -190,8 +190,7 @@ struct LoginView_Previews: PreviewProvider {
   static var previews: some View {
     LoginView(store: Store(
       initialState: LoginState(),
-      reducer: loginReducer,
-      environment: AppEnvironment()
+      reducer: Login()
     ))
   }
 }
