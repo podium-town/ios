@@ -10,7 +10,7 @@ import ComposableArchitecture
 import Introspect
 
 struct AddView: View {
-  let store: Store<AddState, AddAction>
+  let store: StoreOf<Add>
   
   var body: some View {
     WithViewStore(store) { viewStore in
@@ -113,8 +113,7 @@ struct AddView_Previews: PreviewProvider {
           UIImage(named: "avatar")!
         ]
       ),
-      reducer: addReducer,
-      environment: AppEnvironment()
+      reducer: Add()
     ))
   }
 }

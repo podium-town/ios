@@ -19,8 +19,7 @@ struct PodiumApp: App {
       AppView(
         store: Store(
           initialState: AppState(),
-          reducer: appReducer,
-          environment: AppEnvironment()
+          reducer: Main()
         ))
       .onOpenURL { url in
         Auth.auth().canHandle(url)

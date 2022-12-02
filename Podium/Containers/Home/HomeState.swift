@@ -11,22 +11,22 @@ import Foundation
 struct HomeState: Equatable {
   var profile: ProfileModel
   var isStoriesPresented = false
+  var isAddPresented = false
+  var isMediaPresented = false
   var isThreadPresented = false
   var isProfilePresented = false
-  var isMediaPresented = false
-  var isAddPresented = false
-  var isLoadingRefreshable = false
   var isEmpty = false
-  var posts: [PostProfileModel]
   var bannerData: BannerData?
   var stories: [String: [StoryProfileModel]] = [:]
   var profiles: [ProfileModel] = []
   var isStoriesLoading = false
+  var posts: [PostProfileModel] = []
+  var isLoadingRefreshable = false
   
   // View States
   var add: AddState?
   var storiesState: StoriesState?
   var threadState: ThreadState?
-  var profileState: ProfileState?
   var mediaState: MediaState?
+  var profileState: ProfileState?
 }

@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct MediaView: View {
-  let store: Store<MediaState, MediaAction>
+  let store: StoreOf<Media>
   
   var body: some View {
     WithViewStore(store) { viewStore in
@@ -45,8 +45,7 @@ struct MediaView_Previews: PreviewProvider {
       initialState: MediaState(
         post: Mocks.postProfile
       ),
-      reducer: mediaReducer,
-      environment: AppEnvironment()
+      reducer: Media()
     ))
   }
 }

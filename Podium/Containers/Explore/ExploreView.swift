@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct ExploreView: View {
-  let store: Store<ExploreState, ExploreAction>
+  let store: StoreOf<Explore>
   
   var body: some View {
     WithViewStore(store) { viewStore in
@@ -78,14 +78,21 @@ struct ExploreView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                       HStack {
                         ForEach(viewStore.hashtags) { tag in
-                          Text(tag.hashtag)
-                            .fontWeight(.medium)
-                            .padding(.horizontal)
-                            .padding(.vertical, 10)
-                            .background(
-                              RoundedRectangle(cornerRadius: 24)
-                                .foregroundColor(Color("ColorLightBackground"))
-                            )
+                          Button {
+                            viewStore.send(.presentHashtag(
+                              isPresented: true,
+                              hashtag: tag.hashtag
+                            ))
+                          } label: {
+                            Text(tag.hashtag)
+                              .fontWeight(.medium)
+                              .padding(.horizontal)
+                              .padding(.vertical, 10)
+                              .background(
+                                RoundedRectangle(cornerRadius: 24)
+                                  .foregroundColor(Color("ColorLightBackground"))
+                              )
+                          }
                         }
                       }
                     }
@@ -194,7 +201,6 @@ struct ExploreView: View {
           }
           .padding(.top, 1)
           
-          
           WithViewStore(store.scope(state: \.isProfilePresented)) { viewStore in
             NavigationLink(
               destination: IfLetStore(
@@ -215,6 +221,27 @@ struct ExploreView: View {
               label: EmptyView.init
             )
           }
+          
+          WithViewStore(store.scope(state: \.isHashtagPresented)) { viewStore in
+            NavigationLink(
+              destination: IfLetStore(
+                store.scope(
+                  state: \.hashtagState,
+                  action: ExploreAction.hashtag
+                ),
+                then: { store in
+                  HashtagView(store: store)
+                }
+              ),
+              isActive: viewStore.binding(
+                send: .presentHashtag(
+                  isPresented: false,
+                  hashtag: nil
+                )
+              ),
+              label: EmptyView.init
+            )
+          }
         }
       }
       .navigationViewStyle(StackNavigationViewStyle())
@@ -229,8 +256,7 @@ struct ExploreView_Previews: PreviewProvider {
         profile: Mocks.profile,
         foundProfiles: [Mocks.profile]
       ),
-      reducer: exploreReducer,
-      environment: AppEnvironment()
+      reducer: Explore()
     ))
   }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct SettingsView: View {
-  let store: Store<SettingsState, SettingsAction>
+  let store: StoreOf<Settings>
   
   @State private var isPresentingConfirm: Bool = false
   
@@ -87,8 +87,7 @@ struct SettingsView_Previews: PreviewProvider {
       initialState: SettingsState(
         profile: Mocks.profile
       ),
-      reducer: settingsReducer,
-      environment: AppEnvironment()
+      reducer: Settings()
     ))
   }
 }

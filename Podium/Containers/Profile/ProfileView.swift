@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct ProfileView: View {
-  let store: Store<ProfileState, ProfileAction>
+  let store: StoreOf<Profile>
   
   @State private var tab = 0
   
@@ -114,7 +114,7 @@ struct ProfileView: View {
               }
             } else {
               List {
-                ForEach(filterData(posts: viewStore.posts)) { post in
+                ForEach(viewStore.posts) { post in
                   Button {
                     viewStore.send(.presentThread(
                       isPresented: true,
@@ -122,50 +122,40 @@ struct ProfileView: View {
                     ))
                   } label: {
                     Post(
-                      isSelf: viewStore.fromProfile.id == post.post.ownerId,
-                      post: post,
-                      onDelete: { post in
+                      isSelf: post.id == viewStore.fromProfile.id,
+                      post: post) { post in
                         viewStore.send(.deletePost(post: post))
-                      },
-                      onReport: { post in
+                      } onReport: { post in
                         viewStore.send(.reportPost(post: post))
-                      },
-                      onBlockProfile: { post in
+                      } onBlockProfile: { post in
                         viewStore.send(.blockProfile(profile: post.profile))
-                      },
-                      onBlockPost: { post in
+                      } onBlockPost: { post in
                         viewStore.send(.blockPost(post: post))
-                      },
-                      onProfile: { profile in
+                      } onProfile: { profile in
                         
-                      },
-                      onImage: { post, loadedImages in
+                      } onImage: { post, loadedImages in
                         viewStore.send(.presentMedia(
                           isPresented: true,
                           post: post,
                           loadedImages: loadedImages
                         ))
-                      },
-                      onMenuTap: {
+                      } onMenuTap: {
                         viewStore.send(.onMenuOpen)
                       }
-                    )
                   }
                 }
                 .listRowSeparator(.hidden)
                 .listRowInsets(EdgeInsets())
               }
               .listStyle(.plain)
-              .refreshable {
-#if targetEnvironment(simulator)
-                
-#else
-                await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
-#endif
-              }
             }
           }
         }
+        .padding(.bottom, 18)
+        .banner(data: viewStore.binding(
+          get: \.bannerData,
+          send: ProfileAction.dismissBanner
+        ))
         .sheet(isPresented: viewStore.binding(
           get: \.isMediaPresented,
           send: ProfileAction.presentMedia(
@@ -182,21 +172,14 @@ struct ProfileView: View {
             )
           }
         .onAppear {
-          if !viewStore.isSelf {
-            viewStore.send(.getPosts)
-          }
+          viewStore.send(.getPosts)
         }
-        .padding(.bottom, 18)
-        .banner(data: viewStore.binding(
-          get: \.bannerData,
-          send: ProfileAction.dismissBanner
-        ))
         .toolbar {
           ToolbarItem(placement: .navigationBarTrailing) {
             Menu {
               if viewStore.profile.id != viewStore.fromProfile.id {
                 Button("Block profile") {
-                  viewStore.send(.blockProfile(profile: viewStore.profile))
+                  //                  viewStore.send(.blockProfile(profile: viewStore.profile))
                 }
               }
             } label: {
@@ -275,11 +258,9 @@ struct ProfileView_Previews: PreviewProvider {
     ProfileView(store: Store(
       initialState: ProfileState(
         fromProfile: Mocks.profile,
-        profile: Mocks.profile2,
-        posts: [Mocks.postProfile]
+        profile: Mocks.profile2
       ),
-      reducer: profileReducer,
-      environment: AppEnvironment()
+      reducer: Profile()
     ))
   }
 }

@@ -132,7 +132,7 @@ struct Post: View {
                             )
                             self.loadedImages[imageObj.url] = loadedData
                           } catch let error {
-                            print(error)
+                            
                           }
                         }
                     }

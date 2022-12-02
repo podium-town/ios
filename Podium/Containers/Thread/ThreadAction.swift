@@ -25,6 +25,7 @@ indirect enum ThreadAction {
   case addComments(comments: [PostProfileModel])
   case openMenu
   case presentMedia(isPresented: Bool, post: PostProfileModel?, loadedImages: [String: Data]?)
+//  case presentProfile(isPresented: Bool, profile: ProfileModel?)
   case blockProfile(profile: ProfileModel)
   case didBlockProfile(TaskResult<ProfileModel>)
   case blockPost(post: PostProfileModel)
@@ -32,4 +33,5 @@ indirect enum ThreadAction {
   
   // View Actions
   case media(MediaAction)
+//  case profile(ProfileAction)
 }

@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct AppView: View {
-  let store: Store<AppState, AppAction>
+  let store: StoreOf<Main>
   
   var body: some View {
     WithViewStore(store) { viewStore in
@@ -41,8 +41,7 @@ struct AppView_Previews: PreviewProvider {
   static var previews: some View {
     AppView(store: Store(
       initialState: AppState(),
-      reducer: appReducer,
-      environment: AppEnvironment()
+      reducer: Main()
     ))
   }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 import ComposableArchitecture
 
 struct HomeView: View {
-  let store: Store<HomeState, HomeAction>
+  let store: StoreOf<Home>
   
   var body: some View {
     NavigationView {
@@ -78,6 +78,21 @@ struct HomeView: View {
                 await viewStore.send(.getPosts, while: \.isLoadingRefreshable)
 #endif
               }
+              .sheet(isPresented: viewStore.binding(
+                get: \.isMediaPresented,
+                send: HomeAction.presentMedia(
+                  isPresented: false,
+                  post: nil,
+                  loadedImages: nil
+                ))) {
+                  IfLetStore(
+                    store.scope(
+                      state: \.mediaState,
+                      action: HomeAction.media
+                    ),
+                    then: MediaView.init(store:)
+                  )
+                }
             }
             
             VStack(spacing: 0) {
@@ -169,25 +184,10 @@ struct HomeView: View {
           }
           .navigationBarTitleDisplayMode(.inline)
           .navigationBarHidden(true)
-          .sheet(isPresented: viewStore.binding(
-            get: \.isMediaPresented,
-            send: HomeAction.presentMedia(
-              isPresented: false,
-              post: nil,
-              loadedImages: nil
-            ))) {
-              IfLetStore(
-                store.scope(
-                  state: \.mediaState,
-                  action: HomeAction.media
-                ),
-                then: MediaView.init(store:)
-              )
-            }
-            .banner(data: viewStore.binding(
-              get: \.bannerData,
-              send: HomeAction.dismissBanner
-            ))
+          .banner(data: viewStore.binding(
+            get: \.bannerData,
+            send: HomeAction.dismissBanner
+          ))
         }
         
         WithViewStore(store.scope(state: \.isThreadPresented)) { viewStore in
@@ -205,7 +205,8 @@ struct HomeView: View {
               send: .presentThread(
                 isPresented: false,
                 post: nil
-              )),
+              )
+            ),
             label: EmptyView.init
           )
         }
@@ -243,7 +244,6 @@ struct HomeView_Previews: PreviewProvider {
       initialState: HomeState(
         profile: Mocks.profile,
         isEmpty: false,
-        posts: [Mocks.postProfile, Mocks.postProfile],
         stories: [
           "456": [Mocks.storyProfile]
         ],
@@ -252,8 +252,7 @@ struct HomeView_Previews: PreviewProvider {
           Mocks.profile
         ]
       ),
-      reducer: homeReducer,
-      environment: AppEnvironment()
+      reducer: Home()
     ))
   }
 }

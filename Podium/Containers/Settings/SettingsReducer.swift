@@ -6,29 +6,33 @@
 //
 
 import ComposableArchitecture
-import CoreFoundation
 import UIKit
 
-let settingsReducer = Reducer<SettingsState, SettingsAction, AppEnvironment>.combine(
-  Reducer { state, action, environment in
-    switch action {
-    case .logout:
-      return .none
-      
-    case .viewPrivacy:
-      if let url = URL(string: environment.privacyUrl) {
-        UIApplication.shared.open(url)
+struct Settings: ReducerProtocol {
+  typealias State = SettingsState
+  typealias Action = SettingsAction
+  
+  var body: some ReducerProtocol<State, Action> {
+    Reduce { state, action in
+      switch action {
+      case .logout:
+        return .none
+        
+      case .viewPrivacy:
+        if let url = URL(string: "https://podium.town/privacy") {
+          UIApplication.shared.open(url)
+        }
+        return .none
+        
+      case .viewTerms:
+        if let url = URL(string: "https://podium.town/terms") {
+          UIApplication.shared.open(url)
+        }
+        return .none
+        
+      case .deleteAccount:
+        return .none
       }
-      return .none
-      
-    case .viewTerms:
-      if let url = URL(string: environment.termsUrl) {
-        UIApplication.shared.open(url)
-      }
-      return .none
-      
-    case .deleteAccount:
-      return .none
     }
   }
-)
+}

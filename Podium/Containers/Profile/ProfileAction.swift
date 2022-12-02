@@ -17,22 +17,22 @@ enum ProfileAction {
   case presentMedia(isPresented: Bool, post: PostProfileModel?, loadedImages: [String: Data]?)
   case changeAvatar(UIImage)
   case onMenuOpen
-  case deletePost(post: PostProfileModel)
-  case didDeletePost(TaskResult<String>)
-  case reportPost(post: PostProfileModel)
-  case didReportPost(TaskResult<String>)
-  case blockProfile(profile: ProfileModel)
-  case didBlockProfile(TaskResult<ProfileModel>)
-  case blockPost(post: PostProfileModel)
-  case didBlockPost(TaskResult<PostProfileModel>)
   case follow
   case didFollow(TaskResult<(ProfileModel, String)>)
   case unfollow
   case didUnfollow(TaskResult<(ProfileModel, String)>)
   case dismissBanner
+  case deletePost(post: PostProfileModel)
+  case didDeletePost(TaskResult<String>)
+  case reportPost(post: PostProfileModel)
+  case didReportPost(TaskResult<String>)
+  case blockPost(post: PostProfileModel)
+  case didBlockPost(TaskResult<PostProfileModel>)
+  case blockProfile(profile: ProfileModel)
+  case didBlockProfile(TaskResult<ProfileModel>)
   
   // View Actions
   case settings(SettingsAction)
-  case thread(ThreadAction)
   case media(MediaAction)
+  case thread(ThreadAction)
 }

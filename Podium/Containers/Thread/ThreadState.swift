@@ -15,6 +15,7 @@ struct ThreadState: Equatable {
   var comments: [PostProfileModel] = []
   var isLoading = false
   var isMediaPresented = false
+  var isProfilePresented = false
   
   // View States
   var mediaState: MediaState?

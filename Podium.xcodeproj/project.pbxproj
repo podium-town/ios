@@ -41,6 +41,8 @@
 		8243152E293136F50008F01A /* CreateBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8243152D293136F50008F01A /* CreateBar.swift */; };
 		824315302931387B0008F01A /* CreateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8243152F2931387B0008F01A /* CreateView.swift */; };
 		82462A2E2933EDB70026730B /* BidirectionalIterator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82462A2D2933EDB70026730B /* BidirectionalIterator.swift */; };
+		8248333D293A845E00C696EC /* HashtagReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8248333C293A845E00C696EC /* HashtagReducer.swift */; };
+		8248333F293A847D00C696EC /* HashtagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8248333E293A847D00C696EC /* HashtagView.swift */; };
 		826030E6291B015B006007C3 /* LocalStorageKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826030E5291B015B006007C3 /* LocalStorageKey.swift */; };
 		8263AE77291BA7CA0074B033 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8263AE76291BA7CA0074B033 /* GoogleService-Info.plist */; };
 		826757162932241200B67E58 /* StoryUrlModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 826757152932241200B67E58 /* StoryUrlModel.swift */; };
@@ -69,6 +71,8 @@
 		828E351C291C55640089AD1A /* AddReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828E351B291C55640089AD1A /* AddReducer.swift */; };
 		828E351E291C55780089AD1A /* AddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 828E351D291C55780089AD1A /* AddView.swift */; };
 		82954746292C28AA006600F3 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82954745292C28AA006600F3 /* String+Extensions.swift */; };
+		82A3219A293A841A00E412D5 /* HashtagState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A32199293A841A00E412D5 /* HashtagState.swift */; };
+		82A3219C293A842B00E412D5 /* HashtagAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82A3219B293A842B00E412D5 /* HashtagAction.swift */; };
 		82BBC979291ABAFF008DB479 /* ThreadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BBC978291ABAFF008DB479 /* ThreadState.swift */; };
 		82BBC97B291ABB11008DB479 /* ThreadAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BBC97A291ABB11008DB479 /* ThreadAction.swift */; };
 		82BBC97D291ABB21008DB479 /* ThreadReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82BBC97C291ABB21008DB479 /* ThreadReducer.swift */; };
@@ -134,6 +138,8 @@
 		8243152D293136F50008F01A /* CreateBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateBar.swift; sourceTree = "<group>"; };
 		8243152F2931387B0008F01A /* CreateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateView.swift; sourceTree = "<group>"; };
 		82462A2D2933EDB70026730B /* BidirectionalIterator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BidirectionalIterator.swift; sourceTree = "<group>"; };
+		8248333C293A845E00C696EC /* HashtagReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagReducer.swift; sourceTree = "<group>"; };
+		8248333E293A847D00C696EC /* HashtagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagView.swift; sourceTree = "<group>"; };
 		826030E5291B015B006007C3 /* LocalStorageKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStorageKey.swift; sourceTree = "<group>"; };
 		8263AE76291BA7CA0074B033 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		826757152932241200B67E58 /* StoryUrlModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryUrlModel.swift; sourceTree = "<group>"; };
@@ -161,6 +167,8 @@
 		828E351B291C55640089AD1A /* AddReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddReducer.swift; sourceTree = "<group>"; };
 		828E351D291C55780089AD1A /* AddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddView.swift; sourceTree = "<group>"; };
 		82954745292C28AA006600F3 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
+		82A32199293A841A00E412D5 /* HashtagState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagState.swift; sourceTree = "<group>"; };
+		82A3219B293A842B00E412D5 /* HashtagAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HashtagAction.swift; sourceTree = "<group>"; };
 		82BBC978291ABAFF008DB479 /* ThreadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadState.swift; sourceTree = "<group>"; };
 		82BBC97A291ABB11008DB479 /* ThreadAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadAction.swift; sourceTree = "<group>"; };
 		82BBC97C291ABB21008DB479 /* ThreadReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThreadReducer.swift; sourceTree = "<group>"; };
@@ -255,6 +263,7 @@
 		822591F7291A9B8500D17E30 /* Containers */ = {
 			isa = PBXGroup;
 			children = (
+				82A32198293A840B00E412D5 /* Hashtag */,
 				827C9CA1292A41FE008599A2 /* Settings */,
 				82DBC947292916F6002F885C /* Media */,
 				82F2AE2F291E859B00A4524E /* Explore */,
@@ -442,6 +451,17 @@
 			path = Add;
 			sourceTree = "<group>";
 		};
+		82A32198293A840B00E412D5 /* Hashtag */ = {
+			isa = PBXGroup;
+			children = (
+				82A32199293A841A00E412D5 /* HashtagState.swift */,
+				82A3219B293A842B00E412D5 /* HashtagAction.swift */,
+				8248333C293A845E00C696EC /* HashtagReducer.swift */,
+				8248333E293A847D00C696EC /* HashtagView.swift */,
+			);
+			path = Hashtag;
+			sourceTree = "<group>";
+		};
 		82BBC977291ABAF1008DB479 /* Thread */ = {
 			isa = PBXGroup;
 			children = (
@@ -623,12 +643,14 @@
 				82259200291A9BEC00D17E30 /* AppEnvironment.swift in Sources */,
 				82BBC982291AC22E008DB479 /* PostModel.swift in Sources */,
 				82BBC984291AC292008DB479 /* Mocks.swift in Sources */,
+				82A3219C293A842B00E412D5 /* HashtagAction.swift in Sources */,
 				826030E6291B015B006007C3 /* LocalStorageKey.swift in Sources */,
 				826F331429300F9E005B1E6B /* Array+Extensions.swift in Sources */,
 				827C9CA9292A4342008599A2 /* SettingsView.swift in Sources */,
 				828E350F291C1A670089AD1A /* ProfileAction.swift in Sources */,
 				82259220291AA7CD00D17E30 /* StoriesView.swift in Sources */,
 				82259217291AA03C00D17E30 /* HomeReducer.swift in Sources */,
+				82A3219A293A841A00E412D5 /* HashtagState.swift in Sources */,
 				82F2AE5F29244D1C00A4524E /* UIImage+Extensions.swift in Sources */,
 				8225922D291AAC7000D17E30 /* LoginView.swift in Sources */,
 				82F2AE35291E85F600A4524E /* ExploreReducer.swift in Sources */,
@@ -642,6 +664,7 @@
 				82259227291AAC3200D17E30 /* LoginState.swift in Sources */,
 				828E351C291C55640089AD1A /* AddReducer.swift in Sources */,
 				8225922F291AB2D200D17E30 /* StoriesState.swift in Sources */,
+				8248333D293A845E00C696EC /* HashtagReducer.swift in Sources */,
 				828E3518291C55440089AD1A /* AddState.swift in Sources */,
 				82BBC979291ABAFF008DB479 /* ThreadState.swift in Sources */,
 				82259213291AA01B00D17E30 /* HomeState.swift in Sources */,
@@ -695,6 +718,7 @@
 				82F2AE31291E85AB00A4524E /* ExploreState.swift in Sources */,
 				8267571C2932CDCF00B67E58 /* PostImage.swift in Sources */,
 				826757162932241200B67E58 /* StoryUrlModel.swift in Sources */,
+				8248333F293A847D00C696EC /* HashtagView.swift in Sources */,
 				82F2AE3A291E87F300A4524E /* SearchBar.swift in Sources */,
 				82793782291D60BB00FD5148 /* Banner.swift in Sources */,
 				82F2AE432920584A00A4524E /* ImagePicker.swift in Sources */,

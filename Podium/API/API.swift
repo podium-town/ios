@@ -206,7 +206,6 @@ class API {
       
       return tempPosts.map({ post in
         return PostProfileModel(
-          id: post.id,
           post: post,
           profile: profiles.first(where: { $0.id == post.ownerId })!
         )
@@ -258,7 +257,6 @@ class API {
             
             let posts = tempPosts.map({ post in
               return PostProfileModel(
-                id: post.id,
                 post: post,
                 profile: profiles.first(where: { $0.id == post.ownerId })!
               )
@@ -292,7 +290,6 @@ class API {
             
             let comments = tempComments.map({ post in
               return PostProfileModel(
-                id: post.id,
                 post: post,
                 profile: profiles.first(where: { $0.id == post.ownerId })!
               )
@@ -311,8 +308,7 @@ class API {
         .document(post.post.id)
         .setData(from: post.post, merge: true)
       
-      let matches = post.post.text.matchingStrings(regex: "#[a-zA-Z]+").compactMap({ $0.first })
-      for hashtag in matches {
+      for hashtag in post.post.hashtags {
         try await db
           .collection("hashtags")
           .document(hashtag)
@@ -331,17 +327,10 @@ class API {
   
   static func addComment(comment: PostProfileModel, postId: String) async throws -> PostProfileModel {
     do {
-      try await db
+      try db
         .collection("comments")
         .document(comment.post.id)
-        .setData([
-          "id": comment.post.id,
-          "ownerId": comment.post.ownerId,
-          "postId": postId,
-          "createdAt": comment.post.createdAt,
-          "text": comment.post.text,
-          "images": comment.post.images
-        ])
+        .setData(from: comment.post)
       
       return comment
     } catch let error {
@@ -404,14 +393,12 @@ class API {
         if let post = try? document.data(as: PostModel.self) {
           if let profile = profiles[post.ownerId] {
             posts.append(PostProfileModel(
-              id: post.id,
               post: post,
               profile: profile
             ))
           } else {
             if let profile = try? await getProfile(id: post.ownerId) {
               posts.append(PostProfileModel(
-                id: post.id,
                 post: post,
                 profile: profile
               ))
@@ -902,6 +889,36 @@ class API {
         .delete()
       
       return id
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func getPostsForHashtag(hashtag: String) async throws -> [PostProfileModel] {
+    var tempPosts: [PostModel] = []
+    do {
+      let dictionary = try await db
+        .collection("posts")
+        .whereField("hashtags", arrayContains: hashtag)
+        .order(by: "createdAt", descending: true)
+        .limit(to: 50)
+        .getDocuments().documents
+      
+      for document in dictionary {
+        if let post = try? document.data(as: PostModel.self) {
+          tempPosts.append(post)
+        }
+      }
+      
+      let uniqueProfileIds = Array(Set(tempPosts.map { $0.ownerId }))
+      let profiles = try await getProfiles(ids: uniqueProfileIds)
+      
+      return tempPosts.map({ post in
+        return PostProfileModel(
+          post: post,
+          profile: profiles.first(where: { $0.id == post.ownerId })!
+        )
+      })
     } catch let error {
       throw error
     }

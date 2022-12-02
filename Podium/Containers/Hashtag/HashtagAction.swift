@@ -1,35 +1,29 @@
 //
-//  HomeAction.swift
+//  HashtagAction.swift
 //  Podium
 //
-//  Created by Michael Jach on 08/11/2022.
+//  Created by Michael Jach on 02/12/2022.
 //
 
 import ComposableArchitecture
 import Foundation
 
-enum HomeAction {
-  case presentStories(isPresented: Bool, profileId: String?)
-  case presentProfile(isPresented: Bool, profile: ProfileModel?)
-  case presentAdd(isPresented: Bool)
+enum HashtagAction {
+  case getPosts
+  case didGetPosts(TaskResult<[PostProfileModel]>)
   case presentMedia(isPresented: Bool, post: PostProfileModel?, loadedImages: [String: Data]?)
   case presentThread(isPresented: Bool, post: PostProfileModel?)
-  case dismissBanner
-  case onMenuOpen
-  case getPosts
-  case deletePost(post: PostProfileModel)
-  case didDeletePost(TaskResult<String>)
+  case presentProfile(isPresented: Bool, profile: ProfileModel?)
   case reportPost(post: PostProfileModel)
   case didReportPost(TaskResult<String>)
   case blockPost(post: PostProfileModel)
   case didBlockPost(TaskResult<PostProfileModel>)
   case blockProfile(profile: ProfileModel)
   case didBlockProfile(TaskResult<ProfileModel>)
+  case onMenuOpen
   
   // View Actions
-  case add(AddAction)
-  case stories(StoriesAction)
   case media(MediaAction)
-  case thread(ThreadAction)
   case profile(ProfileAction)
+  case thread(ThreadAction)
 }

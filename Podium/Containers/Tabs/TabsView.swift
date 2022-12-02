@@ -11,7 +11,7 @@ import ComposableArchitecture
 struct TabsView: View {
   @Environment(\.scenePhase) private var scenePhase
   
-  let store: Store<TabsState, TabsAction>
+  let store: StoreOf<Tabs>
   
   var body: some View {
     WithViewStore(store) { viewStore in
@@ -65,17 +65,21 @@ struct TabsView: View {
         viewStore.send(.initialize)
         viewStore.send(.getProfile)
         API.listenPosts(ids: viewStore.profile.following.filter({ !viewStore.profile.blockedProfiles.contains($0) })) { posts in
-          viewStore.send(.addPosts(posts: posts))
+          DispatchQueue.main.async {
+            viewStore.send(.addPosts(posts: posts))
+          }
         }
         API.listenStories(ids: viewStore.profile.following.filter({ !viewStore.profile.blockedProfiles.contains($0) }), profileId: viewStore.profile.id) { (st, storiesToRemove) in
-          let (stories, urls, profiles) = st
-          viewStore.send(.addStories(stories: stories, urls: urls, profiles: profiles))
-          viewStore.send(.removeStories(stories: storiesToRemove))
+          DispatchQueue.main.async {
+            let (stories, urls, profiles) = st
+            viewStore.send(.addStories(stories: stories, urls: urls, profiles: profiles))
+            viewStore.send(.removeStories(stories: storiesToRemove))
+          }
         }
       }
       .onChange(of: scenePhase) { newPhase in
         if newPhase == .active {
-          viewStore.send(.getProfilePosts)
+          viewStore.send(.getPosts)
         }
       }
       .overlay {
@@ -103,22 +107,17 @@ struct TabsView_Previews: PreviewProvider {
       initialState: TabsState(
         profile: Mocks.profile,
         homeState: HomeState(
-          profile: Mocks.profile,
-          posts: [Mocks.postProfile]
+          profile: Mocks.profile
         ),
         profileState: ProfileState(
           fromProfile: Mocks.profile,
-          profile: Mocks.profile
-        ),
-        addState: AddState(
           profile: Mocks.profile
         ),
         exploreState: ExploreState(
           profile: Mocks.profile
         )
       ),
-      reducer: tabsReducer,
-      environment: AppEnvironment()
+      reducer: Tabs()
     ))
   }
 }

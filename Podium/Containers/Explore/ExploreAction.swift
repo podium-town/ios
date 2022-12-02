@@ -19,7 +19,9 @@ enum ExploreAction {
   case presentProfile(isPresented: Bool, profile: ProfileModel?)
   case getTopHashtags
   case didGetTopHashtags(TaskResult<[HashtagModel]>)
+  case presentHashtag(isPresented: Bool, hashtag: String?)
   
   // View Actions
   case profile(ProfileAction)
+  case hashtag(HashtagAction)
 }

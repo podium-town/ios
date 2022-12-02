@@ -14,4 +14,5 @@ struct PostModel: Equatable, Identifiable, Codable {
   var ownerId: String
   var createdAt: Int64
   var images: [PostImage] = []
+  var hashtags: [String]
 }

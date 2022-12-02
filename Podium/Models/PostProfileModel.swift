@@ -6,7 +6,7 @@
 //
 
 struct PostProfileModel: Equatable, Identifiable {
-  var id: String
+  var id: String { post.id }
   var post: PostModel
   var profile: ProfileModel
 }

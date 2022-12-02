@@ -25,10 +25,10 @@ struct Mocks {
       PostImage(
         id: "", url: "preview"
       )
-    ]
+    ],
+    hashtags: []
   )
   static var postProfile = PostProfileModel(
-    id: "123",
     post: Mocks.post,
     profile: Mocks.profile
   )
@@ -36,13 +36,15 @@ struct Mocks {
     id: "123",
     text: "You are viewing the README and repositories as a public user. You are viewing the README and repositories as a public user.",
     ownerId: "456",
-    createdAt: 123
+    createdAt: 123,
+    hashtags: []
   )
   static var comment = PostModel(
     id: "1123",
     text: "I'm a test comment.",
     ownerId: "456",
-    createdAt: 123
+    createdAt: 123,
+    hashtags: []
   )
   static var profile = ProfileModel(
     id: "456",

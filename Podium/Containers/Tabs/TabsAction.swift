@@ -28,6 +28,5 @@ enum TabsAction {
   // View Actions
   case home(HomeAction)
   case profile(ProfileAction)
-  case add(AddAction)
   case explore(ExploreAction)
 }
