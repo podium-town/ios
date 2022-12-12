@@ -24,6 +24,65 @@ class API {
     }
   }
   
+  static func verifyEmail(emailAddress: String, password: String) async throws -> ProfileModel {
+    do {
+      let result = try await Auth.auth().signIn(
+        withEmail: emailAddress,
+        password: password
+      )
+
+      let dictionary = try await db
+        .collection("users")
+        .document(result.user.uid)
+        .getDocument()
+        .data()
+      
+      if let dictionary = dictionary {
+        var profile = try ProfileModel(dictionary: dictionary)
+        if let avatarId = profile.avatarId {
+          let storageRef = storage.reference()
+          let fileRef = storageRef.child("\(profile.id)/\(avatarId).png")
+          let data = try? await fileRef.data(maxSize: 10 * 1024 * 1024)
+          profile.avatarData = data
+        }
+        return profile
+      } else {
+        throw AppError.profileNotExists
+      }
+    } catch let error {
+      throw error
+    }
+  }
+  
+  static func createAccount(emailAddress: String, password: String) async throws -> ProfileModel {
+    do {
+      let result = try await Auth.auth().createUser(
+        withEmail: emailAddress,
+        password: password
+      )
+      let profile = ProfileModel(
+        id: result.user.uid,
+        following: [result.user.uid],
+        createdAt: Int(Date().millisecondsSince1970) / 1000,
+        blockedProfiles: [],
+        blockedPosts: []
+      )
+      try await db
+        .collection("users")
+        .document(profile.id)
+        .setData([
+          "id": profile.id,
+          "following": profile.following,
+          "createdAt": profile.createdAt,
+          "blockedProfiles": profile.blockedProfiles,
+          "blockedPosts": profile.blockedPosts
+        ])
+      return profile
+    } catch let error {
+      throw error
+    }
+  }
+  
   static func signIn(verificationId: String?, verificationCode: String?) async throws -> ProfileModel {
     if let verificationId = verificationId,
        let verificationCode = verificationCode {
@@ -341,16 +400,16 @@ class API {
   static func setUsername(profile: ProfileModel, username: String) async throws -> ProfileModel {
     var updated = profile
     do {
-      let isAvailable = try await API.checkUsername(username: username)
+      let isAvailable = try await API.checkUsername(username: username.lowercased())
       if isAvailable {
         try await db
           .collection("users")
           .document(updated.id)
           .setData([
-            "username": username
+            "username": username.lowercased()
           ], merge: true)
         
-        updated.username = username
+        updated.username = username.lowercased()
         return updated
       } else {
         throw AppError.usernameTaken
@@ -421,7 +480,7 @@ class API {
     do {
       let results = try await db
         .collection("users")
-        .whereField("username", isEqualTo: username)
+        .whereField("username", isEqualTo: username.lowercased())
         .count
         .getAggregation(source: .server)
       
@@ -606,8 +665,8 @@ class API {
       var profiles: [ProfileModel] = []
       let results = try await db
         .collection("users")
-        .whereField("username", isGreaterThanOrEqualTo: query)
-        .whereField("username", isLessThanOrEqualTo: query+"\u{F7FF}")
+        .whereField("username", isGreaterThanOrEqualTo: query.lowercased())
+        .whereField("username", isLessThanOrEqualTo: query.lowercased()+"\u{F7FF}")
         .limit(to: 25)
         .getDocuments()
         .documents

@@ -31,7 +31,10 @@ struct Settings: ReducerProtocol {
         return .none
         
       case .deleteAccount:
-        return .none
+        let id = state.profile.id
+        return .fireAndForget {
+          try await API.deleteAccount(id: id)
+        }
       }
     }
   }

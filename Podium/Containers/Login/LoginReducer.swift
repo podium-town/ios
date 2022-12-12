@@ -15,6 +15,10 @@ struct Login: ReducerProtocol {
   var body: some ReducerProtocol<State, Action> {
     Reduce { state, action in
       switch action {
+      case .setStep(let step):
+        state.step = step
+        return .none
+        
       case .viewTerms:
         if let url = URL(string: "https://podium.town/terms") {
           UIApplication.shared.open(url)
@@ -25,29 +29,46 @@ struct Login: ReducerProtocol {
         state.bannerData = nil
         return .none
         
+      case .emailAddressChanged(let emailAddress):
+        state.emailAddress = emailAddress
+        return .none
+        
+      case .passwordChanged(let password):
+        state.password = password
+        return .none
+        
       case .phoneNumberChanged(let phoneNumber):
         state.phoneNumber = phoneNumber
         return .none
         
       case .resend:
         state.isVerificationPending = false
-        state.isUsernameSelectionVisible = false
+        state.step = .phone
         state.verificationId = nil
         state.verificationCode = ""
         return .none
         
       case .usernameChanged(let username):
         state.username = username
-        if username.count > 1 {
-          state.isUsernameValidated = true
-        } else {
-          state.isUsernameValidated = false
-        }
+        state.isUsernameValidated = username.count > 1
         return .none
         
       case .verificationCodeChanged(let verificationCode):
         state.verificationCode = verificationCode
         return .none
+        
+      case .verifyEmail:
+        state.isVerificationPending = true
+        let emailAddress = state.emailAddress
+        let password = state.password
+        return .task {
+          await .didSignIn(TaskResult {
+            try await API.verifyEmail(
+              emailAddress: emailAddress,
+              password: password
+            )
+          })
+        }
         
       case .verifyPhone:
         state.isVerificationPending = true
@@ -86,6 +107,19 @@ struct Login: ReducerProtocol {
           })
         }
         
+      case .createAccount:
+        state.isVerificationPending = true
+        let emailAddress = state.emailAddress
+        let password = state.password
+        return .task {
+          await .didSignIn(TaskResult {
+            try await API.createAccount(
+              emailAddress: emailAddress,
+              password: password
+            )
+          })
+        }
+        
       case .didSignIn(.success(let profile)):
         state.profile = profile
         state.isVerificationPending = false
@@ -95,7 +129,7 @@ struct Login: ReducerProtocol {
           UserDefaults.standard.set(encoded, forKey: StorageKey.profile.rawValue)
         }
         if profile.username == nil {
-          state.isUsernameSelectionVisible = true
+          state.step = .createProfile
         }
         return .none
         
@@ -110,6 +144,7 @@ struct Login: ReducerProtocol {
         return .none
         
       case .setUsername:
+        state.isVerificationPending = true
         let profile = state.profile
         let username = state.username
         if let profile = profile {
@@ -126,10 +161,11 @@ struct Login: ReducerProtocol {
         }
         
       case .didSetUsername(.success(let profile)):
+        state.isVerificationPending = false
         if let encoded = profile.encoded() {
           UserDefaults.standard.set(encoded, forKey: StorageKey.profile.rawValue)
         }
-        state.isUsernameSelectionVisible = false
+        state.step = .phone
         return .none
         
       case .didSetUsername(.failure(let error)):

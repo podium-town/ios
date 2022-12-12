@@ -21,6 +21,17 @@ extension View {
     self.modifier(BannerModifier(data: data))
   }
   
+  func placeholder<Content: View>(
+    when shouldShow: Bool,
+    alignment: Alignment = .leading,
+    @ViewBuilder placeholder: () -> Content) -> some View {
+      
+      ZStack(alignment: alignment) {
+        placeholder().opacity(shouldShow ? 1 : 0)
+        self
+      }
+    }
+  
   func tabViewStyle(backgroundColor: Color? = nil,
                     itemColor: Color? = nil,
                     selectedItemColor: Color? = nil,

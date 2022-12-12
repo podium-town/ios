@@ -75,7 +75,7 @@ struct Main: ReducerProtocol {
             )
           )
         }
-        return .none
+        return Effect(value: .tabs(.getPosts))
         
       case .login(.didSetUsername(.success(let profile))):
         state.login = nil
@@ -93,7 +93,7 @@ struct Main: ReducerProtocol {
             foundProfiles: []
           )
         )
-        return .none
+        return Effect(value: .tabs(.getPosts))
         
       case .login(_):
         return .none

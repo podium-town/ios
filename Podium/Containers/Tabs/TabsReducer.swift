@@ -62,22 +62,9 @@ struct Tabs: ReducerProtocol {
             state.homeState.storiesState?.stories[profileId]?.removeAll(where: { $0.story.id == st.id })
             state.urls.removeAll(where: { $0.url == st.url})
             state.homeState.storiesState?.urls.removeAll(where: { $0.url == st.url})
-            var hasNew = false
             if let st = state.homeState.stories[profileId] {
               if st.isEmpty {
                 state.homeState.profiles.removeAll(where: { $0.id == profileId })
-              } else if st.contains(where: { !$0.story.seenBy.contains(where: { $0.id == state.profile.id }) }) {
-                hasNew = true
-              } else {
-                hasNew = false
-              }
-              state.homeState.profiles = state.homeState.profiles.map { profile in
-                if profile.id == profileId {
-                  var mut = profile
-                  mut.hasNewStories = hasNew
-                  return mut
-                }
-                return profile
               }
             }
           }
@@ -158,7 +145,8 @@ struct Tabs: ReducerProtocol {
             return !state.profile.blockedPosts.contains(where: { $0 == post.post.id })
           })
         state.homeState.posts = added
-        return .none
+        state.homeState.isEmpty = added.isEmpty
+        return Effect(value: .getStories)
         
       case .didGetPosts(.failure(_)):
         state.homeState.isLoadingRefreshable = false
@@ -255,8 +243,36 @@ struct Tabs: ReducerProtocol {
         state.profileState.profile.blockedProfiles.append(profile.id)
         return .none
         
+      case .home(.profile(.didUnfollow(.success((_, let id))))),
+          .explore(.profile(.didUnfollow(.success((_, let id))))),
+          .explore(.didUnfollow(.success((_, let id)))):
+        state.profile.following.removeAll(where: { $0 == id })
+        state.homeState.profileState?.fromProfile.following.removeAll(where: { $0 == id })
+        state.homeState.profile.following.removeAll(where: { $0 == id })
+        state.exploreState.profile.following.removeAll(where: { $0 == id })
+        state.profileState.profile.following.removeAll(where: { $0 == id })
+        return Effect.merge([
+          Effect(value: .getPosts)
+        ])
+        
+      case .home(.profile(.didFollow(.success((_, let id))))),
+          .explore(.profile(.didFollow(.success((_, let id))))),
+          .explore(.didFollow(.success((_, let id)))):
+        if !state.profile.following.contains(id) {
+          state.homeState.profileState?.fromProfile.following.append(id)
+          state.profile.following.append(id)
+          state.homeState.profile.following.append(id)
+          state.exploreState.profile.following.append(id)
+          state.profileState.profile.following.append(id)
+        }
+        return Effect.merge([
+          Effect(value: .getPosts)
+        ])
+        
       case .home(.getPosts):
-        return Effect(value: .getPosts)
+        return Effect.merge([
+          Effect(value: .getPosts)
+        ])
         
       case .home(_):
         return .none
